@@ -4,10 +4,37 @@ import { useNavigate } from 'react-router-dom';
 function CarmenLydia() {
   const navigate = useNavigate();
 
+  // --- URLs de Imagem (Substitua pelos links reais do seu GCS) ---
+  const carmenLydiaImages = [
+    // URL 1: Exemplo de uma foto de natação ou recorte de jornal
+    "https://storage.googleapis.com/seu-bucket-aqui/carmen-lydia/foto-nado-1916.jpg", 
+    
+    // URL 2: Exemplo de uma foto de dança ou de apresentação
+    "https://storage.googleapis.com/seu-bucket-aqui/carmen-lydia/foto-danca-apresentacao.jpg",
+    
+    // URL 3: Exemplo de um documento ou foto de época
+    "https://storage.googleapis.com/seu-bucket-aqui/carmen-lydia/documento-resistencia.jpg",
+  ];
+
   return (
     <div className="pagina-conteudo">
       <div className="content-box">
+        
+        {/* Título Principal */}
         <h2>Quem Foi Carmen Lydia?</h2>
+        
+        {/* NOVO: GALERIA DE IMAGENS (Usando o estilo .lydia-galeria do seu CSS) */}
+        <div className="lydia-galeria">
+            {carmenLydiaImages.map((url, index) => (
+                <img 
+                    key={index} 
+                    src={url} 
+                    alt={`Imagem histórica de Carmen Lydia ${index + 1}`} 
+                />
+            ))}
+        </div>
+        {/* FIM DA GALERIA */}
+
         <p>
           No início do século XX, numa época em que a participação feminina nos esportes era rara e frequentemente criticada, uma jovem chamada <strong>Carmen Lydia</strong> se destacou nos cenários da alta sociedade do Rio de Janeiro e São Paulo. Ela não era apenas uma talentosa dançarina, mas também uma ávida nadadora e saltadora.
         </p>
