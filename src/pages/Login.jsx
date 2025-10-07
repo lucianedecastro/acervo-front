@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL;
+// REMOVIDO: const API_URL = import.meta.env.VITE_API_URL;
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -18,7 +18,8 @@ function LoginPage() {
     setError(null);
 
     try {
-      const response = await axios.post(`${API_URL}/admin/login`, { email, senha });
+      // CORREÇÃO: Usa apenas o caminho relativo. axios.defaults.baseURL fará o resto.
+      const response = await axios.post('/admin/login', { email, senha });
       login(response.data); // Guarda o token no contexto
       navigate('/admin/dashboard'); // Redireciona para o painel
     } catch (err) {

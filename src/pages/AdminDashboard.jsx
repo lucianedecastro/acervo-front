@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL;
+// REMOVIDO: const API_URL = import.meta.env.VITE_API_URL;
 
 function AdminDashboard() {
   const { token, logout } = useAuth();
@@ -14,7 +14,8 @@ function AdminDashboard() {
   const fetchAtletas = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/atletas`);
+      // CORREÇÃO: Usa apenas o caminho relativo. axios.defaults.baseURL fará o resto.
+      const response = await axios.get('/atletas');
       setAtletas(response.data);
     } catch (err) {
       setError('Falha ao buscar dados da API.');
@@ -31,7 +32,8 @@ function AdminDashboard() {
   const handleDelete = async (atletaId) => {
     if (window.confirm('Tem a certeza de que deseja apagar esta atleta?')) {
       try {
-        await axios.delete(`${API_URL}/atletas/${atletaId}`, {
+        // CORREÇÃO: Usa apenas o caminho relativo.
+        await axios.delete(`/atletas/${atletaId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

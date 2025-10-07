@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL;
+// REMOVIDO: const API_URL = import.meta.env.VITE_API_URL;
 
 function AtletaForm() {
   const { id } = useParams(); // Pega o 'id' da URL, se for uma edição
@@ -26,7 +26,8 @@ function AtletaForm() {
       // Se estiver a editar, busca os dados da atleta para preencher o formulário
       const fetchAtleta = async () => {
         try {
-          const response = await axios.get(`${API_URL}/atletas/${id}`);
+          // CORREÇÃO: Usa apenas o caminho relativo
+          const response = await axios.get(`/atletas/${id}`);
           setAtleta(response.data);
         } catch (err) {
           setError('Não foi possível carregar os dados da atleta.');
@@ -52,11 +53,13 @@ function AtletaForm() {
     try {
       if (isEditing) {
         // Modo Edição: usa o método PUT
-        await axios.put(`${API_URL}/atletas/${id}`, atleta, config);
+        // CORREÇÃO: Usa apenas o caminho relativo
+        await axios.put(`/atletas/${id}`, atleta, config);
         alert('Atleta atualizada com sucesso!');
       } else {
         // Modo Criação: usa o método POST
-        await axios.post(`${API_URL}/atletas`, atleta, config);
+        // CORREÇÃO: Usa apenas o caminho relativo
+        await axios.post('/atletas', atleta, config);
         alert('Atleta criada com sucesso!');
       }
       navigate('/admin/dashboard'); // Volta para o painel após o sucesso

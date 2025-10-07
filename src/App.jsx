@@ -12,7 +12,15 @@ import AdminDashboard from './pages/AdminDashboard';
 import AtletaForm from './pages/AtletaForm';
 import AtletaCard from './components/AtletaCard';
 
+// 1. LÊ A VARIÁVEL DE AMBIENTE
 const API_URL = import.meta.env.VITE_API_URL;
+
+// 2. CORREÇÃO CRUCIAL: CONFIGURA O AXIOS GLOBALMENTE
+// Isso garante que todas as chamadas como axios.get('/atletas')
+// usem a URL do Cloud Run como prefixo.
+if (API_URL) {
+    axios.defaults.baseURL = API_URL;
+}
 
 // --- Componentes de Layout ---
 
@@ -64,7 +72,8 @@ function PaginaInicial() {
   useEffect(() => {
     const fetchAtletas = async () => {
       try {
-        const response = await axios.get(`${API_URL}/atletas`);
+        // CORREÇÃO: Usa apenas o caminho relativo. axios.defaults.baseURL fará o resto.
+        const response = await axios.get('/atletas');
         setAtletas(response.data);
       } catch (err) {
         setError('Falha ao buscar dados da API.');
