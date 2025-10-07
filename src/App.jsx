@@ -12,7 +12,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AtletaForm from './pages/AtletaForm';
 import AtletaCard from './components/AtletaCard';
 
-const API_URL = 'https://acervo-api-1046033890461.southamerica-east1.run.app';
+const API_URL = import.meta.env.VITE_API_URL;
 
 // --- Componentes de Layout ---
 

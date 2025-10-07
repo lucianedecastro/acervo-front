@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
 
-const API_URL = 'https://acervo-api-1046033890461.southamerica-east1.run.app';
+const API_URL = import.meta.env.VITE_API_URL;
 
 function AtletaForm() {
   const { id } = useParams(); // Pega o 'id' da URL, se for uma edição
