@@ -23,7 +23,7 @@ function AtletaForm() {
   const [error, setError] = useState(null);
   const isEditing = Boolean(id);
 
-  // --- 1. AJUSTE: CARREGAMENTO DE DADOS (PARA EDIÇÃO) ---
+  // --- 1. CARREGAMENTO DE DADOS (PARA EDIÇÃO) ---
   useEffect(() => {
     if (isEditing) {
       const fetchAtleta = async () => {
@@ -86,19 +86,15 @@ function AtletaForm() {
             legenda: legenda // Adiciona a legenda
         };
 
-        // CORREÇÃO CRUCIAL: Envia o JSON como um BLOB com Content-Type explícito
-        // Isso resolve o erro 415/desserialização do Spring WebFlux/Multipart
-        const dadosBlob = new Blob([JSON.stringify(metadados)], { type: 'application/json' });
-        
-        // O nome 'dados' é o que o backend espera (@RequestPart("dados"))
-        formData.append('dados', dadosBlob); 
+        // CORREÇÃO CRUCIAL: Remove o Blob e envia o JSON como STRING.
+        // O backend (Java) será corrigido em seguida para ler esta string.
+        formData.append('dados', JSON.stringify(metadados)); 
         
         // 3. Configuração da Requisição
-        // IMPORTANTE: Removemos 'Content-Type': 'multipart/form-data' do header, 
-        // pois o browser o define corretamente ao enviar FormData, e forçar causava o erro 415.
         const config = {
             headers: { 
                 Authorization: `Bearer ${token}`,
+                // 'Content-Type': 'multipart/form-data' é omitido, o browser o define.
             }
         };
 
