@@ -19,7 +19,10 @@ const API_URL = import.meta.env.VITE_API_URL;
 // Isso garante que todas as chamadas como axios.get('/atletas')
 // usem a URL do Cloud Run como prefixo.
 if (API_URL) {
-    axios.defaults.baseURL = API_URL;
+  axios.defaults.baseURL = API_URL.endsWith('/')
+    ? API_URL
+    : `${API_URL}/`;
+  console.log('API Base URL configurada como:', axios.defaults.baseURL);
 }
 
 // --- Componentes de Layout ---
