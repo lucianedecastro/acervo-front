@@ -3,10 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
 
-// REMOVIDO: const API_URL = import.meta.env.VITE_API_URL;
-
 function AtletaForm() {
-  const { id } = useParams(); // Pega o 'id' da URL, se for uma edição
+  const { id } = useParams();
   const navigate = useNavigate();
   const { token } = useAuth();
 
@@ -15,19 +13,29 @@ function AtletaForm() {
     modalidade: '',
     biografia: '',
     competicao: '',
-    imagemUrl: ''
   });
+  
+  // ESTADOS PARA O UPLOAD
+  const [file, setFile] = useState(null);
+  const [legenda, setLegenda] = useState(''); 
+  const [uploading, setUploading] = useState(false); // Feedback de upload
+  
   const [error, setError] = useState(null);
+  const isEditing = Boolean(id);
 
-  const isEditing = Boolean(id); // Verifica se estamos no modo de edição
-
+  // --- 1. AJUSTE: CARREGAMENTO DE DADOS (PARA EDIÇÃO) ---
   useEffect(() => {
     if (isEditing) {
-      // Se estiver a editar, busca os dados da atleta para preencher o formulário
       const fetchAtleta = async () => {
         try {
-          // CORREÇÃO: Usa apenas o caminho relativo
           const response = await axios.get(`/atletas/${id}`);
+          
+          // Se houver fotos, pré-preenche a legenda com a primeira foto
+          if (response.data.fotos && response.data.fotos.length > 0) {
+            setLegenda(response.data.fotos[0].legenda || '');
+          }
+          
+          // Mapeia os dados do modelo 
           setAtleta(response.data);
         } catch (err) {
           setError('Não foi possível carregar os dados da atleta.');
@@ -37,35 +45,80 @@ function AtletaForm() {
     }
   }, [id, isEditing]);
 
+  // Lidar com campos de texto
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAtleta(prevState => ({ ...prevState, [name]: value }));
   };
+  
+  // Lidar com a seleção do arquivo
+  const handleFileChange = (e) => {
+      setFile(e.target.files[0]);
+  };
 
+  // --- 2. ENVIO DE DADOS (CONSTRUINDO O FormData) ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
+    setUploading(true);
 
+    const formData = new FormData();
+    
     try {
-      if (isEditing) {
-        // Modo Edição: usa o método PUT
-        // CORREÇÃO: Usa apenas o caminho relativo
-        await axios.put(`/atletas/${id}`, atleta, config);
-        alert('Atleta atualizada com sucesso!');
-      } else {
-        // Modo Criação: usa o método POST
-        // CORREÇÃO: Usa apenas o caminho relativo
-        await axios.post('/atletas', atleta, config);
-        alert('Atleta criada com sucesso!');
-      }
-      navigate('/admin/dashboard'); // Volta para o painel após o sucesso
+        // Se estiver em modo de criação E não houver arquivo, força erro.
+        if (!isEditing && !file) {
+            setError('É obrigatório o upload de uma imagem para criar a atleta.');
+            setUploading(false);
+            return;
+        }
+
+        // 1. Adiciona o arquivo (se selecionado)
+        if (file) {
+            formData.append('file', file); // O nome 'file' é o que o backend espera (@RequestPart("file"))
+        }
+
+        // 2. Adiciona os metadados no formato JSON esperado pelo DTO/Backend
+        const metadados = {
+            nome: atleta.nome,
+            modalidade: atleta.modalidade,
+            biografia: atleta.biografia,
+            competicao: atleta.competicao,
+            legenda: legenda // Adiciona a legenda
+        };
+
+        // CORREÇÃO CRUCIAL: Envia o JSON como um BLOB com Content-Type explícito
+        // Isso resolve o erro 415/desserialização do Spring WebFlux/Multipart
+        const dadosBlob = new Blob([JSON.stringify(metadados)], { type: 'application/json' });
+        
+        // O nome 'dados' é o que o backend espera (@RequestPart("dados"))
+        formData.append('dados', dadosBlob); 
+        
+        // 3. Configuração da Requisição
+        // IMPORTANTE: Removemos 'Content-Type': 'multipart/form-data' do header, 
+        // pois o browser o define corretamente ao enviar FormData, e forçar causava o erro 415.
+        const config = {
+            headers: { 
+                Authorization: `Bearer ${token}`,
+            }
+        };
+
+        if (isEditing) {
+            // Modo Edição: PUT
+            await axios.put(`/atletas/${id}`, formData, config);
+            alert('Atleta atualizada com sucesso! (Nova foto, se houver, adicionada à galeria)');
+        } else {
+            // Modo Criação: POST
+            await axios.post('/atletas', formData, config);
+            alert('Atleta criada com sucesso!');
+        }
+        
+        setUploading(false);
+        navigate('/admin/dashboard'); 
+
     } catch (err) {
-      setError('Ocorreu um erro ao salvar. Tente novamente.');
-      console.error(err);
+        setUploading(false);
+        setError('Ocorreu um erro ao salvar ou fazer o upload. Verifique as credenciais.');
+        console.error(err);
     }
   };
 
@@ -73,32 +126,63 @@ function AtletaForm() {
     <div className="pagina-conteudo">
       <h2>{isEditing ? 'Editar Atleta' : 'Criar Nova Atleta'}</h2>
       <form onSubmit={handleSubmit} className="atleta-form">
+        
+        {/* CAMPOS DE TEXTO PRINCIPAIS */}
         <div className="form-group">
           <label htmlFor="nome">Nome:</label>
-          <input type="text" name="nome" value={atleta.nome} onChange={handleChange} required />
+          <input type="text" name="nome" value={atleta.nome} onChange={handleChange} required disabled={uploading} />
         </div>
         <div className="form-group">
           <label htmlFor="modalidade">Modalidade:</label>
-          <input type="text" name="modalidade" value={atleta.modalidade} onChange={handleChange} />
+          <input type="text" name="modalidade" value={atleta.modalidade} onChange={handleChange} disabled={uploading} />
         </div>
         <div className="form-group">
           <label htmlFor="biografia">Biografia:</label>
-          <textarea name="biografia" value={atleta.biografia} onChange={handleChange}></textarea>
+          <textarea name="biografia" value={atleta.biografia} onChange={handleChange} disabled={uploading}></textarea>
         </div>
         <div className="form-group">
           <label htmlFor="competicao">Competições:</label>
-          <input type="text" name="competicao" value={atleta.competicao} onChange={handleChange} />
+          <input type="text" name="competicao" value={atleta.competicao} onChange={handleChange} disabled={uploading} />
         </div>
+
+        {/* --- NOVOS CAMPOS DE UPLOAD DE ARQUIVO --- */}
+        <h3>Adicionar Foto ao Acervo</h3>
+        
+        {/* CAMPO UPLOAD DE ARQUIVO */}
         <div className="form-group">
-          <label htmlFor="imagemUrl">URL da Imagem:</label>
-          <input type="text" name="imagemUrl" value={atleta.imagemUrl} onChange={handleChange} />
+          <label htmlFor="file-upload">Selecione a Imagem (JPG/PNG):</label>
+          <input 
+            type="file" 
+            id="file-upload" 
+            onChange={handleFileChange} 
+            accept="image/png, image/jpeg" 
+            disabled={uploading}
+          />
+          {file && <p className="info-message">Arquivo pronto para upload: <strong>{file.name}</strong></p>}
         </div>
         
+        {/* CAMPO LEGENDA */}
+        <div className="form-group">
+          <label htmlFor="legenda">Legenda para esta Foto:</label>
+          <input 
+            type="text" 
+            name="legenda" 
+            value={legenda} 
+            onChange={(e) => setLegenda(e.target.value)} 
+            placeholder="Ex: Maria Lenk nos Jogos de 1932"
+            disabled={uploading}
+          />
+        </div>
+        {/* --- FIM DOS NOVOS CAMPOS --- */}
+
+        {uploading && <p className="info-message">A carregar imagem e salvar dados... Por favor, aguarde.</p>}
         {error && <p className="error-message">{error}</p>}
 
         <div className="form-actions">
-            <button type="submit" className="btn-action">{isEditing ? 'Salvar Alterações' : 'Criar Atleta'}</button>
-            <button type="button" className="btn-action btn-secondary" onClick={() => navigate('/admin/dashboard')}>Voltar</button>
+            <button type="submit" className="btn-action" disabled={uploading}>
+                {uploading ? 'Aguarde...' : isEditing ? 'Salvar Alterações' : 'Criar Atleta'}
+            </button>
+            <button type="button" className="btn-action btn-secondary" onClick={() => navigate('/admin/dashboard')} disabled={uploading}>Voltar</button>
         </div>
       </form>
     </div>
