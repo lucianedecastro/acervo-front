@@ -29,7 +29,8 @@ function AtletaForm() {
       const fetchAtleta = async () => {
         try {
           // CORREÇÃO: Adiciona token se necessário
-          const response = await axios.get(`/atletas/${id}`);
+          const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+          const response = await axios.get(`/atletas/${id}`, config);
           setAtleta({
             nome: response.data.nome || '',
             modalidade: response.data.modalidade || '',
@@ -46,7 +47,7 @@ function AtletaForm() {
       };
       fetchAtleta();
     }
-  }, [id, isEditing]);
+  }, [id, isEditing, token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,6 +65,12 @@ function AtletaForm() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
+    // ✅ VERIFICAÇÃO CRÍTICA DO TOKEN - ADICIONADA
+    if (!token) {
+      setError('Usuário não autenticado. Faça login novamente.');
+      return;
+    }
 
     if (!isEditing && !file) {
       setError('É obrigatório o upload de uma imagem ao criar uma nova atleta.');
@@ -122,12 +129,11 @@ function AtletaForm() {
     }
   };
 
-  // ... (o restante do JSX permanece igual)
   return (
     <div className="pagina-conteudo">
       <h2>{isEditing ? 'Editar Atleta' : 'Criar Nova Atleta'}</h2>
       <form onSubmit={handleSubmit} className="atleta-form">
-        {/* Campos do formulário (mantidos iguais) */}
+        {/* Campos do formulário */}
         <div className="form-group">
           <label>Nome:</label>
           <input
