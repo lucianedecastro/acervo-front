@@ -18,14 +18,12 @@ function LoginPage() {
     try {
       const response = await axios.post('/admin/login', { email, senha });
       
-      // ✅ CORREÇÃO SIMPLIFICADA
       console.log('🔐 Resposta do login:', response.data);
       
-      // A API retorna o token JWT diretamente como string
-      const token = response.data;
+      // ✅ CORREÇÃO: response.data é um OBJETO, pega a propriedade token
+      const token = response.data.token;
       
-      // DEBUG: Verifica o token
-      console.log('🔐 Token recebido:', {
+      console.log('🔐 Token extraído:', {
         token: token,
         type: typeof token,
         length: token?.length,
