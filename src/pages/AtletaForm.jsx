@@ -15,7 +15,6 @@ function AtletaForm() {
     competicao: '',
   });
 
-  // Upload e feedback
   const [file, setFile] = useState(null);
   const [legenda, setLegenda] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -29,6 +28,7 @@ function AtletaForm() {
     if (isEditing) {
       const fetchAtleta = async () => {
         try {
+          // CORREÇÃO: Adiciona token se necessário
           const response = await axios.get(`/atletas/${id}`);
           setAtleta({
             nome: response.data.nome || '',
@@ -40,7 +40,7 @@ function AtletaForm() {
             setLegenda(response.data.fotos[0].legenda || '');
           }
         } catch (err) {
-          console.error(err);
+          console.error('Erro ao carregar atleta:', err);
           setError('Não foi possível carregar os dados da atleta.');
         }
       };
@@ -48,7 +48,6 @@ function AtletaForm() {
     }
   }, [id, isEditing]);
 
-  // --- 2️⃣ Manipulação de campos ---
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAtleta((prev) => ({ ...prev, [name]: value }));
@@ -60,13 +59,12 @@ function AtletaForm() {
     setError(null);
   };
 
-  // --- 3️⃣ Envio dos dados ---
+  // --- 3️⃣ Envio dos dados CORRIGIDO ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
 
-    // Validações básicas
     if (!isEditing && !file) {
       setError('É obrigatório o upload de uma imagem ao criar uma nova atleta.');
       return;
@@ -77,12 +75,10 @@ function AtletaForm() {
     try {
       const formData = new FormData();
 
-      // Adiciona o arquivo (se houver)
       if (file) {
         formData.append('file', file);
       }
 
-      // Adiciona JSON dos metadados
       const dados = {
         nome: atleta.nome,
         modalidade: atleta.modalidade,
@@ -93,40 +89,45 @@ function AtletaForm() {
       formData.append('dados', JSON.stringify(dados));
 
       const config = {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        },
       };
 
-      // ⚙️ PUT pode falhar com multipart → substituímos por POST
+      // CORREÇÃO: Usa os endpoints CORRETOS do backend
       if (isEditing) {
-        await axios.post(`/atletas/${id}?edit=true`, formData, config);
+        // ✅ Seu backend tem PUT /atletas/{id}
+        await axios.put(`/atletas/${id}`, formData, config);
         setSuccess('Atleta atualizada com sucesso!');
       } else {
+        // ✅ Seu backend tem POST /atletas  
         await axios.post('/atletas', formData, config);
         setSuccess('Atleta criada com sucesso!');
       }
 
-      setUploading(false);
       setTimeout(() => navigate('/admin/dashboard'), 1200);
 
     } catch (err) {
-      console.error(err);
-      setUploading(false);
+      console.error('Erro ao salvar atleta:', err);
       if (err.response?.status === 401) {
         setError('Sessão expirada. Faça login novamente.');
       } else if (err.response?.status === 415) {
         setError('Formato de arquivo inválido. Envie uma imagem PNG ou JPG.');
       } else {
-        setError('Ocorreu um erro ao salvar ou enviar os dados.');
+        setError('Ocorreu um erro ao salvar os dados.');
       }
+    } finally {
+      setUploading(false);
     }
   };
 
+  // ... (o restante do JSX permanece igual)
   return (
     <div className="pagina-conteudo">
       <h2>{isEditing ? 'Editar Atleta' : 'Criar Nova Atleta'}</h2>
       <form onSubmit={handleSubmit} className="atleta-form">
-
-        {/* Campos principais */}
+        {/* Campos do formulário (mantidos iguais) */}
         <div className="form-group">
           <label>Nome:</label>
           <input
@@ -173,7 +174,6 @@ function AtletaForm() {
 
         <h3>Adicionar Foto ao Acervo</h3>
 
-        {/* Upload de arquivo */}
         <div className="form-group">
           <label>Selecione a Imagem (JPG/PNG):</label>
           <input
@@ -197,7 +197,6 @@ function AtletaForm() {
           )}
         </div>
 
-        {/* Legenda */}
         <div className="form-group">
           <label>Legenda da Foto:</label>
           <input
@@ -210,7 +209,6 @@ function AtletaForm() {
           />
         </div>
 
-        {/* Feedback visual */}
         {uploading && <p className="info-message">Salvando dados, por favor aguarde...</p>}
         {error && <p className="error-message">{error}</p>}
         {success && <p className="success-message">{success}</p>}

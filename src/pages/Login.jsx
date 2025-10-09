@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
 
-// REMOVIDO: const API_URL = import.meta.env.VITE_API_URL;
-
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -18,11 +16,31 @@ function LoginPage() {
     setError(null);
 
     try {
-      // CORREÇÃO: Usa apenas o caminho relativo. axios.defaults.baseURL fará o resto.
       const response = await axios.post('/admin/login', { email, senha });
-      login(response.data); // Guarda o token no contexto
-      navigate('/admin/dashboard'); // Redireciona para o painel
+      
+      // CORREÇÃO: Extrai o token da resposta
+      console.log('Resposta do login:', response.data);
+      
+      let token;
+      if (typeof response.data === 'string') {
+        // Se for string JSON, faz parse
+        const parsed = JSON.parse(response.data);
+        token = parsed.token;
+      } else if (response.data.token) {
+        // Se for objeto, pega o token
+        token = response.data.token;
+      } else {
+        // Se já for o token direto
+        token = response.data;
+      }
+      
+      console.log('Token extraído:', token);
+      login(token); // CORREÇÃO: Passa só o token, não a resposta completa
+      navigate('/admin/dashboard');
+      
     } catch (err) {
+      console.error('Erro no login:', err);
+      console.error('Detalhes do erro:', err.response);
       setError('Credenciais inválidas. Tente novamente.');
     }
   };
@@ -31,7 +49,6 @@ function LoginPage() {
     <div className="pagina-conteudo">
       <h2>Login Administrativo</h2>
       <form onSubmit={handleLogin} className="login-form">
-        {/* Formulário continua o mesmo */}
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
