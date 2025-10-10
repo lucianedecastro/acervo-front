@@ -38,7 +38,10 @@ function AtletaForm() {
           });
           // 🆕 CARREGA GALERIA EXISTENTE
           if (response.data.fotos) {
-            setFotos(response.data.fotos);
+            setFotos(response.data.fotos.map(foto => ({
+              ...foto,
+              preview: foto.url // Para preview de fotos existentes
+            })));
           }
         } catch (err) {
           console.error('Erro ao carregar atleta:', err);
@@ -59,10 +62,10 @@ function AtletaForm() {
     const files = Array.from(e.target.files);
     
     const novasFotos = files.map(file => ({
-      file,
-      preview: URL.createObjectURL(file),
+      file, // 🎯 Arquivo para upload
+      preview: URL.createObjectURL(file), // Preview local
       legenda: '',
-      ehDestaque: fotos.length === 0 // 🎯 Primeira foto é destaque
+      ehDestaque: fotos.length === 0 && files.length === 1 // 🎯 Primeira foto é destaque
     }));
 
     setFotos(prev => [...prev, ...novasFotos]);
@@ -96,7 +99,7 @@ function AtletaForm() {
     setFotos(novasFotos);
   };
 
-  // --- 3️⃣ Envio dos dados ATUALIZADO ---
+  // --- 3️⃣ Envio dos dados CORRIGIDO ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -116,62 +119,49 @@ function AtletaForm() {
     setUploading(true);
 
     try {
-      // 🆕 UPLOAD DE MÚLTIPLAS FOTOS
-      const uploadPromises = fotos.map(async (foto) => {
-        if (foto.url) {
-          // Foto já existe (edição), retorna dados existentes
-          return {
-            id: foto.id,
-            url: foto.url,
-            legenda: foto.legenda,
-            ehDestaque: foto.ehDestaque
-          };
-        } else {
-          // Nova foto, faz upload
-          const formData = new FormData();
-          formData.append('file', foto.file);
-          
-          const config = {
-            headers: { 
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data'
-            },
-          };
+      const formData = new FormData();
 
-          const response = await axios.post('/upload', formData, config);
-          return {
-            id: Math.random().toString(36).substr(2, 9), // ID temporário
-            url: response.data.url,
-            legenda: foto.legenda,
-            ehDestaque: foto.ehDestaque
-          };
-        }
-      });
+      // 🎯 ESTRATÉGIA CORRETA: Envia APENAS a PRIMEIRA foto como 'file' (para compatibilidade)
+      // O backend espera um campo 'file' no multipart
+      const primeiraFotoNova = fotos.find(foto => foto.file);
+      if (primeiraFotoNova) {
+        formData.append('file', primeiraFotoNova.file);
+      }
 
-      const fotosProcessadas = await Promise.all(uploadPromises);
-      const fotoDestaque = fotosProcessadas.find(foto => foto.ehDestaque);
-
+      const fotoDestaque = fotos.find(foto => foto.ehDestaque);
+      
       const dados = {
         nome: atleta.nome,
         modalidade: atleta.modalidade,
         biografia: atleta.biografia,
         competicao: atleta.competicao,
-        fotos: fotosProcessadas,
+        legenda: primeiraFotoNova?.legenda || '', // Legenda da primeira foto
+        fotos: fotos.map(foto => ({
+          id: foto.id,
+          url: foto.url, // Para fotos existentes
+          legenda: foto.legenda,
+          ehDestaque: foto.ehDestaque
+        })),
         fotoDestaqueId: fotoDestaque?.id
       };
+      
+      formData.append('dados', JSON.stringify(dados));
 
       const config = {
         headers: { 
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data' // ✅ CORRETO - multipart
         },
       };
 
+      // CORREÇÃO: Usa os endpoints CORRETOS do backend
       if (isEditing) {
-        await axios.put(`/atletas/${id}`, dados, config);
+        // ✅ Seu backend tem PUT /atletas/{id} com multipart
+        await axios.put(`/atletas/${id}`, formData, config);
         setSuccess('Atleta atualizada com sucesso!');
       } else {
-        await axios.post('/atletas', dados, config);
+        // ✅ Seu backend tem POST /atletas com multipart
+        await axios.post('/atletas', formData, config);
         setSuccess('Atleta criada com sucesso!');
       }
 
@@ -182,9 +172,9 @@ function AtletaForm() {
       if (err.response?.status === 401) {
         setError('Sessão expirada. Faça login novamente.');
       } else if (err.response?.status === 415) {
-        setError('Formato de arquivo inválido. Envie uma imagem PNG ou JPG.');
+        setError('Erro de formato - verifique se as imagens são PNG ou JPG.');
       } else {
-        setError('Ocorreu um erro ao salvar os dados.');
+        setError('Ocorreu um erro ao salvar os dados: ' + (err.response?.data?.message || err.message));
       }
     } finally {
       setUploading(false);
