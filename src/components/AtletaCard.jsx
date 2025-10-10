@@ -2,33 +2,62 @@ import React from 'react';
 import styles from './AtletaCard.module.css';
 
 function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
+  // 🎯 CORREÇÃO: Função para remover duplicatas baseada no ID ou URL
+  const getFotosUnicas = () => {
+    if (!atleta.fotos?.length) return [];
+    
+    const fotosUnicas = [];
+    const idsVistos = new Set();
+    const urlsVistas = new Set();
+    
+    atleta.fotos.forEach(foto => {
+      // Se a foto tem ID, usa como chave única
+      if (foto.id) {
+        if (!idsVistos.has(foto.id)) {
+          idsVistos.add(foto.id);
+          fotosUnicas.push(foto);
+        }
+      } 
+      // Se não tem ID, usa a URL como chave única
+      else if (foto.url && !urlsVistas.has(foto.url)) {
+        urlsVistas.add(foto.url);
+        fotosUnicas.push(foto);
+      }
+    });
+    
+    return fotosUnicas;
+  };
+
+  // 🎯 CORREÇÃO: Filtra fotos válidas E únicas
+  const getFotosValidas = () => {
+    const fotosUnicas = getFotosUnicas();
+    return fotosUnicas.filter(foto => 
+      foto.url && foto.url.includes('storage.googleapis.com')
+    );
+  };
+
   // 🎯 CORREÇÃO AVANÇADA: Usa foto destaque ou fallback inteligente
   const getFotoCard = () => {
+    const fotosValidas = getFotosValidas();
+    
     // 1. Tenta encontrar a foto marcada como destaque
-    const fotoDestaque = atleta.fotos?.find(foto => foto.ehDestaque);
+    const fotoDestaque = fotosValidas.find(foto => foto.ehDestaque);
     if (fotoDestaque) return fotoDestaque.url;
     
     // 2. Tenta usar fotoDestaqueId se existir
     if (atleta.fotoDestaqueId) {
-      const fotoPorId = atleta.fotos?.find(foto => foto.id === atleta.fotoDestaqueId);
+      const fotoPorId = fotosValidas.find(foto => foto.id === atleta.fotoDestaqueId);
       if (fotoPorId) return fotoPorId.url;
     }
     
-    // 3. Fallback para primeira foto
-    if (atleta.fotos?.[0]?.url) return atleta.fotos[0].url;
+    // 3. Fallback para primeira foto válida
+    if (fotosValidas[0]?.url) return fotosValidas[0].url;
     
     // 4. Fallback para estrutura antiga (compatibilidade)
     if (atleta.imagemUrl) return atleta.imagemUrl;
     
     // 5. Fallback final
     return 'https://via.placeholder.com/300x200/4A5568/FFFFFF?text=Imagem+Indisponível';
-  };
-
-  // 🎯 NOVO: Filtra apenas fotos válidas (que existem no bucket)
-  const getFotosValidas = () => {
-    return atleta.fotos?.filter(foto => 
-      foto.url && foto.url.includes('storage.googleapis.com')
-    ) || [];
   };
 
   const fotosValidas = getFotosValidas();
@@ -49,7 +78,7 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
           <span className={styles.atleta}>ATLETA</span>
           <h3 className={styles.nome}>{atleta.nome}</h3>
           <p className={styles.modalidade}>{atleta.modalidade}</p>
-          {/* 🎯 CORREÇÃO: Badge mostra APENAS fotos válidas */}
+          {/* 🎯 CORREÇÃO: Badge mostra APENAS fotos válidas e únicas */}
           {fotosValidas.length > 1 && (
             <span className={styles.fotoBadge}>📸 {fotosValidas.length} fotos</span>
           )}
@@ -77,19 +106,21 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
           <h4>Competições e Títulos</h4>
           <p>{atleta.competicao}</p>
           
-          {/* 🎯 CORREÇÃO: Galeria mostra APENAS fotos válidas */}
+          {/* 🎯 CORREÇÃO: Galeria mostra APENAS fotos válidas e únicas */}
           {fotosValidas.length > 0 && (
             <>
               <h4>Galeria de Fotos ({fotosValidas.length})</h4>
               <div className={styles.galeria}>
-                {fotosValidas.map((foto, index) => (
-                  <div key={foto.id || index} className={styles.fotoExpandida}>
+                {fotosValidas.map((foto) => (
+                  <div 
+                    key={foto.id || foto.url} // 🎯 CORREÇÃO CRÍTICA: Key única baseada em ID ou URL
+                    className={styles.fotoExpandida}
+                  >
                     <img 
                       src={foto.url} 
-                      alt={foto.legenda || `Foto ${index + 1} de ${atleta.nome}`}
+                      alt={foto.legenda || `Foto de ${atleta.nome}`}
                       className={foto.ehDestaque ? styles.fotoDestaque : ''}
                       onError={(e) => {
-                        // 🎯 Se foto não carregar, mostra placeholder
                         e.target.src = 'https://via.placeholder.com/300x200/718096/FFFFFF?text=Foto+Não+Encontrada';
                       }}
                     />
