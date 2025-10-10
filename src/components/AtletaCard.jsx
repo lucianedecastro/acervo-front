@@ -24,6 +24,14 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
     return 'https://via.placeholder.com/300x200/4A5568/FFFFFF?text=Imagem+Indisponível';
   };
 
+  // 🎯 NOVO: Filtra apenas fotos válidas (que existem no bucket)
+  const getFotosValidas = () => {
+    return atleta.fotos?.filter(foto => 
+      foto.url && foto.url.includes('storage.googleapis.com')
+    ) || [];
+  };
+
+  const fotosValidas = getFotosValidas();
   const imagemUrl = getFotoCard();
   
   return (
@@ -38,12 +46,12 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
           }}
         />
         <div className={styles.infoPrincipal}>
-          <span className={styles.atleta}>ATLETA</span> {/* 🆕 MUDANÇA AQUI */}
+          <span className={styles.atleta}>ATLETA</span>
           <h3 className={styles.nome}>{atleta.nome}</h3>
           <p className={styles.modalidade}>{atleta.modalidade}</p>
-          {/* 🆕 BADGE mostrando total de fotos */}
-          {atleta.fotos && atleta.fotos.length > 1 && (
-            <span className={styles.fotoBadge}>📸 {atleta.fotos.length} fotos</span>
+          {/* 🎯 CORREÇÃO: Badge mostra APENAS fotos válidas */}
+          {fotosValidas.length > 1 && (
+            <span className={styles.fotoBadge}>📸 {fotosValidas.length} fotos</span>
           )}
         </div>
       </div>
@@ -69,17 +77,21 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
           <h4>Competições e Títulos</h4>
           <p>{atleta.competicao}</p>
           
-          {/* 🎯 GALERIA EXPANDIDA MELHORADA */}
-          {atleta.fotos && atleta.fotos.length > 0 && (
+          {/* 🎯 CORREÇÃO: Galeria mostra APENAS fotos válidas */}
+          {fotosValidas.length > 0 && (
             <>
-              <h4>Galeria de Fotos</h4>
+              <h4>Galeria de Fotos ({fotosValidas.length})</h4>
               <div className={styles.galeria}>
-                {atleta.fotos.map((foto, index) => (
+                {fotosValidas.map((foto, index) => (
                   <div key={foto.id || index} className={styles.fotoExpandida}>
                     <img 
                       src={foto.url} 
                       alt={foto.legenda || `Foto ${index + 1} de ${atleta.nome}`}
                       className={foto.ehDestaque ? styles.fotoDestaque : ''}
+                      onError={(e) => {
+                        // 🎯 Se foto não carregar, mostra placeholder
+                        e.target.src = 'https://via.placeholder.com/300x200/718096/FFFFFF?text=Foto+Não+Encontrada';
+                      }}
                     />
                     {foto.legenda && (
                       <p className={styles.legenda}>
@@ -91,6 +103,13 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
                 ))}
               </div>
             </>
+          )}
+          
+          {/* 🎯 AVISO se todas as fotos foram filtradas */}
+          {atleta.fotos?.length > 0 && fotosValidas.length === 0 && (
+            <div className={styles.semFotos}>
+              <p>⚠️ Esta atleta tem {atleta.fotos.length} foto(s) no cadastro, mas nenhuma foi encontrada no servidor.</p>
+            </div>
           )}
         </div>
       )}
