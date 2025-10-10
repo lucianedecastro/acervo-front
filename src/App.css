@@ -572,3 +572,269 @@ nav a:hover {
     padding: 0.5rem;
   }
 }
+
+/* === NOVOS ESTILOS PARA AS PÁGINAS === */
+
+/* 🏠 HOME PAGE */
+.hero-destaques {
+  margin-bottom: 3rem;
+}
+
+.destaques-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.preview-modalidades {
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.modalidades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.modalidade-preview {
+  text-align: center;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #eee;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+}
+
+.modalidade-preview:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.modalidade-preview img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.pictograma-placeholder {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.pictograma-placeholder.hero {
+  font-size: 4rem;
+}
+
+.preview-antessala {
+  text-align: center;
+  padding: 2rem;
+}
+
+/* 🆕 ESTILOS PARA A PÁGINA DE MODALIDADE */
+
+.modalidade-info {
+  flex-grow: 1;
+}
+
+.modalidade-actions {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.editor-container {
+  margin: 1rem 0;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+}
+
+/* Melhorias para o conteúdo rico */
+.conteudo-rico {
+  line-height: 1.8;
+  text-align: left;
+}
+
+.conteudo-rico h3 {
+  color: var(--cor-primaria);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--cor-primaria);
+  padding-bottom: 0.5rem;
+}
+
+.conteudo-rico h4 {
+  color: var(--cor-texto-principal);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.conteudo-rico p {
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.conteudo-rico ul, 
+.conteudo-rico ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.conteudo-rico li {
+  margin-bottom: 0.5rem;
+}
+
+.conteudo-rico blockquote {
+  border-left: 4px solid var(--cor-primaria);
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--cor-texto-secundario);
+  background: #f8f9fa;
+  padding: 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.conteudo-rico strong {
+  color: var(--cor-primaria);
+  font-weight: 700;
+}
+
+/* 🏊‍♀️ PÁGINA MODALIDADE INDIVIDUAL */
+.modalidade-hero {
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.modalidade-hero .modalidade-header {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.modalidade-hero h1 {
+  margin: 1rem 0 0.5rem 0;
+  color: var(--cor-primaria);
+}
+
+.historia-modalidade {
+  margin: 2rem 0;
+  padding: 2rem;
+}
+
+.conteudo-rico {
+  line-height: 1.8;
+  text-align: left;
+}
+
+.conteudo-rico h3 {
+  color: var(--cor-primaria);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.conteudo-rico p {
+  margin-bottom: 1rem;
+}
+
+.conteudo-rico strong {
+  color: var(--cor-primaria);
+}
+
+.navigation-links {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* 🏛️ PÁGINA ANTESSALA */
+.carrossel-historia {
+  margin: 2rem 0;
+}
+
+.carrossel-container {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.carrossel-slide {
+  display: none;
+}
+
+.carrossel-slide.active {
+  display: block;
+}
+
+.carrossel-slide img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.legenda-carrossel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 1rem;
+  margin: 0;
+  text-align: center;
+}
+
+.carrossel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.8);
+  border: none;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--cor-primaria);
+}
+
+.carrossel-btn.prev {
+  left: 10px;
+}
+
+.carrossel-btn.next {
+  right: 10px;
+}
+
+.carrossel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--cor-primaria);
+  background: transparent;
+  cursor: pointer;
+}
+
+.indicator.active {
+  background: var(--cor-primaria);
+}

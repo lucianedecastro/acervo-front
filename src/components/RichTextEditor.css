@@ -1,0 +1,162 @@
+.rich-text-editor {
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.rich-text-editor.focused {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1);
+}
+
+/* BARRA DE FERRAMENTAS */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8f9fa;
+  border-radius: 6px 6px 0 0;
+}
+
+.toolbar-btn {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  min-width: 40px;
+}
+
+.toolbar-btn:hover {
+  background: #f3f4f6;
+  border-color: var(--cor-primaria);
+}
+
+.toolbar-btn:active {
+  background: var(--cor-primaria);
+  color: white;
+}
+
+.toolbar-select {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ÁREA DE EDIÇÃO */
+.editor-content {
+  padding: 16px;
+  min-height: 200px;
+  max-height: 500px;
+  overflow-y: auto;
+  line-height: 1.6;
+  font-family: var(--fonte-corpo);
+  color: var(--cor-texto-principal);
+}
+
+.editor-content:empty:before {
+  content: attr(placeholder);
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.editor-content:focus {
+  outline: none;
+}
+
+/* ESTILOS DO CONTEÚDO EDITÁVEL */
+.editor-content h1,
+.editor-content h2,
+.editor-content h3,
+.editor-content h4 {
+  font-family: var(--fonte-titulo);
+  color: var(--cor-primaria);
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.editor-content h1 {
+  font-size: 2rem;
+  border-bottom: 2px solid var(--cor-primaria);
+  padding-bottom: 0.5rem;
+}
+
+.editor-content h2 {
+  font-size: 1.5rem;
+}
+
+.editor-content h3 {
+  font-size: 1.25rem;
+}
+
+.editor-content p {
+  margin-bottom: 1rem;
+}
+
+.editor-content ul,
+.editor-content ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.editor-content blockquote {
+  border-left: 4px solid var(--cor-primaria);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: var(--cor-texto-secundario);
+}
+
+.editor-content a {
+  color: var(--cor-primaria);
+  text-decoration: underline;
+}
+
+.editor-content strong {
+  font-weight: 700;
+  color: var(--cor-texto-principal);
+}
+
+.editor-content em {
+  font-style: italic;
+}
+
+/* RODAPÉ DO EDITOR */
+.editor-footer {
+  padding: 8px 16px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8f9fa;
+  border-radius: 0 0 6px 6px;
+  text-align: right;
+}
+
+.char-count {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .toolbar {
+    gap: 2px;
+    padding: 8px;
+  }
+  
+  .toolbar-btn {
+    padding: 4px 6px;
+    font-size: 12px;
+    min-width: 32px;
+  }
+  
+  .editor-content {
+    padding: 12px;
+    min-height: 150px;
+  }
+}
