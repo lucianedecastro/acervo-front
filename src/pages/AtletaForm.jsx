@@ -15,8 +15,8 @@ function AtletaForm() {
     competicao: '',
   });
 
-  const [file, setFile] = useState(null);
-  const [legenda, setLegenda] = useState('');
+  // 🆕 ESTADO PARA GALERIA MÚLTIPLA
+  const [fotos, setFotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -28,7 +28,6 @@ function AtletaForm() {
     if (isEditing) {
       const fetchAtleta = async () => {
         try {
-          // CORREÇÃO: Adiciona token se necessário
           const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
           const response = await axios.get(`/atletas/${id}`, config);
           setAtleta({
@@ -37,8 +36,9 @@ function AtletaForm() {
             biografia: response.data.biografia || '',
             competicao: response.data.competicao || '',
           });
-          if (response.data.fotos?.length > 0) {
-            setLegenda(response.data.fotos[0].legenda || '');
+          // 🆕 CARREGA GALERIA EXISTENTE
+          if (response.data.fotos) {
+            setFotos(response.data.fotos);
           }
         } catch (err) {
           console.error('Erro ao carregar atleta:', err);
@@ -54,62 +54,124 @@ function AtletaForm() {
     setAtleta((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 🆕 UPLOAD MÚLTIPLO
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const files = Array.from(e.target.files);
+    
+    const novasFotos = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+      legenda: '',
+      ehDestaque: fotos.length === 0 // 🎯 Primeira foto é destaque
+    }));
+
+    setFotos(prev => [...prev, ...novasFotos]);
     setSuccess(null);
     setError(null);
   };
 
-  // --- 3️⃣ Envio dos dados CORRIGIDO ---
+  // 🆕 ATUALIZAR LEGENDA
+  const handleLegendaChange = (index, legenda) => {
+    const novasFotos = [...fotos];
+    novasFotos[index].legenda = legenda;
+    setFotos(novasFotos);
+  };
+
+  // 🆕 DEFINIR FOTO DESTAQUE
+  const handleDefinirDestaque = (index) => {
+    const novasFotos = fotos.map((foto, i) => ({
+      ...foto,
+      ehDestaque: i === index
+    }));
+    setFotos(novasFotos);
+  };
+
+  // 🆕 REMOVER FOTO
+  const handleRemoverFoto = (index) => {
+    const novasFotos = fotos.filter((_, i) => i !== index);
+    // 🎯 Se removemos a foto destaque, define nova destaque
+    if (fotos[index].ehDestaque && novasFotos.length > 0) {
+      novasFotos[0].ehDestaque = true;
+    }
+    setFotos(novasFotos);
+  };
+
+  // --- 3️⃣ Envio dos dados ATUALIZADO ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
 
-    // ✅ VERIFICAÇÃO CRÍTICA DO TOKEN - ADICIONADA
     if (!token) {
       setError('Usuário não autenticado. Faça login novamente.');
       return;
     }
 
-    if (!isEditing && !file) {
-      setError('É obrigatório o upload de uma imagem ao criar uma nova atleta.');
+    // 🆕 VALIDAÇÃO: Pelo menos uma foto ao criar
+    if (!isEditing && fotos.length === 0) {
+      setError('É obrigatório o upload de pelo menos uma imagem ao criar uma nova atleta.');
       return;
     }
 
     setUploading(true);
 
     try {
-      const formData = new FormData();
+      // 🆕 UPLOAD DE MÚLTIPLAS FOTOS
+      const uploadPromises = fotos.map(async (foto) => {
+        if (foto.url) {
+          // Foto já existe (edição), retorna dados existentes
+          return {
+            id: foto.id,
+            url: foto.url,
+            legenda: foto.legenda,
+            ehDestaque: foto.ehDestaque
+          };
+        } else {
+          // Nova foto, faz upload
+          const formData = new FormData();
+          formData.append('file', foto.file);
+          
+          const config = {
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data'
+            },
+          };
 
-      if (file) {
-        formData.append('file', file);
-      }
+          const response = await axios.post('/upload', formData, config);
+          return {
+            id: Math.random().toString(36).substr(2, 9), // ID temporário
+            url: response.data.url,
+            legenda: foto.legenda,
+            ehDestaque: foto.ehDestaque
+          };
+        }
+      });
+
+      const fotosProcessadas = await Promise.all(uploadPromises);
+      const fotoDestaque = fotosProcessadas.find(foto => foto.ehDestaque);
 
       const dados = {
         nome: atleta.nome,
         modalidade: atleta.modalidade,
         biografia: atleta.biografia,
         competicao: atleta.competicao,
-        legenda,
+        fotos: fotosProcessadas,
+        fotoDestaqueId: fotoDestaque?.id
       };
-      formData.append('dados', JSON.stringify(dados));
 
       const config = {
         headers: { 
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/json'
         },
       };
 
-      // CORREÇÃO: Usa os endpoints CORRETOS do backend
       if (isEditing) {
-        // ✅ Seu backend tem PUT /atletas/{id}
-        await axios.put(`/atletas/${id}`, formData, config);
+        await axios.put(`/atletas/${id}`, dados, config);
         setSuccess('Atleta atualizada com sucesso!');
       } else {
-        // ✅ Seu backend tem POST /atletas  
-        await axios.post('/atletas', formData, config);
+        await axios.post('/atletas', dados, config);
         setSuccess('Atleta criada com sucesso!');
       }
 
@@ -178,42 +240,66 @@ function AtletaForm() {
           />
         </div>
 
-        <h3>Adicionar Foto ao Acervo</h3>
+        <h3>Galeria de Fotos</h3>
 
+        {/* 🆕 GALERIA DE FOTOS */}
         <div className="form-group">
-          <label>Selecione a Imagem (JPG/PNG):</label>
+          <label>Adicionar Fotos (JPG/PNG):</label>
           <input
             type="file"
+            multiple
             onChange={handleFileChange}
             accept="image/png, image/jpeg"
             disabled={uploading}
           />
-          {file && (
-            <>
-              <p className="info-message">
-                Arquivo pronto para upload: <strong>{file.name}</strong>
-              </p>
-              <img
-                src={URL.createObjectURL(file)}
-                alt="Pré-visualização"
-                width="200"
-                style={{ marginTop: '10px', borderRadius: '8px' }}
-              />
-            </>
-          )}
+          <p className="info-message">
+            ⭐ A foto destacada será exibida no card da página inicial
+          </p>
         </div>
 
-        <div className="form-group">
-          <label>Legenda da Foto:</label>
-          <input
-            type="text"
-            name="legenda"
-            value={legenda}
-            onChange={(e) => setLegenda(e.target.value)}
-            placeholder="Ex: Maria Lenk nos Jogos de 1932"
-            disabled={uploading}
-          />
-        </div>
+        {/* 🆕 PREVIEW DA GALERIA */}
+        {fotos.length > 0 && (
+          <div className="galeria-preview">
+            <h4>Fotos da Atleta ({fotos.length})</h4>
+            <div className="grid-fotos">
+              {fotos.map((foto, index) => (
+                <div key={index} className={`foto-item ${foto.ehDestaque ? 'destaque' : ''}`}>
+                  <img
+                    src={foto.preview || foto.url}
+                    alt={`Preview ${index + 1}`}
+                    className="foto-preview"
+                  />
+                  <div className="foto-actions">
+                    <button
+                      type="button"
+                      className={`btn-destaque ${foto.ehDestaque ? 'ativo' : ''}`}
+                      onClick={() => handleDefinirDestaque(index)}
+                      disabled={uploading}
+                    >
+                      {foto.ehDestaque ? '⭐ Destaque' : 'Definir Destaque'}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-remover"
+                      onClick={() => handleRemoverFoto(index)}
+                      disabled={uploading}
+                    >
+                      🗑️ Remover
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Legenda da foto..."
+                    value={foto.legenda}
+                    onChange={(e) => handleLegendaChange(index, e.target.value)}
+                    disabled={uploading}
+                    className="input-legenda"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {uploading && <p className="info-message">Salvando dados, por favor aguarde...</p>}
         {error && <p className="error-message">{error}</p>}
