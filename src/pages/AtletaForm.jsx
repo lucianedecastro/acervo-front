@@ -15,13 +15,25 @@ function AtletaForm() {
     competicao: '',
   });
 
-  // ✅ MANTIDO: Estado para galeria múltipla
+  // ✅ Estado para galeria múltipla
   const [fotos, setFotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
   const isEditing = Boolean(id);
+
+  // 🎯 FUNÇÃO AUXILIAR: Normalizar dados da foto para evitar nulls
+  const normalizarFoto = (foto) => {
+    return {
+      ...foto,
+      id: foto.id && foto.id !== 'null' && !foto.id.includes('null') ? foto.id : undefined,
+      ehDestaque: Boolean(foto.ehDestaque),
+      legenda: foto.legenda || '',
+      url: foto.url || '',
+      filename: foto.filename || ''
+    };
+  };
 
   // --- Carrega dados ao editar ---
   useEffect(() => {
@@ -38,16 +50,25 @@ function AtletaForm() {
             competicao: response.data.competicao || '',
           });
 
-          // ✅ MANTIDO: Carrega galeria existente com IDs únicos
+          // ✅ CORREÇÃO: Carrega galeria existente com normalização
           if (response.data.fotos && response.data.fotos.length > 0) {
-            // 🎯 CORREÇÃO: Garante que cada foto tenha ID único
-            const fotosComIds = response.data.fotos.map(foto => ({
-              ...foto,
-              id: foto.id || `existente-${Date.now()}-${Math.random()}`,
-              preview: foto.url,
-              isExisting: true
-            }));
+            const fotosComIds = response.data.fotos.map((foto, index) => {
+              const fotoNormalizada = normalizarFoto(foto);
+              return {
+                ...fotoNormalizada,
+                // 🎯 Gera ID único apenas se o original for null/undefined
+                id: fotoNormalizada.id || `existente-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
+                preview: foto.url,
+                isExisting: true
+              };
+            });
             setFotos(fotosComIds);
+            
+            console.log('📥 Fotos carregadas:', fotosComIds.map(f => ({
+              id: f.id,
+              ehDestaque: f.ehDestaque,
+              isExisting: f.isExisting
+            })));
           }
         } catch (err) {
           console.error('Erro ao carregar atleta:', err);
@@ -63,17 +84,17 @@ function AtletaForm() {
     setAtleta((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ MANTIDO: Upload múltiplo com IDs únicos
+  // ✅ Upload múltiplo com IDs únicos
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
     const novasFotos = files.map(file => ({
-      id: `nova-${Date.now()}-${Math.random()}`, // 🎯 ID único imediato
+      id: `nova-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // 🎯 ID único mais robusto
       file,
       preview: URL.createObjectURL(file),
       legenda: '',
-      ehDestaque: fotos.length === 0, // Primeira nova foto é destaque se não houver outras
+      ehDestaque: fotos.length === 0 && !fotos.some(f => f.ehDestaque), // Destaque apenas se não houver nenhuma
       isExisting: false
     }));
 
@@ -82,14 +103,14 @@ function AtletaForm() {
     setError(null);
   };
 
-  // ✅ MANTIDO: Atualizar legenda
+  // ✅ Atualizar legenda
   const handleLegendaChange = (id, legenda) => {
     setFotos(prev => prev.map(foto => 
       foto.id === id ? { ...foto, legenda } : foto
     ));
   };
 
-  // ✅ MANTIDO: Definir foto destaque
+  // ✅ Definir foto destaque
   const handleDefinirDestaque = (id) => {
     setFotos(prev => prev.map(foto => ({
       ...foto,
@@ -97,7 +118,7 @@ function AtletaForm() {
     })));
   };
 
-  // ✅ MANTIDO: Remover foto
+  // ✅ Remover foto
   const handleRemoverFoto = (id) => {
     const fotoARemover = fotos.find(f => f.id === id);
     const novasFotos = fotos.filter(foto => foto.id !== id);
@@ -110,7 +131,7 @@ function AtletaForm() {
     setFotos(novasFotos);
   };
 
-  // --- Envio dos dados PARA BACKEND COM GALERIA ---
+  // --- Envio dos dados CORRIGIDO para evitar erro 500 ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -133,37 +154,50 @@ function AtletaForm() {
       const formData = new FormData();
 
       // ✅ ENVIO MULTIPLO: Adiciona todas as fotos novas
-      fotos.forEach((foto, index) => {
-        if (foto.file && !foto.isExisting) {
-          formData.append('files', foto.file); // 🎯 Múltiplos arquivos
-        }
+      const fotosNovas = fotos.filter(foto => foto.file && !foto.isExisting);
+      fotosNovas.forEach((foto) => {
+        formData.append('files', foto.file); // 🎯 Múltiplos arquivos
       });
 
-      // 🎯 Dados completos para galeria múltipla
+      // 🎯 CORREÇÃO CRÍTICA: Dados normalizados para evitar nulls
       const fotoDestaque = fotos.find(foto => foto.ehDestaque);
+      
       const dados = {
         nome: atleta.nome,
         modalidade: atleta.modalidade,
         biografia: atleta.biografia,
         competicao: atleta.competicao,
-        // 🎯 ENVIA TODAS AS FOTOS COM METADADOS
-        fotos: fotos.map(foto => ({
-          id: foto.isExisting ? foto.id : undefined, // IDs apenas para fotos existentes
-          legenda: foto.legenda,
-          ehDestaque: foto.ehDestaque,
-          // 🎯 Para fotos novas, o backend gerará novos IDs
-          // Para fotos existentes, mantém os dados atuais
-          url: foto.isExisting ? foto.url : undefined,
-          filename: foto.isExisting ? foto.filename : undefined
-        })),
-        fotoDestaqueId: fotoDestaque?.id
+        // 🎯 ENVIA FOTOS NORMALIZADAS (sem nulls)
+        fotos: fotos.map(foto => {
+          const fotoNormalizada = normalizarFoto(foto);
+          return {
+            // 🎯 Envia ID apenas se for UUID válido (não temporário)
+            id: foto.isExisting && fotoNormalizada.id && !fotoNormalizada.id.includes('existente') && !fotoNormalizada.id.includes('nova') 
+              ? fotoNormalizada.id 
+              : undefined,
+            legenda: fotoNormalizada.legenda,
+            ehDestaque: fotoNormalizada.ehDestaque,
+            // 🎯 Para fotos existentes, mantém dados atuais
+            ...(foto.isExisting && { 
+              url: fotoNormalizada.url,
+              filename: fotoNormalizada.filename 
+            })
+          };
+        }),
+        // 🎯 Foto destaque ID apenas se for UUID válido
+        fotoDestaqueId: fotoDestaque?.id && 
+                        !fotoDestaque.id.includes('existente') && 
+                        !fotoDestaque.id.includes('nova') 
+          ? fotoDestaque.id 
+          : undefined
       };
       
       console.log('📤 Enviando galeria múltipla:', {
         totalFotos: fotos.length,
-        fotosNovas: fotos.filter(f => !f.isExisting).length,
+        fotosNovas: fotosNovas.length,
         fotosExistentes: fotos.filter(f => f.isExisting).length,
-        fotoDestaque: fotoDestaque?.id
+        fotoDestaque: dados.fotoDestaqueId,
+        dadosEstrutura: dados
       });
 
       formData.append('dados', JSON.stringify(dados));
@@ -173,9 +207,9 @@ function AtletaForm() {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         },
+        timeout: 30000 // 🎯 Timeout aumentado para processamento de múltiplas fotos
       };
 
-      // 🎯 Testa primeiro se o backend aceita o formato
       if (isEditing) {
         await axios.put(`/atletas/${id}`, formData, config);
         setSuccess(`Atleta atualizada com sucesso! Galeria: ${fotos.length} foto(s)`);
@@ -188,15 +222,16 @@ function AtletaForm() {
 
     } catch (err) {
       console.error('❌ Erro ao salvar atleta com galeria:', err);
+      console.error('❌ Detalhes do erro:', err.response?.data);
       
       // 🎯 Fallback: Tenta enviar apenas a primeira foto se o múltiplo falhar
-      if (err.response?.status === 400 || err.response?.status === 415) {
+      if (err.response?.status === 400 || err.response?.status === 415 || err.response?.status === 500) {
         console.log('🔄 Tentando fallback para upload simples...');
         await tentarUploadSimples();
       } else if (err.response?.status === 401) {
         setError('Sessão expirada. Faça login novamente.');
       } else {
-        setError('Erro ao salvar galeria: ' + (err.response?.data?.message || err.message));
+        setError('Erro ao salvar galeria: ' + (err.response?.data?.message || err.message || 'Erro desconhecido'));
       }
     } finally {
       setUploading(false);
@@ -221,6 +256,7 @@ function AtletaForm() {
         legenda: primeiraFoto?.legenda || ''
       };
 
+      console.log('🔄 Enviando fallback simples:', dadosSimples);
       formData.append('dados', JSON.stringify(dadosSimples));
 
       const config = {
@@ -232,21 +268,32 @@ function AtletaForm() {
 
       if (isEditing) {
         await axios.put(`/atletas/${id}`, formData, config);
-        setSuccess('Atleta atualizada! ⚠️ Apenas a primeira foto foi processada.');
+        setSuccess('Atleta atualizada! ⚠️ Modo compatibilidade: apenas a primeira foto foi processada.');
       } else {
         await axios.post('/atletas', formData, config);
-        setSuccess('Atleta criada! ⚠️ Apenas a primeira foto foi processada.');
+        setSuccess('Atleta criada! ⚠️ Modo compatibilidade: apenas a primeira foto foi processada.');
       }
 
       setTimeout(() => navigate('/admin/dashboard'), 1500);
     } catch (err) {
-      setError('Erro no fallback: ' + (err.response?.data?.message || err.message));
+      console.error('❌ Erro no fallback:', err);
+      setError('Erro ao salvar dados: ' + (err.response?.data?.message || err.message));
     }
   };
 
   return (
     <div className="pagina-conteudo">
       <h2>{isEditing ? 'Editar Atleta' : 'Criar Nova Atleta'}</h2>
+
+      {/* 🎯 AVISO DE DEBUG */}
+      {isEditing && fotos.length > 0 && (
+        <div className="info-banner" style={{background: '#e3f2fd', padding: '10px', borderRadius: '4px', marginBottom: '15px'}}>
+          <p>🔍 <strong>Modo Edição</strong> - {fotos.length} foto(s) carregada(s)</p>
+          <p style={{fontSize: '12px', margin: '5px 0 0 0'}}>
+            IDs: {fotos.map(f => f.id?.substring(0, 8) + '...').join(', ')}
+          </p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="atleta-form">
         {/* Campos básicos */}
@@ -309,13 +356,14 @@ function AtletaForm() {
           />
           <p className="info-message">
             ⭐ Selecione múltiplas fotos para a galeria. Defina uma como destaque.
+            {isEditing && ' Fotos existentes serão mantidas.'}
           </p>
         </div>
 
         {/* ✅ GALERIA COMPLETA */}
         {fotos.length > 0 && (
           <div className="galeria-preview">
-            <h4>Galeria ({fotos.length} fotos)</h4>
+            <h4>Galeria ({fotos.length} foto(s))</h4>
             <div className="grid-fotos">
               {fotos.map((foto) => (
                 <div key={foto.id} className={`foto-item ${foto.ehDestaque ? 'destaque' : ''}`}>
@@ -358,7 +406,12 @@ function AtletaForm() {
           </div>
         )}
 
-        {uploading && <p className="info-message">Processando galeria, por favor aguarde...</p>}
+        {uploading && (
+          <div className="info-message">
+            <p>⏳ Processando galeria, por favor aguarde...</p>
+            <p style={{fontSize: '12px'}}>Isso pode levar alguns segundos para múltiplas fotos.</p>
+          </div>
+        )}
         {error && <p className="error-message">{error}</p>}
         {success && <p className="success-message">{success}</p>}
 
