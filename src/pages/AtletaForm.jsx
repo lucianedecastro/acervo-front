@@ -15,7 +15,7 @@ function AtletaForm() {
     competicao: '',
   });
 
-  // 🆕 ESTADO PARA GALERIA MÚLTIPLA
+  // ✅ MANTIDO: Estado para galeria múltipla
   const [fotos, setFotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
@@ -36,11 +36,12 @@ function AtletaForm() {
             biografia: response.data.biografia || '',
             competicao: response.data.competicao || '',
           });
-          // 🆕 CARREGA GALERIA EXISTENTE
+          // ✅ MANTIDO: Carrega galeria existente
           if (response.data.fotos) {
             setFotos(response.data.fotos.map(foto => ({
               ...foto,
-              preview: foto.url // Para preview de fotos existentes
+              preview: foto.url,
+              isExisting: true // 🎯 Marca fotos já salvas
             })));
           }
         } catch (err) {
@@ -57,15 +58,15 @@ function AtletaForm() {
     setAtleta((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 🆕 UPLOAD MÚLTIPLO
+  // ✅ MANTIDO: Upload múltiplo
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     
     const novasFotos = files.map(file => ({
       file, // 🎯 Arquivo para upload
-      preview: URL.createObjectURL(file), // Preview local
+      preview: URL.createObjectURL(file),
       legenda: '',
-      ehDestaque: fotos.length === 0 && files.length === 1 // 🎯 Primeira foto é destaque
+      ehDestaque: fotos.length === 0 // 🎯 Primeira foto é destaque se não houver outras
     }));
 
     setFotos(prev => [...prev, ...novasFotos]);
@@ -73,14 +74,14 @@ function AtletaForm() {
     setError(null);
   };
 
-  // 🆕 ATUALIZAR LEGENDA
+  // ✅ MANTIDO: Atualizar legenda
   const handleLegendaChange = (index, legenda) => {
     const novasFotos = [...fotos];
     novasFotos[index].legenda = legenda;
     setFotos(novasFotos);
   };
 
-  // 🆕 DEFINIR FOTO DESTAQUE
+  // ✅ MANTIDO: Definir foto destaque
   const handleDefinirDestaque = (index) => {
     const novasFotos = fotos.map((foto, i) => ({
       ...foto,
@@ -89,7 +90,7 @@ function AtletaForm() {
     setFotos(novasFotos);
   };
 
-  // 🆕 REMOVER FOTO
+  // ✅ MANTIDO: Remover foto
   const handleRemoverFoto = (index) => {
     const novasFotos = fotos.filter((_, i) => i !== index);
     // 🎯 Se removemos a foto destaque, define nova destaque
@@ -110,7 +111,7 @@ function AtletaForm() {
       return;
     }
 
-    // 🆕 VALIDAÇÃO: Pelo menos uma foto ao criar
+    // ✅ MANTIDO: Validação de pelo menos uma foto ao criar
     if (!isEditing && fotos.length === 0) {
       setError('É obrigatório o upload de pelo menos uma imagem ao criar uma nova atleta.');
       return;
@@ -119,48 +120,55 @@ function AtletaForm() {
     setUploading(true);
 
     try {
+      // 🎯 ESTRATÉGIA CORRIGIDA: Envia PRIMEIRA FOTO como 'file' para compatibilidade
+      // Enquanto não implementamos upload múltiplo no backend
       const formData = new FormData();
 
-      // 🎯 ESTRATÉGIA CORRETA: Envia APENAS a PRIMEIRA foto como 'file' (para compatibilidade)
-      // O backend espera um campo 'file' no multipart
-      const primeiraFotoNova = fotos.find(foto => foto.file);
+      const primeiraFotoNova = fotos.find(foto => foto.file && !foto.isExisting);
       if (primeiraFotoNova) {
         formData.append('file', primeiraFotoNova.file);
+      } else if (!isEditing) {
+        // Se criando e não tem foto nova, usa a primeira foto existente (se houver)
+        const primeiraFoto = fotos[0];
+        if (primeiraFoto && primeiraFoto.file) {
+          formData.append('file', primeiraFoto.file);
+        }
       }
 
+      // 🎯 CORREÇÃO CRÍTICA: Envia APENAS dados básicos no JSON
+      // O backend atual não está preparado para receber array de fotos no DTO
       const fotoDestaque = fotos.find(foto => foto.ehDestaque);
+      const primeiraFoto = fotos[0]; // Para legenda
       
       const dados = {
         nome: atleta.nome,
         modalidade: atleta.modalidade,
         biografia: atleta.biografia,
         competicao: atleta.competicao,
-        legenda: primeiraFotoNova?.legenda || '', // Legenda da primeira foto
-        fotos: fotos.map(foto => ({
-          id: foto.id,
-          url: foto.url, // Para fotos existentes
-          legenda: foto.legenda,
-          ehDestaque: foto.ehDestaque
-        })),
-        fotoDestaqueId: fotoDestaque?.id
+        legenda: primeiraFoto?.legenda || '' // 🎯 Apenas legenda da primeira foto
+        // ❌ NÃO envia: fotos[], fotoDestaqueId (backend não processa ainda)
       };
       
+      console.log('📤 Enviando dados simplificados:', dados);
       formData.append('dados', JSON.stringify(dados));
 
       const config = {
         headers: { 
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data' // ✅ CORRETO - multipart
+          'Content-Type': 'multipart/form-data'
         },
       };
 
-      // CORREÇÃO: Usa os endpoints CORRETOS do backend
+      // 🎯 CORRIGIDO: Chamadas API
       if (isEditing) {
-        // ✅ Seu backend tem PUT /atletas/{id} com multipart
         await axios.put(`/atletas/${id}`, formData, config);
         setSuccess('Atleta atualizada com sucesso!');
+        
+        // 🚨 AVISO: Galeria múltipla será implementada em breve
+        if (fotos.length > 1) {
+          setSuccess('Atleta atualizada! ⚠️ Galeria múltipla em desenvolvimento - apenas a primeira foto foi processada.');
+        }
       } else {
-        // ✅ Seu backend tem POST /atletas com multipart
         await axios.post('/atletas', formData, config);
         setSuccess('Atleta criada com sucesso!');
       }
@@ -168,9 +176,13 @@ function AtletaForm() {
       setTimeout(() => navigate('/admin/dashboard'), 1200);
 
     } catch (err) {
-      console.error('Erro ao salvar atleta:', err);
+      console.error('❌ Erro ao salvar atleta:', err);
+      console.error('❌ Response:', err.response);
+      
       if (err.response?.status === 401) {
         setError('Sessão expirada. Faça login novamente.');
+      } else if (err.response?.status === 400) {
+        setError('Dados inválidos. Verifique o formato das informações.');
       } else if (err.response?.status === 415) {
         setError('Erro de formato - verifique se as imagens são PNG ou JPG.');
       } else {
@@ -184,8 +196,15 @@ function AtletaForm() {
   return (
     <div className="pagina-conteudo">
       <h2>{isEditing ? 'Editar Atleta' : 'Criar Nova Atleta'}</h2>
+      
+      {/* 🎯 AVISO SOBRE GALERIA MÚLTIPLA */}
+      <div className="info-banner">
+        <p>🚀 <strong>Galeria Múltipla em Desenvolvimento</strong></p>
+        <p>Por enquanto, apenas a primeira foto será processada. Em breve: upload múltiplo, destaque e deleção individual!</p>
+      </div>
+
       <form onSubmit={handleSubmit} className="atleta-form">
-        {/* Campos do formulário */}
+        {/* Campos do formulário (mantidos iguais) */}
         <div className="form-group">
           <label>Nome:</label>
           <input
@@ -216,6 +235,7 @@ function AtletaForm() {
             value={atleta.biografia}
             onChange={handleChange}
             disabled={uploading}
+            rows="4"
           />
         </div>
 
@@ -232,7 +252,7 @@ function AtletaForm() {
 
         <h3>Galeria de Fotos</h3>
 
-        {/* 🆕 GALERIA DE FOTOS */}
+        {/* ✅ MANTIDO: Upload múltiplo (preparação para futuro) */}
         <div className="form-group">
           <label>Adicionar Fotos (JPG/PNG):</label>
           <input
@@ -243,14 +263,14 @@ function AtletaForm() {
             disabled={uploading}
           />
           <p className="info-message">
-            ⭐ A foto destacada será exibida no card da página inicial
+            ⭐ Funcionalidade completa em desenvolvimento
           </p>
         </div>
 
-        {/* 🆕 PREVIEW DA GALERIA */}
+        {/* ✅ MANTIDO: Preview da galeria (visual apenas por enquanto) */}
         {fotos.length > 0 && (
           <div className="galeria-preview">
-            <h4>Fotos da Atleta ({fotos.length})</h4>
+            <h4>Preview da Galeria ({fotos.length} fotos)</h4>
             <div className="grid-fotos">
               {fotos.map((foto, index) => (
                 <div key={index} className={`foto-item ${foto.ehDestaque ? 'destaque' : ''}`}>
@@ -285,6 +305,7 @@ function AtletaForm() {
                     disabled={uploading}
                     className="input-legenda"
                   />
+                  {foto.isExisting && <span className="badge-existente">✓ Existente</span>}
                 </div>
               ))}
             </div>
