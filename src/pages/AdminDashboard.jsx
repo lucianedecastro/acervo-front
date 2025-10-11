@@ -81,6 +81,26 @@ function AdminDashboard() {
           <p>Total de atletas cadastradas: <strong>{atletas.length}</strong></p>
         </div>
 
+        {/* ✅ NOVA SEÇÃO DE NAVEGAÇÃO */}
+        <div className="dashboard-navigation">
+          <h3>Gerenciar Acervo</h3>
+          <div className="nav-links">
+            <Link to="/admin/modalidades" className="nav-card">
+              <span className="nav-card-icon">🏊‍♀️</span>
+              <span className="nav-card-title">Modalidades</span>
+            </Link>
+            <div className="nav-card disabled">
+              <span className="nav-card-icon">📚</span>
+              <span className="nav-card-title">Conteúdos (em breve)</span>
+            </div>
+            <div className="nav-card disabled">
+              <span className="nav-card-icon">🖼️</span>
+              <span className="nav-card-title">Galeria (em breve)</span>
+            </div>
+          </div>
+        </div>
+
+        <h3>Gerenciar Atletas</h3>
         {atletas.length === 0 ? (
           <div className="empty-state">
             <p>Nenhuma atleta cadastrada ainda.</p>
@@ -89,47 +109,51 @@ function AdminDashboard() {
             </Link>
           </div>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Modalidade</th>
-                <th>Fotos</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {atletas.map(atleta => (
-                <tr key={atleta.id}>
-                  <td>
-                    <strong>{atleta.nome}</strong>
-                  </td>
-                  <td>{atleta.modalidade || 'Não definida'}</td>
-                  <td>
-                    {atleta.fotos?.length > 0 ? (
-                      <span className="foto-count">📸 {atleta.fotos.length}</span>
-                    ) : (
-                      <span className="no-fotos">Sem fotos</span>
-                    )}
-                  </td>
-                  <td>
-                    <Link 
-                      to={`/admin/atletas/editar/${atleta.id}`} 
-                      className="btn-action btn-edit"
-                    >
-                      ✏️ Editar
-                    </Link>
-                    <button 
-                      className="btn-action btn-delete" 
-                      onClick={() => handleDelete(atleta.id, atleta.nome)}
-                    >
-                      🗑️ Excluir
-                    </button>
-                  </td>
+          <div className="table-container"> 
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Modalidade</th>
+                  <th>Fotos</th>
+                  <th>Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {atletas.map(atleta => (
+                  <tr key={atleta.id}>
+                    <td>
+                      <strong>{atleta.nome}</strong>
+                    </td>
+                    <td>{atleta.modalidade || 'Não definida'}</td>
+                    <td>
+                      {atleta.fotos?.length > 0 ? (
+                        <span className="foto-count">📸 {atleta.fotos.length}</span>
+                      ) : (
+                        <span className="no-fotos">Sem fotos</span>
+                      )}
+                    </td>
+                    <td>
+                      <div className="action-buttons-wrapper">
+                        <Link 
+                          to={`/admin/atletas/editar/${atleta.id}`} 
+                          className="btn-action btn-edit"
+                        >
+                          ✏️ Editar
+                        </Link>
+                        <button 
+                          className="btn-action btn-delete" 
+                          onClick={() => handleDelete(atleta.id, atleta.nome)}
+                        >
+                          🗑️ Excluir
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

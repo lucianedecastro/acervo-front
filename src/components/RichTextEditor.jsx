@@ -1,9 +1,17 @@
-import { useState, useRef } from 'react';
-import './RichTextEditor.css'; // Vou criar o CSS também
+import { useState, useRef, useEffect } from 'react';
+import './RichTextEditor.css'; // Importa seu próprio CSS
 
 function RichTextEditor({ value, onChange, placeholder = "Escreva seu conteúdo aqui..." }) {
   const editorRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
+
+  // ✅ CORREÇÃO: Sincroniza o conteúdo vindo do componente pai
+  // sem reescrever o HTML a cada caractere, o que causava a perda de foco.
+  useEffect(() => {
+    if (editorRef.current && value !== editorRef.current.innerHTML) {
+      editorRef.current.innerHTML = value;
+    }
+  }, [value]);
 
   // Funções para formatação
   const execCommand = (command, value = null) => {
@@ -135,7 +143,6 @@ function RichTextEditor({ value, onChange, placeholder = "Escreva seu conteúdo 
         ref={editorRef}
         className="editor-content"
         contentEditable
-        dangerouslySetInnerHTML={{ __html: value }}
         onInput={updateContent}
         onPaste={handlePaste}
         onFocus={() => setIsFocused(true)}
