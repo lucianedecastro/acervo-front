@@ -1,359 +1,127 @@
-/* === CARD PRINCIPAL === */
 .card {
   background-color: #fff;
-  border-radius: 12px;
-  padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-left: 6px solid #fbbc05;
-  margin-bottom: 1.5rem;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left: 10px solid #fbbc05; /* Amarelo-mostarda */
+  margin-bottom: 2rem;
   text-align: left;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-
-/* === HEADER DO CARD === */
 .cardHeader {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-/* Container da foto com skeleton loading */
-.fotoContainer {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  flex-shrink: 0;
-}
-
-.imageSkeleton {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+  gap: 1.5rem;
 }
 
 .foto {
-  width: 100%;
-  height: 100%;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #f8f9fa;
-  transition: border-color 0.2s ease;
+  border: 4px solid #f8f9fa;
 }
 
-.fotoError {
-  border-color: #ffebee;
-}
-
-.foto:hover {
-  border-color: #008080;
-}
-
-/* Informações principais */
-.infoPrincipal {
-  text-align: center;
-  flex-grow: 1;
-}
-
+/* 🆕 MUDANÇA: .antessala → .atleta */
 .atleta {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #6c757d;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  display: block;
-  margin-bottom: 0.25rem;
 }
 
 .nome {
-  font-family: 'Libre Franklin', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
   color: #343a40;
   margin: 0.25rem 0;
-  line-height: 1.2;
 }
 
 .modalidade {
   font-weight: 600;
   color: #495057;
   margin: 0;
-  font-size: 0.9rem;
 }
 
-/* === BADGE DE FOTOS === */
-.fotoBadge {
-  background: #4A5568;
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  margin-left: 0.5rem;
-  display: inline-block;
-}
-
-/* === CORPO DO CARD === */
 .cardBody {
-  margin: 1rem 0;
+  margin-top: 1rem;
 }
 
 .biografiaResumo {
   color: #495057;
-  line-height: 1.5;
-  font-size: 0.9rem;
-  margin: 0;
+  line-height: 1.6;
 }
 
-/* === RODAPÉ DO CARD === */
 .cardFooter {
   margin-top: 1rem;
-  text-align: center;
 }
 
 .btnConheca {
-  background-color: #00796b;
+  background-color: #00796b; /* Verde/Ciano escuro */
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 600;
+  border-radius: 5px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
-  min-height: 44px;
-  width: 100%;
-  max-width: 200px;
+  transition: background-color 0.2s;
 }
 
 .btnConheca:hover {
   background-color: #004d40;
-  transform: translateY(-1px);
 }
 
-.btnConheca:active {
-  transform: translateY(0);
-}
-
-/* === DETALHES EXPANDIDOS === */
 .detalhesExpandidos {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e9ecef;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
 }
 
-.detalhesExpandidos h4 {
-  color: #008080;
-  margin: 1rem 0 0.5rem 0;
-  font-size: 1.1rem;
-}
+/* 🆕 NOVOS ESTILOS PARA GALERIA */
 
-.biografiaCompleta, .competicao {
-  color: #495057;
-  line-height: 1.6;
-  margin: 0 0 1rem 0;
-  text-align: left;
-}
-
-/* === GALERIA === */
-.galeria {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.fotoExpandida {
-  text-align: center;
-  background: #f8f9fa;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-  transition: transform 0.2s ease;
-}
-
-.fotoExpandida:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.fotoGaleriaContainer {
-  margin-bottom: 0.75rem;
-}
-
-.fotoGaleria {
-  width: 100%;
-  max-width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 6px;
-  border: 2px solid #dee2e6;
-  transition: all 0.2s ease;
+.fotoBadge {
+  background: #4A5568;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  margin-left: 8px;
 }
 
 .fotoDestaque {
-  border: 3px solid #E53E3E !important;
-  box-shadow: 0 0 0 1px rgba(229, 62, 62, 0.1);
-}
-
-.legenda {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-  color: #6c757d;
-  font-style: italic;
-  line-height: 1.4;
-  margin: 0;
+  border: 3px solid #E53E3E;
+  border-radius: 8px;
 }
 
 .destaqueBadge {
   color: #E53E3E;
-  font-weight: 700;
-  margin-left: 0.5rem;
-  font-size: 0.75rem;
+  font-weight: bold;
+  margin-left: 8px;
 }
 
-/* === MENSAGEM SEM FOTOS === */
-.semFotos {
-  background: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 6px;
-  padding: 1rem;
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.fotoExpandida {
   text-align: center;
-  margin: 1rem 0;
 }
 
-.semFotos p {
-  margin: 0;
-  color: #856404;
-  font-size: 0.9rem;
+.fotoExpandida img {
+  width: 100%;
+  max-width: 300px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-/* === MEDIA QUERIES === */
-
-/* Tablet */
-@media (min-width: 768px) {
-  .card {
-    padding: 1.5rem;
-    border-left-width: 8px;
-  }
-  
-  .cardHeader {
-    flex-direction: row;
-    align-items: center;
-    text-align: left;
-  }
-  
-  .infoPrincipal {
-    text-align: left;
-  }
-  
-  .fotoContainer {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .nome {
-    font-size: 1.75rem;
-  }
-  
-  .btnConheca {
-    width: auto;
-    min-width: 140px;
-  }
-  
-  .galeria {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.25rem;
-  }
-  
-  .fotoGaleria {
-    height: 180px;
-  }
-}
-
-/* Desktop */
-@media (min-width: 1024px) {
-  .card {
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .fotoContainer {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .nome {
-    font-size: 2rem;
-  }
-  
-  .galeria {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .fotoGaleria {
-    height: 200px;
-  }
-}
-
-/* Large Desktop */
-@media (min-width: 1280px) {
-  .galeria {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-}
-
-/* Acessibilidade */
-@media (prefers-reduced-motion: reduce) {
-  .card,
-  .btnConheca,
-  .fotoExpandida {
-    transition: none;
-  }
-  
-  .imageSkeleton {
-    animation: none;
-  }
-}
-
-/* Modo escuro (opcional) */
-@media (prefers-color-scheme: dark) {
-  .card {
-    background-color: #2d3748;
-    border-left-color: #d69e2e;
-  }
-  
-  .nome {
-    color: #e2e8f0;
-  }
-  
-  .modalidade,
-  .biografiaResumo,
-  .biografiaCompleta,
-  .competicao {
-    color: #cbd5e0;
-  }
-  
-  .foto {
-    border-color: #4a5568;
-  }
+.legenda {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-style: italic;
 }

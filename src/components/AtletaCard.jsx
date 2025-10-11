@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './AtletaCard.module.css';
 
 function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
-  const [imageLoading, setImageLoading] = useState(true);
-  const [imageError, setImageError] = useState(false);
-
   // 🎯 CORREÇÃO: Função para remover duplicatas baseada no ID ou URL
   const getFotosUnicas = () => {
     if (!atleta.fotos?.length) return [];
@@ -65,35 +62,18 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
 
   const fotosValidas = getFotosValidas();
   const imagemUrl = getFotoCard();
-
-  const handleImageLoad = () => {
-    setImageLoading(false);
-  };
-
-  const handleImageError = () => {
-    setImageLoading(false);
-    setImageError(true);
-  };
   
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
-        <div className={styles.fotoContainer}>
-          {imageLoading && (
-            <div className={styles.imageSkeleton}></div>
-          )}
-          <img 
-            src={imagemUrl}
-            alt={atleta.nome} 
-            className={`${styles.foto} ${imageError ? styles.fotoError : ''}`}
-            onLoad={handleImageLoad}
-            onError={(e) => {
-              handleImageError();
-              e.target.src = 'https://via.placeholder.com/300x200/4A5568/FFFFFF?text=Erro+ao+Carregar';
-            }}
-            style={{ display: imageLoading ? 'none' : 'block' }}
-          />
-        </div>
+        <img 
+          src={imagemUrl}
+          alt={atleta.nome} 
+          className={styles.foto} 
+          onError={(e) => {
+            e.target.src = 'https://via.placeholder.com/300x200/4A5568/FFFFFF?text=Erro+ao+Carregar';
+          }}
+        />
         <div className={styles.infoPrincipal}>
           <span className={styles.atleta}>ATLETA</span>
           <h3 className={styles.nome}>{atleta.nome}</h3>
@@ -113,7 +93,6 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
         <button 
           onClick={() => onToggleExpand(atleta.id)} 
           className={styles.btnConheca}
-          aria-expanded={isExpanded}
         >
           {isExpanded ? 'RECOLHER' : 'CONHEÇA'}
         </button>
@@ -122,10 +101,10 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
       {isExpanded && (
         <div className={styles.detalhesExpandidos}>
           <h4>Biografia Completa</h4>
-          <p className={styles.biografiaCompleta}>{atleta.biografia}</p>
+          <p>{atleta.biografia}</p>
           
           <h4>Competições e Títulos</h4>
-          <p className={styles.competicao}>{atleta.competicao}</p>
+          <p>{atleta.competicao}</p>
           
           {/* 🎯 CORREÇÃO: Galeria mostra APENAS fotos válidas e únicas */}
           {fotosValidas.length > 0 && (
@@ -134,20 +113,17 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
               <div className={styles.galeria}>
                 {fotosValidas.map((foto) => (
                   <div 
-                    key={foto.id || foto.url}
+                    key={foto.id || foto.url} // 🎯 CORREÇÃO CRÍTICA: Key única baseada em ID ou URL
                     className={styles.fotoExpandida}
                   >
-                    <div className={styles.fotoGaleriaContainer}>
-                      <img 
-                        src={foto.url} 
-                        alt={foto.legenda || `Foto de ${atleta.nome}`}
-                        className={`${styles.fotoGaleria} ${foto.ehDestaque ? styles.fotoDestaque : ''}`}
-                        onError={(e) => {
-                          e.target.src = 'https://via.placeholder.com/300x200/718096/FFFFFF?text=Foto+Não+Encontrada';
-                        }}
-                        loading="lazy"
-                      />
-                    </div>
+                    <img 
+                      src={foto.url} 
+                      alt={foto.legenda || `Foto de ${atleta.nome}`}
+                      className={foto.ehDestaque ? styles.fotoDestaque : ''}
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/300x200/718096/FFFFFF?text=Foto+Não+Encontrada';
+                      }}
+                    />
                     {foto.legenda && (
                       <p className={styles.legenda}>
                         {foto.legenda}

@@ -34,64 +34,31 @@ if (API_URL) {
 function Layout() {
   const { token, logout } = useAuth();
   const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/');
-    setIsMobileMenuOpen(false);
-  };
-
-  const handleNavClick = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
     <>
       <header className="app-header">
-        <div className="header-container">
-          <h1>Acervo "Carmen Lydia" da Mulher Brasileira no Esporte</h1>
-          
-          {/* Menu Hamburger para Mobile */}
-          <button 
-            className="nav-mobile-toggle"
-            onClick={toggleMobileMenu}
-            aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? '✕' : '☰'}
-          </button>
-        </div>
-
-        <nav className={isMobileMenuOpen ? 'nav-open' : ''}>
-          <Link to="/" onClick={handleNavClick}>Página Inicial</Link>
-          <Link to="/atletas" onClick={handleNavClick}>Atletas</Link>
-          <Link to="/modalidades" onClick={handleNavClick}>Modalidades</Link>
-          <Link to="/antessala" onClick={handleNavClick}>Antessala</Link>
-          <Link to="/contato" onClick={handleNavClick}>Contato</Link>
-          <Link to="/sobre" onClick={handleNavClick}>Sobre</Link>
+        <h1>Acervo "Carmen Lydia" da Mulher Brasileira no Esporte</h1>
+        <nav>
+          <Link to="/">Página Inicial</Link>
+          <Link to="/atletas">Atletas</Link>
+          <Link to="/modalidades">Modalidades</Link>
+          <Link to="/antessala">Antessala</Link>
+          <Link to="/contato">Contato</Link>
+          <Link to="/sobre">Sobre</Link>
           
           {token ? (
             <>
-              <Link to="/admin/dashboard" onClick={handleNavClick}>Painel Admin</Link>
+              <Link to="/admin/dashboard">Painel Admin</Link>
               <button onClick={handleLogout} className="logout-button">Sair</button>
             </>
-          ) : (
-            <Link to="/login" onClick={handleNavClick} className="login-link">Área Admin</Link>
-          )}
+          ) : null}
         </nav>
-
-        {/* Overlay para fechar menu ao clicar fora */}
-        {isMobileMenuOpen && (
-          <div 
-            className="nav-overlay"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-        )}
       </header>
 
       <main>
@@ -99,17 +66,11 @@ function Layout() {
       </main>
 
       <footer className="app-footer">
-        <div className="footer-content">
-          <p>© 2025 Acervo Carmen Lydia - Todos os direitos reservados.</p>
-          <div className="mde-lab-logo">
-            <p>Desenvolvido com apoio do MDE Lab</p>
-          </div>
-          <div className="footer-links">
-            <Link to="/sobre">Sobre o Projeto</Link>
-            <Link to="/contato">Contato</Link>
-            <Link to="/antessala">Nossa História</Link>
-          </div>
+        <p>© 2025 Acervo Carmen Lydia - Todos os direitos reservados.</p>
+        <div className="mde-lab-logo">
+          <p>Desenvolvido com apoio do MDE Lab</p>
         </div>
+        {!token && <Link to="/login">Área Administrativa</Link>}
       </footer>
     </>
   );
@@ -122,7 +83,6 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Layout />}>
-            {/* Rotas Públicas */}
             <Route index element={<PaginaInicial />} />
             <Route path="atletas" element={<AtletasPage />} />
             <Route path="modalidades" element={<ModalidadesPage />} />
@@ -133,49 +93,17 @@ function App() {
             <Route path="carmen-lydia" element={<CarmenLydia />} />
             <Route path="login" element={<LoginPage />} />
             
-            {/* Rotas Protegidas - Admin */}
             <Route 
               path="admin/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } 
+              element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} 
             />
             <Route 
               path="admin/atletas/novo" 
-              element={
-                <ProtectedRoute>
-                  <AtletaForm />
-                </ProtectedRoute>
-              } 
+              element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} 
             />
             <Route 
               path="admin/atletas/editar/:id" 
-              element={
-                <ProtectedRoute>
-                  <AtletaForm />
-                </ProtectedRoute>
-              } 
-            />
-
-            {/* Rota 404 - Página Não Encontrada */}
-            <Route 
-              path="*" 
-              element={
-                <div className="pagina-conteudo">
-                  <div className="error-container content-box">
-                    <div className="error-icon">🔍</div>
-                    <h2>Página Não Encontrada</h2>
-                    <p>A página que você está procurando não existe ou foi movida.</p>
-                    <div className="error-actions">
-                      <Link to="/" className="btn-action">
-                        🏠 Voltar para Home
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              } 
+              element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} 
             />
           </Route>
         </Routes>

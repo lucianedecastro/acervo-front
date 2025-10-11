@@ -11,16 +11,12 @@ function ModalidadeDetailPage() {
   const [modalidade, setModalidade] = useState(null);
   const [atletas, setAtletas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [tempHistoria, setTempHistoria] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setError(null);
-        
-        // Mock data - substituir por API real quando disponível
         const mockModalidades = {
           '1': { 
             id: '1', 
@@ -38,20 +34,15 @@ function ModalidadeDetailPage() {
               
               <h4>Principais Conquistas</h4>
               <ul>
-                <li><strong>1932</strong> - Primeira participação olímpica feminina</li>
-                <li><strong>1950</strong> - Primeiros recordes sul-americanos</li>
-                <li><strong>1970</strong> - Consolidação no cenário internacional</li>
-                <li><strong>1980</strong> - Primeiras medalhas em Pan-Americanos</li>
+                <li>1932 - Primeira participação olímpica feminina</li>
+                <li>1950 - Primeiros recordes sul-americanos</li>
+                <li>1970 - Consolidação no cenário internacional</li>
               </ul>
               
               <blockquote>
                 "A natação feminina brasileira sempre foi marcada pela coragem de mulheres que desafiaram seu tempo."
               </blockquote>
-              
-              <h3>Impacto Social</h3>
-              <p>A trajetória das nadadoras pioneiras não apenas abriu caminhos no esporte, mas também contribuiu para a discussão sobre o papel da mulher na sociedade brasileira, inspirando gerações futuras.</p>
-            `,
-            corDestaque: '#008080'
+            `
           },
           '2': { 
             id: '2', 
@@ -59,107 +50,48 @@ function ModalidadeDetailPage() {
             pictogramaUrl: null, 
             historia: `
               <h3>As Pioneiras do Atletismo Feminino</h3>
-              <p>O atletismo feminino no Brasil começou a ganhar força nas décadas de 1940 e 1950, com atletas que superaram barreiras sociais e esportivas para competir em provas de pista e campo.</p>
+              <p>O atletismo feminino no Brasil começou a ganhar força nas décadas de 1940 e 1950, com atletas que superaram barreiras sociais e esportivas.</p>
               
               <h4>Modalidades Iniciais</h4>
               <ul>
-                <li><strong>Corridas de velocidade</strong> - 100m, 200m</li>
-                <li><strong>Saltos em distância</strong> - Salto em distância, salto triplo</li>
-                <li><strong>Arremesso de peso</strong> e lançamento de dardo</li>
-                <li><strong>Corridas com barreiras</strong> - 100m com barreiras</li>
+                <li>Corridas de velocidade</li>
+                <li>Saltos em distância</li>
+                <li>Arremesso de peso</li>
               </ul>
-              
-              <h3>Destaques Históricos</h3>
-              <p>Atletas como Aída dos Santos foram fundamentais para consolidar a presença feminina no atletismo nacional e internacional.</p>
-            `,
-            corDestaque: '#E53E3E'
+            ` 
           },
           '3': { 
             id: '3', 
             nome: 'Ginástica', 
             pictogramaUrl: null, 
-            historia: `
-              <h3>A Ginástica Artística Feminina no Brasil</h3>
-              <p>A ginástica artística feminina desenvolveu-se no Brasil com atletas que combinaram força, graça e técnica em performances memoráveis.</p>
-              
-              <h4>Aparelhos Tradicionais</h4>
-              <ul>
-                <li><strong>Solo</strong> - Coreografias com música</li>
-                <li><strong>Trave</strong> - Equilíbrio e precisão</li>
-                <li><strong>Barras assimétricas</strong> - Força e coordenação</li>
-                <li><strong>Salto sobre a mesa</strong> - Potência e altura</li>
-              </ul>
-              
-              <blockquote>
-                "A ginástica é a arte de transformar força em beleza."
-              </blockquote>
-            `,
-            corDestaque: '#805AD5'
+            historia: '<p>História da ginástica feminina no Brasil...</p>' 
           },
           '4': { 
             id: '4', 
             nome: 'Futebol', 
             pictogramaUrl: null, 
-            historia: `
-              <h3>O Futebol Feminino Brasileiro</h3>
-              <p>O futebol feminino enfrentou muitas resistências no Brasil, mas hoje é uma das modalidades que mais cresce e conquista espaço no cenário esportivo nacional.</p>
-              
-              <h4>Marcos Importantes</h4>
-              <ul>
-                <li><strong>Década de 1980</strong> - Primeiras competições organizadas</li>
-                <li><strong>1991</strong> - Primeira Copa do Mundo Feminina</li>
-                <li><strong>1996</strong> - Estreia em Olimpíadas</li>
-                <li><strong>2007</strong> - Vice-campeonato mundial</li>
-              </ul>
-              
-              <h3>Lendas do Futebol Feminino</h3>
-              <p>Jogadoras como Marta, Formiga e Cristiane tornaram-se referências mundiais e inspiração para milhões de meninas.</p>
-            `,
-            corDestaque: '#38A169'
+            historia: '<p>História do futebol feminino no Brasil...</p>' 
           }
         };
 
         const modalidadeData = mockModalidades[id];
-        
-        if (!modalidadeData) {
-          throw new Error('Modalidade não encontrada');
-        }
-        
         setModalidade(modalidadeData);
         setTempHistoria(modalidadeData.historia);
         
-        // Buscar atletas desta modalidade (mock - substituir por API)
         const mockAtletas = [
           {
             id: '1',
             nome: 'Maria Lenk',
             modalidade: 'Natação',
-            biografia: 'Pioneira da natação brasileira, primeira mulher sul-americana a competir em Olimpíadas. Nascida em 1915, começou a nadar aos 10 anos e rapidamente se destacou nas competições nacionais. Participou dos Jogos Olímpicos de Los Angeles em 1932, marcando o início da participação feminina brasileira em Olimpíadas.',
+            biografia: 'Pioneira da natação brasileira, primeira mulher sul-americana a competir em Olimpíadas. Nascida em 1915, começou a nadar aos 10 anos e rapidamente se destacou nas competições nacionais.',
             competicao: 'Jogos Olímpicos de 1932 (Los Angeles)',
-            fotos: [{ 
-              url: 'https://storage.googleapis.com/acervo-carmen-lydia-fotos/atletas_imagens/maria-lenk.jpg', 
-              legenda: 'Maria Lenk em competição nos anos 1930',
-              ehDestaque: true
-            }]
-          },
-          {
-            id: '2',
-            nome: 'Piedade Coutinho',
-            modalidade: 'Natação',
-            biografia: 'Nadadora brasileira que se destacou nas décadas de 1940 e 1950, sendo uma das principais representantes do país em competições internacionais.',
-            competicao: 'Jogos Pan-Americanos, Campeonatos Sul-Americanos',
-            fotos: [{ 
-              url: 'https://via.placeholder.com/300x200/4A5568/FFFFFF?text=Piedade+Coutinho', 
-              legenda: 'Piedade Coutinho em treinamento'
-            }]
+            fotos: [{ url: 'https://storage.googleapis.com/acervo-carmen-lydia-fotos/atletas_imagens/maria-lenk.jpg', legenda: 'Maria Lenk em competição' }]
           }
-        ].filter(atleta => atleta.modalidade === modalidadeData.nome);
-        
+        ];
         setAtletas(mockAtletas);
         
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
-        setError('Não foi possível carregar os dados da modalidade. Tente novamente.');
       } finally {
         setLoading(false);
       }
@@ -178,7 +110,6 @@ function ModalidadeDetailPage() {
   const handleSave = () => {
     setModalidade({ ...modalidade, historia: tempHistoria });
     setEditMode(false);
-    // Aqui você faria a chamada API para salvar no backend
     console.log('Salvando história:', tempHistoria);
   };
 
@@ -187,145 +118,57 @@ function ModalidadeDetailPage() {
     setEditMode(false);
   };
 
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-    window.location.reload();
-  };
-
-  const getModalidadeIcon = (nome) => {
-    const icons = {
-      'Natação': '🏊‍♀️',
-      'Atletismo': '🏃‍♀️',
-      'Ginástica': '🤸‍♀️',
-      'Futebol': '⚽',
-      'Vôlei': '🏐',
-      'Basquete': '🏀'
-    };
-    return icons[nome] || '🏆';
-  };
-
-  if (loading) {
-    return (
-      <div className="pagina-conteudo">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Carregando modalidade...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="pagina-conteudo">
-        <div className="error-container content-box">
-          <div className="error-icon">⚠️</div>
-          <h2>Modalidade não encontrada</h2>
-          <p>{error}</p>
-          <div className="error-actions">
-            <button onClick={handleRetry} className="btn-action">
-              Tentar Novamente
-            </button>
-            <Link to="/modalidades" className="btn-action btn-secondary">
-              Voltar para Modalidades
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!modalidade) {
-    return (
-      <div className="pagina-conteudo">
-        <div className="error-container content-box">
-          <div className="error-icon">❓</div>
-          <h2>Modalidade não encontrada</h2>
-          <p>A modalidade que você está procurando não existe ou foi removida.</p>
-          <Link to="/modalidades" className="btn-action">
-            Explorar Modalidades
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="pagina-conteudo">Carregando...</div>;
+  if (!modalidade) return <div className="pagina-conteudo">Modalidade não encontrada.</div>;
 
   return (
     <div className="pagina-conteudo">
-      {/* 🎯 HEADER DA MODALIDADE */}
-      <div 
-        className="modalidade-hero"
-        style={{ '--cor-destaque': modalidade.corDestaque || '#008080' }}
-      >
-        <div className="modalidade-hero-content content-box">
-          <div className="modalidade-header">
-            <div className="modalidade-icon-large">
-              <div className="pictograma-container-large">
-                {modalidade.pictogramaUrl ? (
-                  <img 
-                    src={modalidade.pictogramaUrl} 
-                    alt={`Pictograma ${modalidade.nome}`}
-                    className="modalidade-pictograma-large"
-                  />
-                ) : (
-                  <div className="pictograma-placeholder-large">
-                    {getModalidadeIcon(modalidade.nome)}
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="modalidade-info">
-              <h1 className="modalidade-titulo">{modalidade.nome}</h1>
-              <div className="modalidade-meta">
-                <span className="atleta-count-badge">
-                  {atletas.length} {atletas.length === 1 ? 'atleta' : 'atletas'} no acervo
-                </span>
-                <span className="modalidade-category">Esporte Olímpico</span>
-              </div>
-              <p className="modalidade-intro">
-                Descubra a história das mulheres pioneiras que marcaram esta modalidade no Brasil.
-              </p>
-            </div>
-          </div>
-          
-          {/* 🎯 AÇÕES DO ADMIN */}
-          {token && (
-            <div className="modalidade-actions">
-              <button 
-                onClick={handleEditToggle}
-                className={`btn-action ${editMode ? 'btn-secondary' : 'btn-edit'}`}
-              >
-                {editMode ? '❌ Cancelar Edição' : '✏️ Editar História'}
-              </button>
+      <div className="modalidade-hero content-box">
+        <div className="modalidade-header">
+          {modalidade.pictogramaUrl ? (
+            <img src={modalidade.pictogramaUrl} alt={modalidade.nome} className="hero-pictograma" />
+          ) : (
+            <div className="pictograma-placeholder hero">
+              {modalidade.nome === 'Natação' && '🏊‍♀️'}
+              {modalidade.nome === 'Atletismo' && '🏃‍♀️'}
+              {modalidade.nome === 'Ginástica' && '🤸‍♀️'}
+              {modalidade.nome === 'Futebol' && '⚽'}
             </div>
           )}
+          <div className="modalidade-info">
+            <h1>{modalidade.nome}</h1>
+            <p>{atletas.length} atletas nesta modalidade</p>
+          </div>
         </div>
+        
+        {token && (
+          <div className="modalidade-actions">
+            <button 
+              onClick={handleEditToggle}
+              className={`btn-action ${editMode ? 'btn-secondary' : 'btn-edit'}`}
+            >
+              {editMode ? '❌ Cancelar Edição' : '✏️ Editar História'}
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* 🎯 HISTÓRIA DA MODALIDADE */}
       <section className="historia-modalidade content-box">
-        <div className="section-header">
-          <h2>História da Modalidade</h2>
-          <p className="section-subtitle">
-            A trajetória das mulheres no {modalidade.nome.toLowerCase()} brasileiro
-          </p>
-        </div>
+        <h2>História da Modalidade</h2>
         
         {editMode ? (
           <div className="editor-container">
             <RichTextEditor
               value={tempHistoria}
               onChange={setTempHistoria}
-              placeholder={`Conte a história das primeiras participações femininas no ${modalidade.nome.toLowerCase()}...`}
+              placeholder="Conte a história das primeiras participações femininas nesta modalidade..."
             />
             <div className="editor-actions">
               <button onClick={handleSave} className="btn-action">
                 💾 Salvar Alterações
               </button>
               <button onClick={handleCancel} className="btn-action btn-secondary">
-                ↩️ Descartar Alterações
+                ↩️ Cancelar
               </button>
             </div>
           </div>
@@ -337,65 +180,28 @@ function ModalidadeDetailPage() {
         )}
       </section>
 
-      {/* 🎯 ATLETAS DESTA MODALIDADE */}
       <section className="atletas-modalidade">
-        <div className="section-header">
-          <h2>Atletas Destacadas</h2>
-          <p className="section-subtitle">
-            Conheça as mulheres que fizeram história no {modalidade.nome.toLowerCase()}
-          </p>
-        </div>
-
+        <h2>Atletas Destacadas</h2>
         {atletas.length > 0 ? (
-          <div className="atletas-grid">
+          <div className="lista-atletas">
             {atletas.map(atleta => (
-              <AtletaCard 
-                key={atleta.id} 
-                atleta={atleta}
-                compact={true}
-              />
+              <AtletaCard key={atleta.id} atleta={atleta} />
             ))}
           </div>
         ) : (
-          <div className="empty-state content-box">
-            <div className="empty-icon">👥</div>
-            <h3>Nenhuma atleta cadastrada</h3>
-            <p>
-              Ainda não há atletas cadastradas para a modalidade de {modalidade.nome.toLowerCase()}.
-              {token && ' Você pode adicionar a primeira atleta usando o botão abaixo.'}
-            </p>
-            {token && (
-              <div className="empty-actions">
-                <Link to="/admin/atletas/novo" className="btn-action btn-create">
-                  ➕ Adicionar Primeira Atleta
-                </Link>
-              </div>
-            )}
+          <div className="content-box">
+            <p>Nenhuma atleta cadastrada nesta modalidade ainda.</p>
+            <Link to="/admin/atletas/novo" className="btn-action btn-create">
+              Adicionar Primeira Atleta
+            </Link>
           </div>
         )}
       </section>
 
-      {/* 🎯 NAVEGAÇÃO */}
-      <div className="page-navigation">
-        <Link to="/modalidades" className="btn-action btn-secondary btn-large">
-          ← Voltar para Todas as Modalidades
+      <div className="navigation-links">
+        <Link to="/modalidades" className="btn-action btn-secondary">
+          ← Voltar para Modalidades
         </Link>
-        
-        {atletas.length > 0 && (
-          <Link to="/atletas" className="btn-action btn-large">
-            Explorar Todas as Atletas →
-          </Link>
-        )}
-      </div>
-
-      {/* 🎯 PIE DE PÁGINA INFORMATIVO */}
-      <div className="page-footer-info content-box">
-        <h3>💡 Mais sobre o {modalidade.nome}</h3>
-        <p>
-          Esta página faz parte do Acervo Carmen Lydia, dedicado a preservar a memória 
-          das mulheres pioneiras no esporte brasileiro. 
-          {token && ' Como administrador, você pode editar este conteúdo usando o botão "Editar História".'}
-        </p>
       </div>
     </div>
   );

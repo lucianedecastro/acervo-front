@@ -109,17 +109,11 @@ function AntessalaPage() {
 
   return (
     <div className="pagina-conteudo">
-      {/* 🎯 HEADER DA PÁGINA */}
       <div className="page-header">
-        <div className="header-content">
-          <h1>Antessala - Acervo Carmen Lydia</h1>
-          <p className="page-subtitle">
-            Conheça a história do nosso acervo e a trajetória inspiradora da nossa homenageada
-          </p>
-        </div>
+        <h1>Antessala - Acervo Carmen Lydia</h1>
         
         {token && (
-          <div className="header-actions">
+          <div className="page-actions">
             <button 
               onClick={handleEditToggle}
               className={`btn-action ${editMode ? 'btn-secondary' : 'btn-edit'}`}
@@ -129,82 +123,42 @@ function AntessalaPage() {
           </div>
         )}
       </div>
-
-      {/* 🎯 CARROSSEL DE IMAGENS */}
+      
       {carrosselImagens.length > 0 && (
-        <section className="carrossel-section content-box">
-          <div className="section-header">
-            <h2>Nossa História em Imagens</h2>
-            <p className="section-subtitle">
-              Momentos marcantes da trajetória do acervo Carmen Lydia
-            </p>
-          </div>
-          
+        <section className="carrossel-historia content-box">
+          <h2>Nossa História em Imagens</h2>
           <div className="carrossel-container">
-            <button 
-              className="carrossel-btn prev" 
-              onClick={prevSlide}
-              aria-label="Imagem anterior"
-            >
-              ‹
-            </button>
+            <button className="carrossel-btn prev" onClick={prevSlide}>‹</button>
             
-            <div className="carrossel-slides">
-              {carrosselImagens.map((imagem, index) => (
-                <div 
-                  key={index}
-                  className={`carrossel-slide ${index === currentSlide ? 'active' : ''}`}
-                >
-                  <img 
-                    src={imagem.url} 
-                    alt={imagem.legenda} 
-                    className="carrossel-image"
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/800x400/4A5568/FFFFFF?text=Imagem+Indisponível';
-                    }}
-                  />
-                  {imagem.legenda && (
-                    <div className="legenda-carrossel">
-                      {imagem.legenda}
-                    </div>
-                  )}
-                </div>
-              ))}
+            <div className="carrossel-slide active">
+              <img 
+                src={carrosselImagens[currentSlide].url} 
+                alt={carrosselImagens[currentSlide].legenda} 
+              />
+              {carrosselImagens[currentSlide].legenda && (
+                <p className="legenda-carrossel">{carrosselImagens[currentSlide].legenda}</p>
+              )}
             </div>
             
-            <button 
-              className="carrossel-btn next" 
-              onClick={nextSlide}
-              aria-label="Próxima imagem"
-            >
-              ›
-            </button>
+            <button className="carrossel-btn next" onClick={nextSlide}>›</button>
           </div>
-          
           <div className="carrossel-indicators">
             {carrosselImagens.map((_, index) => (
               <button
                 key={index}
                 className={`indicator ${index === currentSlide ? 'active' : ''}`}
                 onClick={() => setCurrentSlide(index)}
-                aria-label={`Ir para imagem ${index + 1}`}
               />
             ))}
           </div>
         </section>
       )}
 
-      {/* 🎯 HISTÓRIA DO ACERVO */}
-      <section className="historia-section content-box">
-        <div className="section-header">
-          <h2>O Acervo Carmen Lydia</h2>
-          <p className="section-subtitle">
-            Conheça nossa missão, visão e os valores que nos guiam
-          </p>
-        </div>
+      <section className="historia-acervo content-box">
+        <h2>O Acervo Carmen Lydia</h2>
         
         {editMode ? (
-          <div className="editor-container">
+          <div className="editor-section">
             <RichTextEditor
               value={tempConteudo.historiaAcervo || ''}
               onChange={(content) => handleContentChange('historiaAcervo', content)}
@@ -219,34 +173,22 @@ function AntessalaPage() {
         )}
       </section>
 
-      {/* 🎯 BIOGRAFIA CARMEN LYDIA */}
-      <section className="biografia-section content-box">
-        <div className="section-header">
-          <h2>Carmen Lydia - Nossa Homenageada</h2>
-          <p className="section-subtitle">
-            A pioneira que inspira nosso trabalho e dá nome ao acervo
-          </p>
-        </div>
-        
-        <div className="biografia-layout">
-          <div className="foto-container">
+      <section className="biografia-carmen content-box">
+        <h2>Carmen Lydia - Nossa Homenageada</h2>
+        <div className="biografia-content">
+          <div className="foto-destaque-container">
             <img 
               src="https://storage.googleapis.com/acervo-carmen-lydia-fotos/conteudos/carmen-lydia-destaque.jpg" 
-              alt="Carmen Lydia - Pioneira do esporte brasileiro" 
-              className="foto-destaque"
+              alt="Carmen Lydia" 
+              className="foto-destaque" 
               onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/400x500/4A5568/FFFFFF?text=Carmen+Lydia';
+                e.target.src = 'https://via.placeholder.com/400x500/4A5568/FFFFFF?text=Imagem+Indisponível';
               }}
             />
-            <div className="foto-legenda">
-              <strong>Carmen Lydia (1898-1970)</strong>
-              <span>Pioneira da natação e saltos ornamentais</span>
-            </div>
           </div>
-          
-          <div className="biografia-conteudo">
+          <div className="biografia-texto">
             {editMode ? (
-              <div className="editor-container">
+              <div className="editor-section">
                 <RichTextEditor
                   value={tempConteudo.biografiaCarmen || ''}
                   onChange={(content) => handleContentChange('biografiaCarmen', content)}
@@ -263,55 +205,20 @@ function AntessalaPage() {
         </div>
       </section>
 
-      {/* 🎯 AÇÕES DE EDIÇÃO */}
       {editMode && (
-        <section className="edicao-section content-box">
-          <div className="section-header">
-            <h3>💾 Salvar Alterações</h3>
-            <p className="section-subtitle">
-              Revise as alterações antes de salvar. As mudanças serão refletidas imediatamente no site.
-            </p>
-          </div>
-          
+        <section className="edicao-actions content-box">
+          <h3>Salvar Alterações</h3>
+          <p>Revise as alterações antes de salvar. As mudanças serão refletidas imediatamente no site.</p>
           <div className="editor-actions">
-            <button onClick={handleSave} className="btn-action btn-large">
+            <button onClick={handleSave} className="btn-action">
               💾 Salvar Todas as Alterações
             </button>
-            <button onClick={handleCancel} className="btn-action btn-secondary btn-large">
+            <button onClick={handleCancel} className="btn-action btn-secondary">
               ↩️ Descartar Alterações
             </button>
           </div>
         </section>
       )}
-
-      {/* 🎯 NAVEGAÇÃO */}
-      <div className="page-navigation">
-        <div className="navigation-grid">
-          <a href="/sobre" className="nav-card">
-            <div className="nav-icon">📚</div>
-            <div className="nav-content">
-              <h4>Sobre o Projeto</h4>
-              <p>Conheça mais sobre nossa missão e valores</p>
-            </div>
-          </a>
-          
-          <a href="/atletas" className="nav-card">
-            <div className="nav-icon">👥</div>
-            <div className="nav-content">
-              <h4>Explorar Atletas</h4>
-              <p>Descubra as histórias das mulheres pioneiras</p>
-            </div>
-          </a>
-          
-          <a href="/modalidades" className="nav-card">
-            <div className="nav-icon">🏆</div>
-            <div className="nav-content">
-              <h4>Ver Modalidades</h4>
-              <p>Conheça os esportes que marcaram história</p>
-            </div>
-          </a>
-        </div>
-      </div>
     </div>
   );
 }
