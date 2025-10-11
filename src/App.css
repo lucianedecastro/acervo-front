@@ -5,7 +5,7 @@
     --cor-primaria: #008080; /* Teal/Verde Profundo (Cor de destaque e links) */
     --cor-secundaria: #FFD700; /* Dourado/Amarelo (Para o botão de Criar) */
     --cor-texto-principal: #212529; /* Preto forte */
-    --cor-texto-secundario: #495057;
+    --cor-texto-secundoario: #495057;
     --cor-fundo: #f8f9fa; /* Cinza muito claro */
 
     /* Fontes: TODAS USAM LIBRE FRANKLIN */
@@ -277,6 +277,7 @@ nav a:hover {
 
 /* --- Botões de Ação --- */
 .btn-action {
+    background-color: var(--cor-primaria); /* ✅ CORREÇÃO: Adicionada cor de fundo padrão */
     border: none;
     padding: 8px 12px;
     border-radius: 4px;
@@ -293,11 +294,13 @@ nav a:hover {
     opacity: 0.9;
 }
 
+/* Esta regra se torna redundante, mas podemos manter por especificidade */
 .form-actions .btn-action[type="submit"] {
     background-color: var(--cor-primaria); 
     color: white;
 }
 
+/* Regra para sobrescrever o padrão */
 .btn-action.btn-edit {
     background-color: white; 
     border: 1px solid var(--cor-primaria); 
@@ -311,6 +314,7 @@ nav a:hover {
     opacity: 1; 
 }
 
+/* Regra para sobrescrever o padrão */
 .btn-action.btn-create {
     background-color: var(--cor-secundaria);
     color: var(--cor-texto-principal);
@@ -318,19 +322,23 @@ nav a:hover {
     text-decoration: none;
 }
 
+/* Regra para sobrescrever o padrão */
 .btn-action.btn-delete {
     background-color: #dc3545;
     color: white;
 }
 
+/* Regra para sobrescrever o padrão */
 .btn-action.btn-secondary {
     background-color: #6c757d; 
     color: white;
 }
 
 /* ============================================= */
-/* ESTILOS PARA SISTEMA DE GALERIA DE FOTOS */
+/* ESTILOS PARA SISTEMA DE GALERIA DE FOTOS      */
 /* ============================================= */
+
+/* ... (demais estilos da galeria, sem alterações) ... */
 
 .galeria-preview {
   margin-top: 1rem;
@@ -487,28 +495,9 @@ nav a:hover {
 .success-message { background: #e8f5e8; border: 1px solid #c8e6c9; color: #2e7d32; }
 .error-message { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; }
 
-/* === ESTILOS PARA PÁGINAS === */
-
-.hero-destaques, .preview-modalidades { margin-bottom: 3rem; }
-.destaques-lista { display: flex; flex-direction: column; gap: 1.5rem; }
-.modalidades-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-.modalidade-preview { text-align: center; padding: 1.5rem; background: white; border-radius: 8px; text-decoration: none; color: inherit; border: 1px solid #eee; transition: all 0.2s; }
-.modalidade-preview:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.pictograma-placeholder { font-size: 3rem; margin-bottom: 1rem; }
-.pictograma-placeholder.hero { font-size: 4rem; }
-
-/* ...estilos para .conteudo-rico, etc... */
-
-.conteudo-rico h3 { color: var(--cor-primaria); border-bottom: 2px solid var(--cor-primaria); }
-.conteudo-rico blockquote { border-left: 4px solid var(--cor-primaria); background: #f8f9fa; }
-.conteudo-rico strong { color: var(--cor-primaria); }
-.modalidade-hero .modalidade-header { display: flex; flex-direction: column; align-items: center; }
-
-/* Carrossel */
-/* ...estilos do carrossel... */
 
 /* ============================================= */
-/* ✅ ESTILOS PARA O DASHBOARD ADMIN (NOVOS)      */
+/* ESTILOS PARA O DASHBOARD ADMIN                */
 /* ============================================= */
 
 .dashboard-navigation {
@@ -576,8 +565,9 @@ nav a:hover {
   background-color: #e9ecef;
 }
 
+
 /* ======================================================= */
-/* ✅ ESTILOS PARA RESPONSIVIDADE */
+/* ESTILOS PARA RESPONSIVIDADE                           */
 /* ======================================================= */
 
 .nav-toggle {

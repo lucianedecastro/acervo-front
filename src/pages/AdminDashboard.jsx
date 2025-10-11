@@ -81,7 +81,6 @@ function AdminDashboard() {
           <p>Total de atletas cadastradas: <strong>{atletas.length}</strong></p>
         </div>
 
-        {/* ✅ NOVA SEÇÃO DE NAVEGAÇÃO */}
         <div className="dashboard-navigation">
           <h3>Gerenciar Acervo</h3>
           <div className="nav-links">
@@ -89,10 +88,11 @@ function AdminDashboard() {
               <span className="nav-card-icon">🏊‍♀️</span>
               <span className="nav-card-title">Modalidades</span>
             </Link>
-            <div className="nav-card disabled">
+            {/* ✅ CARD DE CONTEÚDOS ATIVADO */}
+            <Link to="/admin/conteudos" className="nav-card">
               <span className="nav-card-icon">📚</span>
-              <span className="nav-card-title">Conteúdos (em breve)</span>
-            </div>
+              <span className="nav-card-title">Conteúdos</span>
+            </Link>
             <div className="nav-card disabled">
               <span className="nav-card-icon">🖼️</span>
               <span className="nav-card-title">Galeria (em breve)</span>

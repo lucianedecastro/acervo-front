@@ -19,8 +19,10 @@ import ModalidadeDetailPage from './pages/ModalidadeDetailPage';
 import AntessalaPage from './pages/AntessalaPage';
 import ContatoPage from './pages/ContatoPage';
 import AtletasPage from './pages/AtletasPage';
-import AdminModalidades from './pages/AdminModalidades'; // ✅ IMPORTAR
-import ModalidadeForm from './pages/ModalidadeForm';   // ✅ IMPORTAR
+import AdminModalidades from './pages/AdminModalidades';
+import ModalidadeForm from './pages/ModalidadeForm';
+import AdminConteudos from './pages/AdminConteudos';   // ✅ IMPORTAR
+import ConteudoForm from './pages/ConteudoForm';     // ✅ IMPORTAR
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -85,13 +87,20 @@ function App() {
             
             {/* Rotas de Admin Protegidas */}
             <Route path="admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            
+            {/* Gerenciar Atletas */}
             <Route path="admin/atletas/novo" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
             <Route path="admin/atletas/editar/:id" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
             
-            {/* ✅ NOVAS ROTAS PARA MODALIDADES */}
+            {/* Gerenciar Modalidades */}
             <Route path="admin/modalidades" element={<ProtectedRoute><AdminModalidades /></ProtectedRoute>} />
             <Route path="admin/modalidades/novo" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
             <Route path="admin/modalidades/editar/:id" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
+
+            {/* ✅ NOVAS ROTAS PARA CONTEÚDOS */}
+            <Route path="admin/conteudos" element={<ProtectedRoute><AdminConteudos /></ProtectedRoute>} />
+            <Route path="admin/conteudos/editar/:slug" element={<ProtectedRoute><ConteudoForm /></ProtectedRoute>} />
+
           </Route>
         </Routes>
       </AuthProvider>
