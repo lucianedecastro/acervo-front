@@ -29,8 +29,8 @@ body {
 
 h1, h2, h3, h4 {
     font-family: var(--fonte-titulo);
-    font-weight: 700; 
-    color: var(--cor-texto-principal); 
+    font-weight: 700;
+    color: var(--cor-texto-principal);
 }
 
 /* --- Layout (Header, Main, Footer) --- */
@@ -45,8 +45,8 @@ h1, h2, h3, h4 {
 .app-header h1 {
     margin: 0;
     font-size: 1.5rem;
-    font-weight: 700; 
-    color: var(--cor-primaria); 
+    font-weight: 700;
+    color: var(--cor-primaria);
 }
 
 main {
@@ -63,7 +63,7 @@ main {
 }
 
 .app-footer a {
-    color: var(--cor-primaria); 
+    color: var(--cor-primaria);
     text-decoration: none;
 }
 
@@ -87,7 +87,7 @@ nav a {
 
 nav a:hover {
     border-bottom-color: var(--cor-primaria);
-    color: var(--cor-primaria); 
+    color: var(--cor-primaria);
 }
 
 .logout-button {
@@ -128,11 +128,11 @@ nav a:hover {
     margin-top: 2rem;
     border-bottom: 1px solid #eee;
     padding-bottom: 0.5rem;
-    color: var(--cor-primaria); 
+    color: var(--cor-primaria);
 }
 
 .pagina-conteudo a {
-    color: var(--cor-primaria); 
+    color: var(--cor-primaria);
     text-decoration: underline;
     cursor: pointer;
 }
@@ -144,7 +144,7 @@ nav a:hover {
 /* --- Estilo da Página Carmen Lydia (Galeria) --- */
 .lydia-galeria {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
 }
@@ -171,7 +171,7 @@ nav a:hover {
     gap: 1rem;
     max-width: 600px;
     text-align: left;
-    margin: 0 auto; 
+    margin: 0 auto;
 }
 .form-group {
     display: flex;
@@ -236,40 +236,32 @@ nav a:hover {
     text-decoration: none;
     transition: opacity 0.2s, background-color 0.2s, color 0.2s;
 }
-
 .btn-action:hover {
     opacity: 0.9;
 }
-
 .btn-action.btn-edit {
-    background-color: white; 
-    border: 1px solid var(--cor-primaria); 
+    background-color: white;
+    border: 1px solid var(--cor-primaria);
     color: var(--cor-primaria);
 }
-
 .btn-action.btn-edit:hover {
     background-color: var(--cor-primaria);
-    color: white; 
-    opacity: 1; 
+    color: white;
+    opacity: 1;
 }
-
 .btn-action.btn-create {
     background-color: var(--cor-secundaria);
     color: var(--cor-texto-principal);
     font-weight: 700;
 }
-
 .btn-action.btn-delete {
     background-color: #dc3545;
 }
-
 .btn-action.btn-secondary {
-    background-color: #6c757d; 
+    background-color: #6c757d;
 }
 
-/* ============================================= */
-/* ESTILOS PARA SISTEMA DE GALERIA DE FOTOS      */
-/* ============================================= */
+/* ESTILOS PARA SISTEMA DE GALERIA DE FOTOS */
 .galeria-preview { margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
 .galeria-preview h4 { margin: 0 0 1rem 0; color: var(--cor-primaria); font-size: 1.1rem; }
 .grid-fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
@@ -298,58 +290,16 @@ nav a:hover {
 .success-message { background: #e8f5e8; border: 1px solid #c8e6c9; color: #2e7d32; }
 .error-message { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; }
 
-/* ============================================= */
-/* ✅ ESTILOS DA PÁGINA INICIAL (REINSERIDOS)    */
-/* ============================================= */
-.hero-destaques {
-  margin-bottom: 3rem;
-}
+/* ESTILOS DA PÁGINA INICIAL */
+.hero-destaques { margin-bottom: 3rem; }
+.preview-modalidades { margin: 3rem 0; text-align: center; }
+.modalidades-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+.modalidade-preview { text-align: center; padding: 1.5rem; background: white; border-radius: 8px; text-decoration: none; color: inherit; border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; display: block; }
+.modalidade-preview:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.modalidade-preview .pictograma-placeholder { font-size: 3rem; margin-bottom: 1rem; display: block; }
+.preview-antessala { text-align: center; padding: 2rem; }
 
-.preview-modalidades {
-  margin: 3rem 0;
-  text-align: center;
-}
-
-.modalidades-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-
-.modalidade-preview {
-  text-align: center;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  text-decoration: none;
-  color: inherit;
-  border: 1px solid #eee;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: block;
-}
-
-.modalidade-preview:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-decoration: none;
-  color: inherit;
-}
-
-.modalidade-preview .pictograma-placeholder {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  display: block;
-}
-
-.preview-antessala {
-  text-align: center;
-  padding: 2rem;
-}
-
-/* ============================================= */
-/* ESTILOS PARA O DASHBOARD ADMIN                */
-/* ============================================= */
+/* ESTILOS PARA O DASHBOARD ADMIN */
 .dashboard-navigation { margin: 2.5rem 0; padding-top: 2rem; border-top: 1px solid #eee; }
 .admin-dashboard h3 { margin-top: 0; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #eee; color: var(--cor-primaria); }
 .nav-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
@@ -358,7 +308,13 @@ nav a:hover {
 .nav-card-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
 .nav-card-title { font-weight: 500; font-size: 1rem; }
 .nav-card.disabled { background-color: #e9ecef; color: #adb5bd; cursor: not-allowed; border-color: transparent; }
-.nav-card.disabled:hover { transform: none; box-shadow: none; background-color: #e9ecef; }
+.nav-card.disabled:hover { transform: none; box-shadow: none; }
+
+/* ESTILOS PARA FILTROS DE BUSCA */
+.filtros-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; padding: 1.5rem; flex-wrap: wrap; }
+.form-group-filtro { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 250px; }
+.form-group-filtro label { font-weight: 500; color: var(--cor-texto-secundario); }
+.form-group-filtro input, .form-group-filtro select { padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 1rem; width: 100%; }
 
 /* ======================================================= */
 /* ESTILOS PARA RESPONSIVIDADE                           */
@@ -374,12 +330,7 @@ nav a:hover {
   nav a { font-size: 1.2rem; }
   .table-container { overflow-x: auto; width: 100%; }
   .admin-table { min-width: 600px; }
-  .admin-table .action-buttons-wrapper { display: flex; gap: 0.5rem; }
-}
-
-@media (max-width: 768px) {
-  .grid-fotos { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-  .galeria { grid-template-columns: 1fr; }
+  .filtros-container { flex-direction: column; gap: 1rem; }
 }
 
 @media (max-width: 480px) {
@@ -387,40 +338,4 @@ nav a:hover {
   .app-header { padding: 1rem; }
   .nav-toggle { top: 0.5rem; right: 1rem; }
   .content-box { padding: 1.5rem; }
-  .grid-fotos { grid-template-columns: repeat(2, 1fr); }
-}
-
-/* ============================================= */
-/* ✅ NOVOS ESTILOS PARA FILTROS DE BUSCA         */
-/* ============================================= */
-
-.filtros-container {
-  display: flex;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  flex-wrap: wrap; /* Permite que os filtros quebrem a linha em telas menores */
-}
-
-.form-group-filtro {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex: 1; /* Faz com que os campos ocupem o espaço disponível */
-  min-width: 250px; /* Largura mínima antes de quebrar a linha */
-}
-
-.form-group-filtro label {
-  font-weight: 500;
-  color: var(--cor-texto-secundario);
-}
-
-.form-group-filtro input,
-.form-group-filtro select {
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 1rem;
-  width: 100%;
 }
