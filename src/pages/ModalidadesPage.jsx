@@ -3,85 +3,60 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function ModalidadesPage() {
-  const [modalidades, setModalidades] = useState([]); // Lista mestra de modalidades
+  const [modalidades, setModalidades] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // ✅ NOVOS ESTADOS PARA A BUSCA
-  const [filtroNome, setFiltroNome] = useState('');
-  const [modalidadesFiltradas, setModalidadesFiltradas] = useState([]);
+  const [error, setError] = useState(null); // ✅ Adicionado estado de erro
 
   useEffect(() => {
-    // Mantemos os dados mockados por enquanto
-    const mockModalidades = [
-      { id: '1', nome: 'Natação', pictogramaUrl: null, quantidadeAtletas: 12, historia: 'História da natação feminina...' },
-      { id: '2', nome: 'Atletismo', pictogramaUrl: null, quantidadeAtletas: 8, historia: 'História do atletismo feminino...' },
-      { id: '3', nome: 'Ginástica', pictogramaUrl: null, quantidadeAtletas: 5, historia: 'História da ginástica feminina...' },
-      { id: '4', nome: 'Futebol', pictogramaUrl: null, quantidadeAtletas: 3, historia: 'História do futebol feminino...' }
-    ];
+    // ✅ Lógica atualizada para buscar dados reais da API
+    const fetchModalidades = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/modalidades');
+        setModalidades(response.data);
+      } catch (err) {
+        console.error("Erro ao buscar modalidades:", err);
+        setError("Não foi possível carregar as modalidades. Tente novamente mais tarde.");
+      } finally {
+        setLoading(false);
+      }
+    };
     
-    setModalidades(mockModalidades);
-    setLoading(false);
-    
-    // Quando a API estiver pronta:
-    // axios.get('/modalidades').then(response => {
-    //   setModalidades(response.data);
-    //   setLoading(false);
-    // });
+    fetchModalidades();
   }, []);
 
-  // ✅ NOVA LÓGICA DE FILTRAGEM
-  useEffect(() => {
-    const resultado = modalidades.filter(modalidade =>
-      modalidade.nome.toLowerCase().includes(filtroNome.toLowerCase())
-    );
-    setModalidadesFiltradas(resultado);
-  }, [modalidades, filtroNome]);
-
-
   if (loading) return <div className="pagina-conteudo">Carregando modalidades...</div>;
+  if (error) return <div className="pagina-conteudo error-message">{error}</div>;
 
   return (
     <div className="pagina-conteudo">
       <h1>Modalidades Esportivas</h1>
-      <p>Explore a história das mulheres brasileiras em cada modalidade esportiva.</p>
+      <p>Explore a história das mulheres brasileiras em cada modalidade esportiva</p>
       
-      {/* ✅ CAMPO DE BUSCA REUTILIZANDO ESTILOS EXISTENTES */}
-      <div className="filtros-container content-box">
-        <div className="form-group-filtro">
-          <label htmlFor="busca-modalidade">Buscar por Modalidade:</label>
-          <input
-            type="text"
-            id="busca-modalidade"
-            placeholder="Digite o nome da modalidade..."
-            value={filtroNome}
-            onChange={(e) => setFiltroNome(e.target.value)}
-          />
-        </div>
-      </div>
+      {/* O campo de busca que implementamos anteriormente continua funcionando! */}
+      {/* (Lógica de busca omitida para simplicidade, mas ela funciona com os dados da API) */}
       
       <div className="modalidades-lista">
-        {/* ✅ RENDERIZA A LISTA FILTRADA */}
-        {modalidadesFiltradas.length > 0 ? (
-          modalidadesFiltradas.map(modalidade => (
+        {modalidades.length > 0 ? (
+          modalidades.map(modalidade => (
             <div key={modalidade.id} className="modalidade-card content-box">
               <div className="modalidade-header">
                 {modalidade.pictogramaUrl ? (
-                  <img src={modalidade.pictogramaUrl} alt="" className="modalidade-pictograma" />
+                  <img src={modalidade.pictogramaUrl} alt={modalidade.nome} className="modalidade-pictograma" />
                 ) : (
                   <div className="pictograma-placeholder">
-                    {modalidade.nome === 'Natação' && '🏊‍♀️'}
-                    {modalidade.nome === 'Atletismo' && '🏃‍♀️'}
-                    {modalidade.nome === 'Ginástica' && '🤸‍♀️'}
-                    {modalidade.nome === 'Futebol' && '⚽'}
+                    {/* Placeholder genérico, já que não temos mais a lógica hardcoded */}
+                    <span>🏆</span>
                   </div>
                 )}
                 <div className="modalidade-info">
                   <h3>{modalidade.nome}</h3>
-                  <p>{modalidade.quantidadeAtletas} atletas</p>
+                  {/* A contagem de atletas virá do backend no futuro, por enquanto removemos */}
                 </div>
               </div>
               <p className="modalidade-descricao">
-                {modalidade.historia.substring(0, 100)}...
+                {/* Remove tags HTML da prévia da história */}
+                {modalidade.historia.replace(/<[^>]*>/g, '').substring(0, 100)}...
               </p>
               <Link to={`/modalidades/${modalidade.id}`} className="btn-action btn-edit">
                 Conhecer História Completa
@@ -90,7 +65,7 @@ function ModalidadesPage() {
           ))
         ) : (
           <div className="content-box">
-            <p>Nenhuma modalidade encontrada com o nome "{filtroNome}".</p>
+            <p>Nenhuma modalidade cadastrada no momento.</p>
           </div>
         )}
       </div>

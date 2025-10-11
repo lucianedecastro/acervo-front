@@ -1,40 +1,74 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../AuthContext';
 
-// Componente para simular a página de gerenciamento de modalidades
 function AdminModalidades() {
+  const { token } = useAuth();
   const [modalidades, setModalidades] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // ✅ Função para buscar os dados reais da API
+  const fetchModalidades = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+      const response = await axios.get('/modalidades');
+      setModalidades(response.data);
+    } catch (err) {
+      console.error("Erro ao buscar modalidades:", err);
+      setError("Não foi possível carregar a lista de modalidades.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Simulação de chamada de API com dados mockados
-    const mockModalidades = [
-      { id: '1', nome: 'Natação', pictogramaUrl: null },
-      { id: '2', nome: 'Atletismo', pictogramaUrl: null },
-      { id: '3', nome: 'Ginástica', pictogramaUrl: null },
-      { id: '4', nome: 'Futebol', pictogramaUrl: null },
-    ];
-    setModalidades(mockModalidades);
-    setLoading(false);
+    fetchModalidades();
   }, []);
 
-  const handleDelete = (modalidadeId, modalidadeNome) => {
-    if (window.confirm(`Tem certeza que deseja excluir a modalidade "${modalidadeNome}"? Todas as atletas associadas a ela precisarão ser reclassificadas.`)) {
-      // Lógica para remover do estado (simulação)
-      setModalidades(modalidades.filter(m => m.id !== modalidadeId));
-      alert('Modalidade excluída com sucesso! (Simulação)');
-      // Em um cenário real, aqui iria a chamada para a API:
-      // await axios.delete(`/admin/modalidades/${modalidadeId}`);
+  // ✅ Função de deletar atualizada para chamar a API
+  const handleDelete = async (modalidadeId, modalidadeNome) => {
+    if (window.confirm(`Tem certeza que deseja excluir a modalidade "${modalidadeNome}"? Isso também removerá o pictograma associado.`)) {
+      if (!token) {
+        alert("Erro de autenticação. Faça login novamente.");
+        return;
+      }
+      try {
+        const config = {
+          headers: { 'Authorization': `Bearer ${token}` }
+        };
+        await axios.delete(`/modalidades/${modalidadeId}`, config);
+        
+        // Atualiza a lista na tela imediatamente após o sucesso
+        setModalidades(modalidades.filter(m => m.id !== modalidadeId));
+        alert('Modalidade excluída com sucesso!');
+        
+      } catch (err) {
+        console.error("Erro ao excluir modalidade:", err);
+        alert('Ocorreu um erro ao excluir a modalidade.');
+      }
     }
   };
 
   if (loading) {
     return (
       <div className="pagina-conteudo admin-dashboard">
-        <div className="content-box">
-          <p>Carregando modalidades...</p>
-        </div>
+        <div className="content-box"><p>Carregando modalidades...</p></div>
       </div>
+    );
+  }
+
+  // ✅ Adicionado um bloco para exibir erros de carregamento
+  if (error) {
+    return (
+        <div className="pagina-conteudo admin-dashboard">
+          <div className="content-box error-message">
+              <p>{error}</p>
+              <button onClick={fetchModalidades} className="btn-action">Tentar Novamente</button>
+          </div>
+        </div>
     );
   }
 

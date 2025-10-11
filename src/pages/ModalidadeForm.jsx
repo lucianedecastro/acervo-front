@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import RichTextEditor from '../components/RichTextEditor'; // Importando o editor
+import axios from 'axios';
+import { useAuth } from '../AuthContext'; // ✅ 1. Importar o Auth
+import RichTextEditor from '../components/RichTextEditor';
 
 function ModalidadeForm() {
-  const { id } = useParams(); // Pega o ID da URL, se houver
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { token } = useAuth(); // ✅ 2. Obter o token de autenticação
   const isEditing = Boolean(id);
 
   const [nome, setNome] = useState('');
@@ -14,24 +17,24 @@ function ModalidadeForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // ✅ 3. Lógica atualizada para buscar dados reais da API no modo de edição
   useEffect(() => {
-    // Se estiver no modo de edição, carrega os dados mockados
     if (isEditing) {
-      setLoading(true);
-      // Simulação de busca de dados da modalidade específica
-      const mockModalidades = {
-        '1': { nome: 'Natação', historia: '<p>A história da natação...</p>', pictogramaUrl: null },
-        '2': { nome: 'Atletismo', historia: '<p>A história do atletismo...</p>', pictogramaUrl: null },
+      const fetchModalidade = async () => {
+        setLoading(true);
+        try {
+          const response = await axios.get(`/modalidades/${id}`);
+          setNome(response.data.nome);
+          setHistoria(response.data.historia);
+          setPreview(response.data.pictogramaUrl); // Usa a URL existente para o preview
+        } catch (err) {
+          console.error("Erro ao buscar modalidade:", err);
+          setError("Não foi possível carregar os dados da modalidade para edição.");
+        } finally {
+          setLoading(false);
+        }
       };
-      const dadosAtuais = mockModalidades[id];
-      if (dadosAtuais) {
-        setNome(dadosAtuais.nome);
-        setHistoria(dadosAtuais.historia);
-        setPreview(dadosAtuais.pictogramaUrl);
-      } else {
-        setError('Modalidade não encontrada!');
-      }
-      setLoading(false);
+      fetchModalidade();
     }
   }, [id, isEditing]);
 
@@ -47,64 +50,71 @@ function ModalidadeForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  // ✅ 4. Lógica de envio para a API (criar e editar)
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!token) {
+      setError("Autenticação inválida. Por favor, faça login novamente.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
-    // Validação simples
-    if (!nome) {
-      setError('O nome da modalidade é obrigatório.');
-      setLoading(false);
-      return;
+    const formData = new FormData();
+    
+    // Anexa o arquivo do pictograma, se houver um novo
+    if (pictogramaFile) {
+      formData.append('file', pictogramaFile);
     }
 
-    console.log('--- Simulação de Envio ---');
-    console.log('Nome:', nome);
-    console.log('História (HTML):', historia);
-    console.log('Arquivo do Pictograma:', pictogramaFile);
+    // Anexa os dados de texto como um JSON stringificado
+    const dados = { nome, historia };
+    formData.append('dados', JSON.stringify(dados));
 
-    // Simula um tempo de espera para a chamada da API
-    setTimeout(() => {
-      setLoading(false);
-      alert(`Modalidade "${nome}" ${isEditing ? 'atualizada' : 'criada'} com sucesso! (Simulação)`);
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    try {
+      if (isEditing) {
+        // ATUALIZAR (PUT)
+        await axios.put(`/modalidades/${id}`, formData, config);
+        alert(`Modalidade "${nome}" atualizada com sucesso!`);
+      } else {
+        // CRIAR (POST)
+        await axios.post('/modalidades', formData, config);
+        alert(`Modalidade "${nome}" criada com sucesso!`);
+      }
       navigate('/admin/modalidades');
-    }, 1000);
+    } catch (err) {
+      console.error("Erro ao salvar modalidade:", err);
+      setError("Ocorreu um erro ao salvar a modalidade. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   };
   
   if (loading && isEditing) {
     return <div className="pagina-conteudo">Carregando dados da modalidade...</div>;
   }
 
+  // O JSX do formulário permanece o mesmo
   return (
     <div className="pagina-conteudo">
       <div className="content-box">
         <h2>{isEditing ? 'Editar Modalidade' : 'Criar Nova Modalidade'}</h2>
-
         <form onSubmit={handleSubmit} className="atleta-form">
-          {/* Nome da Modalidade */}
           <div className="form-group">
             <label htmlFor="nome">Nome da Modalidade:</label>
-            <input
-              type="text"
-              id="nome"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              required
-              disabled={loading}
-            />
+            <input type="text" id="nome" value={nome} onChange={(e) => setNome(e.target.value)} required disabled={loading} />
           </div>
 
-          {/* Upload do Pictograma */}
           <div className="form-group">
             <label htmlFor="pictograma">Pictograma (PNG/SVG):</label>
-            <input
-              type="file"
-              id="pictograma"
-              onChange={handleFileChange}
-              accept="image/png, image/svg+xml"
-              disabled={loading}
-            />
+            <input type="file" id="pictograma" onChange={handleFileChange} accept="image/png, image/svg+xml" disabled={loading} />
             {preview && (
               <div className="pictograma-preview" style={{ marginTop: '1rem' }}>
                 <p>Pré-visualização:</p>
@@ -113,14 +123,9 @@ function ModalidadeForm() {
             )}
           </div>
 
-          {/* História da Modalidade */}
           <div className="form-group">
             <label>História da Modalidade:</label>
-            <RichTextEditor
-              value={historia}
-              onChange={setHistoria}
-              placeholder="Descreva a história e a importância das mulheres nesta modalidade..."
-            />
+            <RichTextEditor value={historia} onChange={setHistoria} placeholder="Descreva a história e a importância das mulheres nesta modalidade..." />
           </div>
           
           {error && <p className="error-message">{error}</p>}
@@ -129,12 +134,7 @@ function ModalidadeForm() {
             <button type="submit" className="btn-action" disabled={loading}>
               {loading ? 'Salvando...' : (isEditing ? 'Salvar Alterações' : 'Criar Modalidade')}
             </button>
-            <button
-              type="button"
-              className="btn-action btn-secondary"
-              onClick={() => navigate('/admin/modalidades')}
-              disabled={loading}
-            >
+            <button type="button" className="btn-action btn-secondary" onClick={() => navigate('/admin/modalidades')} disabled={loading} >
               Cancelar
             </button>
           </div>

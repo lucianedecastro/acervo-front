@@ -12,18 +12,23 @@ function PaginaInicial() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Buscar atletas (por enquanto todas, depois filtrar por destaque)
-        const atletasResponse = await axios.get('/atletas');
-        setAtletasDestaque(atletasResponse.data.slice(0, 3)); // Primeiras 3 como destaque
-        
-        // Buscar modalidades (mock por enquanto)
-        setModalidades([
-          { id: '1', nome: 'Natação', pictogramaUrl: null, quantidadeAtletas: 12 },
-          { id: '2', nome: 'Atletismo', pictogramaUrl: null, quantidadeAtletas: 8 },
-          { id: '3', nome: 'Ginástica', pictogramaUrl: null, quantidadeAtletas: 5 }
+        // ✅ Faz as duas chamadas à API em paralelo para mais eficiência
+        const [atletasResponse, modalidadesResponse] = await Promise.all([
+          axios.get('/atletas'),
+          axios.get('/modalidades')
         ]);
+        
+        // Pega os 3 primeiros atletas como destaque
+        setAtletasDestaque(atletasResponse.data.slice(0, 3)); 
+        
+        // Pega as modalidades da API
+        setModalidades(modalidadesResponse.data);
+
       } catch (error) {
-        console.error('Erro ao carregar dados:', error);
+        console.error('Erro ao carregar dados da página inicial:', error);
+        // Em caso de erro, define as listas como vazias para não quebrar a página
+        setAtletasDestaque([]);
+        setModalidades([]);
       } finally {
         setLoading(false);
       }
@@ -40,7 +45,7 @@ function PaginaInicial() {
 
   return (
     <div className="pagina-conteudo">
-      {/* 🎯 HERO SECTION - Atletas Destacadas */}
+      {/* Seção de Atletas em Destaque (sem alterações) */}
       <section className="hero-destaques">
         <h2>Atletas em Destaque</h2>
         <div className="destaques-lista">
@@ -55,19 +60,18 @@ function PaginaInicial() {
         </div>
       </section>
 
-      {/* 🏊‍♀️ PREVIEW MODALIDADES */}
+      {/* Seção de Preview de Modalidades (agora com dados reais) */}
       <section className="preview-modalidades">
         <h2>Modalidades</h2>
         <div className="modalidades-grid">
-          {modalidades.map(modalidade => (
+          {modalidades.slice(0, 6).map(modalidade => ( // Mostra até 6 modalidades
             <Link key={modalidade.id} to={`/modalidades/${modalidade.id}`} className="modalidade-preview">
               {modalidade.pictogramaUrl ? (
-                <img src={modalidade.pictogramaUrl} alt={modalidade.nome} />
+                <img src={modalidade.pictogramaUrl} alt={modalidade.nome} style={{ width: '80px', height: '80px', objectFit: 'contain' }} />
               ) : (
-                <div className="pictograma-placeholder">🏊‍♀️</div>
+                <div className="pictograma-placeholder">🏆</div>
               )}
               <h3>{modalidade.nome}</h3>
-              <p>{modalidade.quantidadeAtletas} atletas</p>
             </Link>
           ))}
         </div>
@@ -76,7 +80,7 @@ function PaginaInicial() {
         </Link>
       </section>
 
-      {/* 📖 PREVIEW ANTESSALA */}
+      {/* Seção de Preview da Antessala (sem alterações) */}
       <section className="preview-antessala content-box">
         <h2>Conheça Nossa História</h2>
         <p>Descubra a trajetória do Acervo Carmen Lydia e a importância da preservação da memória das mulheres no esporte brasileiro.</p>
