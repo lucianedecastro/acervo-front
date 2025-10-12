@@ -1,5 +1,3 @@
-// AdminConteudos.jsx (Completo e CORRIGIDO da correção)
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -22,25 +20,11 @@ function AdminConteudos() {
         setLoading(false);
       }
     };
-
     fetchConteudos();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="pagina-conteudo admin-dashboard">
-        <div className="content-box"><p>Carregando conteúdos...</p></div>
-      </div>
-    );
-  }
-  
-  if (error) {
-    return (
-        <div className="pagina-conteudo admin-dashboard">
-          <div className="content-box error-message"><p>{error}</p></div>
-        </div>
-    );
-  }
+  if (loading) return <div className="pagina-conteudo admin-dashboard"><div className="content-box"><p>Carregando conteúdos...</p></div></div>;
+  if (error) return <div className="pagina-conteudo admin-dashboard"><div className="content-box error-message"><p>{error}</p></div></div>;
 
   return (
     <div className="pagina-conteudo admin-dashboard">
@@ -48,19 +32,11 @@ function AdminConteudos() {
         <div className="dashboard-header">
           <h2>Gerenciar Conteúdos</h2>
           <div className="dashboard-actions">
-            
-            <Link to="/admin/conteudos/novo" className="btn-action btn-create">
-              ➕ Criar Novo Conteúdo
-            </Link>
-            
-            <Link to="/admin/dashboard" className="btn-action btn-secondary">
-              Voltar ao Painel
-            </Link>
+            <Link to="/admin/conteudos/editar/novo" className="btn-action btn-create">➕ Criar Novo Conteúdo</Link>
+            <Link to="/admin/dashboard" className="btn-action btn-secondary">Voltar ao Painel</Link>
           </div>
         </div>
-
         <p style={{ margin: '1rem 0' }}>Selecione um bloco de conteúdo para editar o texto correspondente no site.</p>
-
         <div className="table-container">
           <table className="admin-table">
             <thead>
@@ -71,14 +47,14 @@ function AdminConteudos() {
             </thead>
             <tbody>
               {conteudos.map(conteudo => (
-                <tr key={conteudo.slug}>
-                  <td>
-                    <strong>{conteudo.titulo}</strong>
-                  </td>
+                // ✅ CORREÇÃO: A key agora é o ID único.
+                <tr key={conteudo.id}>
+                  <td><strong>{conteudo.titulo}</strong></td>
                   <td>
                     <div className="action-buttons-wrapper">
+                      {/* ✅ CORREÇÃO: O link agora usa o ID, não o slug. */}
                       <Link
-                        to={`/admin/conteudos/${conteudo.slug}`} 
+                        to={`/admin/conteudos/editar/${conteudo.id}`} 
                         className="btn-action btn-edit"
                       >
                         ✏️ Editar
@@ -94,5 +70,4 @@ function AdminConteudos() {
     </div>
   );
 }
-
 export default AdminConteudos;
