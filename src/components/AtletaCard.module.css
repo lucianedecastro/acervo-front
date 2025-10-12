@@ -1,122 +1,70 @@
-/* ============================== */
-/* AtletaCard.module.css */
-/* ============================== */
+/* ==========================================================
+   ATLETACARD.MODULE.CSS — Revisado
+   Correção de pictogramas e imagens estourando do layout
+   ========================================================== */
 
-/* 1. Estrutura e Container Principal */
 .card {
-  max-width: 320px; /* Um pouco maior para melhor proporção */
-  /* min-height: 480px; <-- LINHA REMOVIDA */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden;
-  margin: 0; /* A margem será controlada pelo gap do grid */
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
 }
 
-/* 2. Cabeçalho e Foto Principal */
-.cardHeader {
-  position: relative;
-  padding-bottom: 20px;
-}
-
+/* Imagem da atleta */
 .foto {
   width: 100%;
-  height: 220px; /* Um pouco mais de altura para a foto */
+  max-width: 160px;
+  height: 160px;
   object-fit: cover;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 2px solid #eee;
 }
 
-.infoPrincipal {
-  padding: 0 15px;
-  margin-top: -30px;
-  position: relative; /* Para garantir que fique sobre a imagem */
-  z-index: 2;
+/* Corrige imagens/pictogramas estourando */
+img,
+.foto,
+.pictograma {
+  object-fit: contain;
+  max-width: 100%;
+  height: auto;
 }
 
+/* Nome e detalhes */
 .nome {
-  font-size: 1.4rem;
-  color: var(--cor-primaria);
-  margin: 5px 0;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 2px 8px;
-  border-radius: 4px;
-  display: inline;
-  backdrop-filter: blur(2px);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 0.25rem;
 }
 
 .modalidade {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #555;
-  margin-top: 5px;
-  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
-/* 3. Corpo e Rodapé */
-.cardBody {
-  flex-grow: 1; /* Permite que o corpo ocupe o espaço restante */
-  padding: 0 15px;
-  margin-bottom: 10px;
+/* Botão de ação */
+.link {
+  text-decoration: none;
+  background-color: #e91e63;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
 }
 
-.biografiaResumo {
-  font-size: 0.9rem;
-  color: #444;
-  line-height: 1.5;
-  /* Garante um tamanho de texto consistente */
-  height: 6.75em; /* Aprox. 5 linhas de texto */
-  overflow: hidden;
-}
-
-.cardFooter {
-  padding: 0 15px 15px 15px;
-  text-align: center;
-  margin-top: auto; /* Empurra o rodapé para o final do card */
-}
-
-.btnConheca {
-  background-color: var(--cor-primaria);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  text-transform: uppercase;
-  transition: background-color 0.3s ease;
-  width: 100%;
-}
-
-.btnConheca:hover {
-  opacity: 0.9;
-}
-
-/* 4. Detalhes Expandidos (Sem alterações) */
-.detalhesExpandidos {
-  padding: 15px;
-  border-top: 1px solid #eee;
-  background-color: #f9f9f9;
-}
-.detalhesExpandidos h4 {
-  color: var(--cor-primaria);
-  margin-top: 15px; margin-bottom: 5px;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 3px; font-size: 1.1rem;
-}
-.galeria {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 10px;
-}
-.fotoExpandida img {
-  width: 100%; height: 100px;
-  object-fit: cover;
+.link:hover {
+  background-color: #d81b60;
 }
