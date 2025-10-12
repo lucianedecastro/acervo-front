@@ -12,18 +12,17 @@ function AtletasPage() {
   const [filtroNome, setFiltroNome] = useState('');
   const [filtroModalidade, setFiltroModalidade] = useState('');
   const [atletasFiltradas, setAtletasFiltradas] = useState([]);
-  const [modalidades, setModalidades] = useState([]); // ✅ Agora busca todas as modalidades
+  const [modalidades, setModalidades] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // ✅ Busca as duas listas em paralelo
         const [atletasResponse, modalidadesResponse] = await Promise.all([
           axios.get('/atletas'),
           axios.get('/modalidades')
         ]);
         setAtletas(atletasResponse.data);
-        setModalidades(modalidadesResponse.data.sort((a, b) => a.nome.localeCompare(b.nome))); // Ordena alfabeticamente
+        setModalidades(modalidadesResponse.data.sort((a, b) => a.nome.localeCompare(b.nome)));
       } catch (err) {
         setError('Falha ao carregar dados da página.');
       } finally {
@@ -33,7 +32,20 @@ function AtletasPage() {
     fetchData();
   }, []);
   
-  // ... (o restante do arquivo, incluindo a lógica de filtragem, permanece o mesmo)
+  // ✅ CORREÇÃO: Busca com botão e Enter
+  const handleBuscar = (e) => {
+    if (e) e.preventDefault(); // Previne submit do form
+    // A filtragem já é feita automaticamente pelo useEffect abaixo
+  };
+
+  // ✅ CORREÇÃO: Buscar ao pressionar Enter
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleBuscar();
+    }
+  };
+
+  // Lógica de filtragem (mantida)
   useEffect(() => {
     let resultado = atletas;
     if (filtroNome) {
@@ -55,25 +67,94 @@ function AtletasPage() {
       <h1>Todas as Atletas</h1>
       <p>Conheça as mulheres pioneiras que fizeram história no esporte brasileiro.</p>
       
-      <div className="filtros-container content-box">
+      {/* ✅ CORREÇÃO: Form com submit e botão */}
+      <form onSubmit={handleBuscar} className="filtros-container content-box">
         <div className="form-group-filtro">
           <label htmlFor="busca-nome">Buscar por Nome:</label>
-          <input type="text" id="busca-nome" placeholder="Digite o nome da atleta..." value={filtroNome} onChange={(e) => setFiltroNome(e.target.value)} />
+          <div className="busca-com-botao">
+            <input 
+              type="text" 
+              id="busca-nome" 
+              placeholder="Digite o nome da atleta..." 
+              value={filtroNome} 
+              onChange={(e) => setFiltroNome(e.target.value)}
+              onKeyPress={handleKeyPress} // ✅ Busca com Enter
+            />
+            <button type="submit" className="btn-busca">
+              🔍
+            </button>
+          </div>
         </div>
+        
         <div className="form-group-filtro">
           <label htmlFor="filtro-modalidade">Filtrar por Modalidade:</label>
-          {/* ✅ DROPDOWN AGORA É POPULADO PELA LISTA COMPLETA */}
-          <select id="filtro-modalidade" value={filtroModalidade} onChange={(e) => setFiltroModalidade(e.target.value)}>
+          <select 
+            id="filtro-modalidade" 
+            value={filtroModalidade} 
+            onChange={(e) => setFiltroModalidade(e.target.value)}
+          >
             <option value="">Todas as modalidades</option>
             {modalidades.map(mod => (
               <option key={mod.id} value={mod.nome}>{mod.nome}</option>
             ))}
           </select>
         </div>
+
+        {/* ✅ Botão para limpar filtros */}
+        {(filtroNome || filtroModalidade) && (
+          <div className="form-group-filtro">
+            <button 
+              type="button" 
+              className="btn-action btn-secondary"
+              onClick={() => {
+                setFiltroNome('');
+                setFiltroModalidade('');
+              }}
+            >
+              🗑️ Limpar Filtros
+            </button>
+          </div>
+        )}
+      </form>
+
+      {/* ✅ Contador de resultados */}
+      <div className="resultados-info">
+        <p>
+          {atletasFiltradas.length === 0 ? 'Nenhuma' : atletasFiltradas.length} 
+          atleta(s) encontrada(s)
+          {(filtroNome || filtroModalidade) && ' com os filtros aplicados'}
+        </p>
       </div>
 
+      {/* Lista de atletas */}
       <div className="lista-atletas">
-        {/* ... (o restante do JSX permanece o mesmo) ... */}
+        {atletasFiltradas.length === 0 ? (
+          <div className="content-box">
+            <p>Nenhuma atleta encontrada com os filtros aplicados.</p>
+            {(filtroNome || filtroModalidade) && (
+              <button 
+                className="btn-action"
+                onClick={() => {
+                  setFiltroNome('');
+                  setFiltroModalidade('');
+                }}
+              >
+                Ver Todas as Atletas
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="atletas-grid">
+            {atletasFiltradas.map(atleta => (
+              <AtletaCard 
+                key={atleta.id}
+                atleta={atleta}
+                isExpanded={expandedId === atleta.id}
+                onToggleExpand={handleToggleExpand}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

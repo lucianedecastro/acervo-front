@@ -102,6 +102,12 @@
 }
 
 .btnConheca {
+  display: block; 
+  visibility: visible; 
+  opacity: 1; 
+}
+
+.btnConheca {
     background-color: var(--cor-principal);
     color: white;
     border: none;
