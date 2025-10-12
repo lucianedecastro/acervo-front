@@ -7,13 +7,13 @@ function CarmenLydia() {
   // --- URLs de Imagem (Substitua pelos links reais do seu GCS) ---
   const carmenLydiaImages = [
     // URL 1: Exemplo de uma foto de natação ou recorte de jornal
-    "https://storage.googleapis.com/acervo-carmen-lydia-fotos-prod/carmenlydia.jpg", 
+    "https://storage.googleapis.com/acervo-carmen-lydia-fotos/atletas_imagens/Carmen%20Lydia%20FonFon%201916.jpg", 
     
     // URL 2: Exemplo de uma foto de dança ou de apresentação
-    "https://storage.googleapis.com/acervo-carmen-lydia-fotos-prod/image%20(1).png",
+    "https://storage.googleapis.com/acervo-carmen-lydia-fotos/atletas_imagens/image%20(1).png",
     
     // URL 3: Exemplo de um documento ou foto de época
-    "https://storage.googleapis.com/acervo-carmen-lydia-fotos-prod/Carmen%20Lydia%20FonFon%201916.jpg",
+    "https://storage.googleapis.com/acervo-carmen-lydia-fotos/atletas_imagens/Carmen%20Lydia.jpg",
   ];
 
   return (

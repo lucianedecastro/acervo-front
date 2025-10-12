@@ -11,16 +11,14 @@ function AtletaForm() {
 
   const [atleta, setAtleta] = useState({ nome: '', modalidade: '', biografia: '', competicao: '' });
   const [fotos, setFotos] = useState([]);
-  const [modalidades, setModalidades] = useState([]); // ✅ Estado para a lista de modalidades
+  const [modalidades, setModalidades] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-  // ✅ UseEffect agora busca a atleta E a lista de todas as modalidades
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        // Busca a lista de modalidades para o dropdown
         const modalidadesResponse = await axios.get('/modalidades');
         setModalidades(modalidadesResponse.data);
 
@@ -29,16 +27,14 @@ function AtletaForm() {
           const atletaResponse = await axios.get(`/atletas/${id}`, config);
           const { nome, modalidade, biografia, competicao, fotos: fotosDaApi } = atletaResponse.data;
           setAtleta({ nome, modalidade, biografia, competicao });
+          
           if (fotosDaApi && fotosDaApi.length > 0) {
-            // Corrigido para carregar fotos existentes para edição
             setFotos(fotosDaApi.map(foto => ({
-              id: foto.id, // ID da foto existente
-              url: foto.url, // URL original
-              legenda: foto.legenda || '',
-              ehDestaque: foto.ehDestaque || false,
+              ...foto, // id, url, legenda, ehDestaque já vêm da API
+              localId: foto.id, // Usaremos um ID local para o React, que não será enviado
               preview: foto.url,
-              isExisting: true,
-              file: null, // Sem arquivo para fotos existentes
+              isExisting: true, // Marca como foto existente
+              file: null,
             })));
           }
         }
@@ -49,44 +45,41 @@ function AtletaForm() {
     fetchInitialData();
   }, [id, isEditing, token]);
 
-  // === LÓGICA DE MANIPULAÇÃO DE FOTOS ===
-  const generateUniqueId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
+  // ID temporário APENAS para o controle no React
+  const generateLocalId = () => `new_${Date.now()}_${Math.random()}`;
 
   const handleChange = (e) => setAtleta(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files).map(file => ({
-      id: generateUniqueId(),
+      localId: generateLocalId(),
+      id: null, // ✅ O ID real para a API é nulo
       file: file,
       legenda: '',
       ehDestaque: false,
-      preview: URL.createObjectURL(file), // Cria URL temporária para pré-visualização
+      preview: URL.createObjectURL(file),
       isExisting: false,
       isRemoved: false,
     }));
     setFotos(prev => [...prev, ...newFiles]);
   };
 
-  const handleLegendaChange = (fotoId, legenda) => {
-    setFotos(prev => prev.map(foto => foto.id === fotoId ? { ...foto, legenda } : foto));
+  const handleLegendaChange = (localId, legenda) => {
+    setFotos(prev => prev.map(foto => foto.localId === localId ? { ...foto, legenda } : foto));
   };
 
-  const handleDefinirDestaque = (fotoId) => {
+  const handleDefinirDestaque = (localId) => {
     setFotos(prev => prev.map(foto => ({ 
       ...foto, 
-      ehDestaque: foto.id === fotoId // Marca apenas a selecionada como destaque
+      ehDestaque: foto.localId === localId
     })));
   };
 
-  const handleRemoverFoto = (fotoId) => {
+  const handleRemoverFoto = (localId) => {
     setFotos(prev => 
       prev.map(foto => 
-        foto.id === fotoId && foto.isExisting // Se for existente, marca para remoção (DELETE)
-          ? { ...foto, isRemoved: true } 
-          : foto.id === fotoId && !foto.isExisting // Se for nova, remove do estado
-          ? null 
-          : foto
-      ).filter(Boolean) // Remove as que foram marcadas como null
+        foto.localId === localId ? { ...foto, isRemoved: true } : foto
+      )
     );
   };
 
@@ -98,36 +91,51 @@ function AtletaForm() {
 
     const formData = new FormData();
     
-    // ✅ CORREÇÃO CRÍTICA: Alinhar com AtletaFormDTO.java
+    // ✅ 1. PREPARA A LISTA DE FOTOS PARA A API
     const fotosParaAPI = fotos
-      .filter(foto => !foto.isRemoved) // Ignora as fotos marcadas para remoção
+      .filter(foto => !foto.isRemoved)
       .map(foto => ({
-        id: foto.id, 
+        // Se a foto já existe, envia seu ID numérico. Se for nova, envia null.
+        id: foto.isExisting ? foto.id : null, 
         legenda: foto.legenda, 
         ehDestaque: foto.ehDestaque,
+        // Campos que o DTO do backend usa
         url: foto.isExisting ? foto.url : null,
         isExisting: foto.isExisting,
       }));
 
-    // ✅ CORREÇÃO: Encontrar o ID da foto destaque (em vez do boolean)
-    const fotoDestaque = fotos.find(foto => foto.ehDestaque && !foto.isRemoved);
-    const fotoDestaqueId = fotoDestaque ? fotoDestaque.id : null;
+    // ✅ 2. PREPARA A LISTA DE IDs A SEREM REMOVIDOS
+    // A lista contém APENAS IDs numéricos de fotos que já existiam
+    const fotosRemovidas = fotos
+      .filter(f => f.isRemoved && f.isExisting)
+      .map(f => f.id); 
 
-    // ✅ DADOS CORRIGIDOS: Agora bate com o DTO do backend
+    // ✅ 3. ENCONTRA O ID DA FOTO DESTAQUE
+    const fotoDestaque = fotos.find(foto => foto.ehDestaque && !foto.isRemoved);
+    let fotoDestaqueIdParaApi = null;
+    if (fotoDestaque) {
+        // Se a foto destaque for uma nova, seu ID temporário será enviado.
+        // O backend deve ser capaz de associar isso com os arquivos recebidos.
+        fotoDestaqueIdParaApi = fotoDestaque.isExisting ? fotoDestaque.id.toString() : fotoDestaque.localId;
+    }
+
+
     const dados = { 
       ...atleta, 
       fotos: fotosParaAPI,
-      fotoDestaqueId: fotoDestaqueId, // ✅ ENVIA ID EM VEZ DE BOOLEAN
-      fotosRemovidas: fotos.filter(f => f.isRemoved).map(f => f.id)
+      // O backend espera uma String para o ID da foto destaque, para poder lidar com IDs temporários de novas fotos
+      fotoDestaqueId: fotoDestaqueIdParaApi,
+      fotosRemovidas: fotosRemovidas
     };
 
-    // ✅ DEBUG: Verifique no console o que está sendo enviado
     console.log("📤 Dados para API:", dados);
-
     formData.append('dados', JSON.stringify(dados));
 
-    // Adiciona novos arquivos de foto
-    fotos.filter(foto => foto.file && !foto.isRemoved).forEach(foto => {
+    // Adiciona apenas os arquivos de fotos NOVAS
+    fotos.filter(foto => foto.file && !foto.isRemoved).forEach((foto, index) => {
+      // É crucial que o backend possa relacionar o arquivo com os metadados.
+      // Uma abordagem é enviar o localId como parte do nome do arquivo ou em um header separado.
+      // A abordagem mais simples que pode funcionar é confiar na ordem.
       formData.append('files', foto.file, foto.file.name);
     });
     
@@ -140,17 +148,19 @@ function AtletaForm() {
       } else {
         await axios.post('/atletas', formData, config);
         setSuccess('Atleta criada com sucesso!');
-        navigate('/admin/dashboard');
       }
+      // Redireciona para o painel após um tempo para o usuário ver a mensagem
+      setTimeout(() => navigate('/admin/dashboard'), 1500);
+
     } catch (err) {
-      console.error("❌ Erro ao salvar atleta:", err);
-      setError('Falha ao salvar a atleta. Verifique a conexão e tente novamente.');
+      console.error("❌ Erro ao salvar atleta:", err.response?.data || err);
+      setError('Falha ao salvar a atleta. Verifique os dados e tente novamente.');
     } finally {
       setUploading(false);
     }
   };
 
-  // Filtra as fotos que não foram marcadas para remoção
+  // Filtra as fotos que não foram marcadas para remoção para exibir na tela
   const fotosAtivas = fotos.filter(f => !f.isRemoved);
 
   return (
@@ -208,19 +218,19 @@ function AtletaForm() {
         {fotosAtivas.length > 0 && (
           <div className="galeria-preview-container">
             {fotosAtivas.map(foto => (
-              <div key={foto.id} className="foto-card-admin">
+              <div key={foto.localId} className="foto-card-admin">
                 <img src={foto.preview} alt="Pré-visualização" className="foto-preview" />
                 <input
                   type="text"
                   placeholder="Legenda da foto"
                   value={foto.legenda}
-                  onChange={(e) => handleLegendaChange(foto.id, e.target.value)}
+                  onChange={(e) => handleLegendaChange(foto.localId, e.target.value)}
                   disabled={uploading}
                 />
                 <div className="foto-actions">
                   <button 
                     type="button" 
-                    onClick={() => handleDefinirDestaque(foto.id)}
+                    onClick={() => handleDefinirDestaque(foto.localId)}
                     className={`btn-mini ${foto.ehDestaque ? 'btn-destaque-ativo' : 'btn-destaque'}`}
                     disabled={uploading}
                   >
@@ -228,7 +238,7 @@ function AtletaForm() {
                   </button>
                   <button 
                     type="button" 
-                    onClick={() => handleRemoverFoto(foto.id)}
+                    onClick={() => handleRemoverFoto(foto.localId)}
                     className="btn-mini btn-delete"
                     disabled={uploading}
                   >
