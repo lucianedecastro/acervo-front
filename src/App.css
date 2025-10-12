@@ -1,325 +1,220 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;700;900&display=swap');
 
 :root {
-    /* Variáveis de Cor (Manutenção do esquema Teal/Dourado) */
-    --cor-primaria: #008080; /* Teal/Verde Profundo (Cor de destaque e links) */
-    --cor-secundaria: #FFD700; /* Dourado/Amarelo (Para o botão de Criar) */
-    --cor-texto-principal: #212529; /* Preto forte */
-    --cor-texto-secundario: #495057;
-    --cor-fundo: #f8f9fa; /* Cinza muito claro */
+  /* Variáveis de Cor (Mantido o esquema Teal/Dourado) */
+  --cor-primaria: #008080; /* Teal/Verde Profundo */
+  --cor-secundaria: #FFD700; /* Dourado/Amarelo */
+  --cor-texto-principal: #212529; /* Preto forte */
+  --cor-texto-secundario: #495057;
+  --cor-fundo: #f8f9fa; /* Cinza muito claro */
 
-    /* Fontes: TODAS USAM LIBRE FRANKLIN */
-    --fonte-titulo: 'Libre Franklin', sans-serif;
-    --fonte-corpo: 'Libre Franklin', sans-serif;
+  /* Fontes */
+  --fonte-titulo: 'Libre Franklin', sans-serif;
+  --fonte-corpo: 'Libre Franklin', sans-serif;
 }
 
 body {
-    font-family: var(--fonte-corpo);
-    color: var(--cor-texto-principal);
-    background-color: var(--cor-fundo);
-    margin: 0;
-    text-align: center;
+  font-family: var(--fonte-corpo);
+  color: var(--cor-texto-principal);
+  background-color: var(--cor-fundo);
+  margin: 0;
 }
 
 #root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
 h1, h2, h3, h4 {
-    font-family: var(--fonte-titulo);
-    font-weight: 700;
-    color: var(--cor-texto-principal);
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  color: var(--cor-texto-principal);
 }
 
 /* --- Layout (Header, Main, Footer) --- */
 .app-header {
-    background-color: white;
-    padding: 1rem 2rem;
-    border-bottom: 1px solid #dee2e6;
-    margin-bottom: 2rem;
-    text-align: left;
+  background-color: white;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 2rem;
 }
 
 .app-header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--cor-primaria);
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  text-align: left;
 }
 
 main {
-    padding-bottom: 4rem;
+  padding-bottom: 4rem;
 }
 
 .app-footer {
-    margin-top: 4rem;
-    padding: 2rem;
-    border-top: 1px solid #dee2e6;
-    text-align: center;
-    color: #6c757d;
-    font-size: 0.9rem;
+  margin-top: 4rem;
+  padding: 2rem;
+  border-top: 1px solid #dee2e6;
+  text-align: center;
+  color: #6c757d;
+  font-size: 0.9rem;
 }
 
 .app-footer a {
-    color: var(--cor-primaria);
-    text-decoration: none;
+  color: var(--cor-primaria);
+  text-decoration: none;
 }
 
 /* --- Navegação --- */
 nav {
-    margin-top: 1rem;
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
+  margin-top: 1rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 nav a {
-    color: var(--cor-texto-secundario);
-    text-decoration: none;
-    font-weight: 500; /* Fonte mais leve */
-    font-size: 1rem;
-    padding-bottom: 5px;
-    border-bottom: 2px solid transparent;
-    transition: border-color 0.2s, color 0.2s;
+  color: var(--cor-texto-secundario);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding-bottom: 5px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
 }
 
 nav a:hover {
-    border-bottom-color: var(--cor-primaria);
-    color: var(--cor-primaria);
+  border-bottom-color: var(--cor-primaria);
+  color: var(--cor-primaria);
 }
 
 .logout-button {
-    background-color: #dc3545;
-    border: none;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
+  background-color: #dc3545;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .logout-button:hover {
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
-/* --- Componentes --- */
-
-/* Páginas de Conteúdo (Sobre, Carmen Lydia, etc.) */
+/* --- Estrutura de Conteúdo --- */
 .pagina-conteudo {
-    max-width: 1000px;
-    margin: 0 auto;
-    text-align: left;
-    line-height: 1.6;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+  line-height: 1.6;
 }
 
-/* Caixa de conteúdo padrão */
 .content-box {
-    background-color: white;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background-color: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.pagina-conteudo h3 {
-    margin-top: 2rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
-    color: var(--cor-primaria);
+/* ======================================================= */
+/* 1. SOLUÇÃO: GRID RESPONSIVO UNIFICADO                 */
+/* ======================================================= */
+/* Use a classe .grid-container nos divs que envolvem os cards */
+.grid-container {
+  display: grid;
+  /* Cria colunas que têm no mínimo 300px, preenchendo o espaço */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
 }
 
-.pagina-conteudo a {
-    color: var(--cor-primaria);
-    text-decoration: underline;
-    cursor: pointer;
+/* ======================================================= */
+/* 2. SOLUÇÃO: HARMONIA NA PÁGINA INICIAL                */
+/* ======================================================= */
+.preview-modalidades .grid-container {
+  /* Para as modalidades, as colunas podem ser menores */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
 }
 
-.pagina-conteudo a:hover {
-    color: var(--cor-texto-principal);
+.modalidade-preview {
+  text-align: center;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #eee;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-/* --- Estilo da Página Carmen Lydia (Galeria) --- */
-.lydia-galeria {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
+.modalidade-preview:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.lydia-galeria img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+.modalidade-preview img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 1rem;
 }
 
-/* Card de Atleta (Página Inicial) */
-.lista-atletas {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+.modalidade-preview h3 {
+  font-size: 1rem;
+  margin: 0;
 }
 
-/* Formulários (Login, AtletaForm) */
+/* ======================================================= */
+/* 3. SOLUÇÃO: PICTOGRAMAS NA PÁGINA DE MODALIDADES      */
+/* ======================================================= */
+.modalidade-card .modalidade-pictograma {
+  width: 80px;
+  height: 80px;
+  object-fit: contain; /* Garante que a imagem caiba sem distorcer */
+}
+
+/* --- Outros Estilos (Formulários, Tabelas, etc. - Mantidos) --- */
 .login-form, .atleta-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 600px;
-    text-align: left;
-    margin: 0 auto;
+  display: flex; flex-direction: column; gap: 1rem; max-width: 600px;
+  text-align: left; margin: 0 auto;
 }
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-group input, .form-group textarea, .form-group select {
+  padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;
+  font-family: inherit; font-size: 1rem;
 }
-.form-group input, .form-group textarea {
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 1rem;
-}
-.atleta-form textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; text-align: left; }
+.admin-table th, .admin-table td { border: 1px solid #ddd; padding: 12px; }
 
-/* Painel de Admin */
-.admin-dashboard {
-    width: 100%;
-}
-.dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    text-align: left;
-}
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    text-align: left;
-}
-.admin-table th, .admin-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-}
-.admin-table th {
-    background-color: #f2f2f2;
-    color: var(--cor-texto-principal);
-}
-
-/* --- Botões de Ação --- */
+/* Botões */
 .btn-action {
-    background-color: var(--cor-primaria);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    color: white;
-    cursor: pointer;
-    margin-right: 5px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+  background-color: var(--cor-primaria); border: none; padding: 8px 12px; border-radius: 4px;
+  color: white; cursor: pointer; margin-right: 5px; font-size: 0.9rem;
+  font-weight: 500; text-decoration: none; transition: all 0.2s;
 }
-.btn-action:hover {
-    opacity: 0.9;
-}
-.btn-action.btn-edit {
-    background-color: white;
-    border: 1px solid var(--cor-primaria);
-    color: var(--cor-primaria);
-}
-.btn-action.btn-edit:hover {
-    background-color: var(--cor-primaria);
-    color: white;
-    opacity: 1;
-}
-.btn-action.btn-create {
-    background-color: var(--cor-secundaria);
-    color: var(--cor-texto-principal);
-    font-weight: 700;
-}
-.btn-action.btn-delete {
-    background-color: #dc3545;
-}
-.btn-action.btn-secondary {
-    background-color: #6c757d;
-}
+.btn-action:hover { opacity: 0.9; }
+.btn-action.btn-create { background-color: var(--cor-secundaria); color: var(--cor-texto-principal); font-weight: 700; }
+.btn-action.btn-delete { background-color: #dc3545; }
+.btn-action.btn-secondary { background-color: #6c757d; }
 
-/* ESTILOS PARA SISTEMA DE GALERIA DE FOTOS */
-.galeria-preview { margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
-.galeria-preview h4 { margin: 0 0 1rem 0; color: var(--cor-primaria); font-size: 1.1rem; }
-.grid-fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
-.foto-item { border: 2px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; background: white; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-.foto-item:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-.foto-item.destaque { border-color: var(--cor-secundaria); background: #fff9e6; box-shadow: 0 0 0 2px var(--cor-secundaria); }
-.foto-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6; }
-.foto-actions { display: flex; gap: 0.5rem; margin: 0.75rem 0; flex-direction: column; }
-.btn-destaque, .btn-remover { border: 1px solid #ced4da; padding: 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.2s ease; }
-.btn-destaque { background: #e9ecef; }
-.btn-destaque:hover { background: #dee2e6; }
-.btn-destaque.ativo { background: var(--cor-secundaria); border-color: var(--cor-secundaria); color: var(--cor-texto-principal); font-weight: 700; }
-.btn-remover { background: #f8d7da; color: #721c24; }
-.btn-remover:hover { background: #f1aeb5; }
-.input-legenda { width: 100%; padding: 0.5rem; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.8rem; }
-.fotoBadge, .destaqueBadge { color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-left: 0.5rem; }
-.fotoBadge { background: var(--cor-primaria); }
-.fotoDestaque { border: 3px solid var(--cor-secundaria) !important; }
-.destaqueBadge { color: var(--cor-secundaria); font-weight: 700; }
-.galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-.fotoExpandida { text-align: center; }
-.fotoExpandida img { width: 100%; height: 200px; object-fit: cover; border-radius: 6px; }
-.legenda { margin-top: 0.75rem; font-size: 0.875rem; color: var(--cor-texto-secundario); font-style: italic; }
-.info-message, .success-message, .error-message { padding: 0.75rem; border-radius: 4px; margin: 1rem 0; font-size: 0.9rem; }
-.info-message { background: #e3f2fd; border: 1px solid #bbdefb; color: #1565c0; }
-.success-message { background: #e8f5e8; border: 1px solid #c8e6c9; color: #2e7d32; }
-.error-message { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; }
-
-/* ESTILOS DA PÁGINA INICIAL */
-.hero-destaques { margin-bottom: 3rem; }
-.preview-modalidades { margin: 3rem 0; text-align: center; }
-.modalidades-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-.modalidade-preview { text-align: center; padding: 1.5rem; background: white; border-radius: 8px; text-decoration: none; color: inherit; border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; display: block; }
-.modalidade-preview:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.modalidade-preview .pictograma-placeholder { font-size: 3rem; margin-bottom: 1rem; display: block; }
-.preview-antessala { text-align: center; padding: 2rem; }
-
-/* ESTILOS PARA O DASHBOARD ADMIN */
-.dashboard-navigation { margin: 2.5rem 0; padding-top: 2rem; border-top: 1px solid #eee; }
-.admin-dashboard h3 { margin-top: 0; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #eee; color: var(--cor-primaria); }
-.nav-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
-.nav-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: var(--cor-texto-principal); transition: all 0.2s ease; text-align: center; }
-.nav-card:hover { border-color: var(--cor-primaria); background-color: white; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-.nav-card-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-.nav-card-title { font-weight: 500; font-size: 1rem; }
-.nav-card.disabled { background-color: #e9ecef; color: #adb5bd; cursor: not-allowed; border-color: transparent; }
-.nav-card.disabled:hover { transform: none; box-shadow: none; }
-
-/* ESTILOS PARA FILTROS DE BUSCA */
+/* Filtros */
 .filtros-container { display: flex; gap: 1.5rem; margin-bottom: 2rem; padding: 1.5rem; flex-wrap: wrap; }
 .form-group-filtro { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 250px; }
 .form-group-filtro label { font-weight: 500; color: var(--cor-texto-secundario); }
-.form-group-filtro input, .form-group-filtro select { padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 1rem; width: 100%; }
+.form-group-filtro input, .form-group-filtro select { padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; width: 100%; }
 
-/* ======================================================= */
-/* ESTILOS PARA RESPONSIVIDADE                           */
-/* ======================================================= */
-.nav-toggle { display: none; background: none; border: 1px solid var(--cor-primaria); color: var(--cor-primaria); font-size: 1.5rem; border-radius: 4px; cursor: pointer; position: absolute; top: 1rem; right: 2rem; z-index: 1001; height: 44px; width: 44px; }
+/* Responsividade */
+.nav-toggle { display: none; background: none; border: 1px solid var(--cor-primaria); color: var(--cor-primaria); font-size: 1.5rem; cursor: pointer; position: absolute; top: 1rem; right: 2rem; z-index: 1001; height: 44px; width: 44px; }
 
 @media (max-width: 900px) {
   .app-header { position: relative; }
@@ -327,168 +222,10 @@ nav a:hover {
   .nav-toggle { display: block; }
   nav { display: none; flex-direction: column; align-items: flex-start; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: white; padding: 6rem 2rem 2rem; z-index: 1000; }
   nav.nav-open { display: flex; }
-  nav a { font-size: 1.2rem; }
   .table-container { overflow-x: auto; width: 100%; }
-  .admin-table { min-width: 600px; }
-  .filtros-container { flex-direction: column; gap: 1rem; }
 }
 
 @media (max-width: 480px) {
   #root { padding: 0 1rem; }
-  .app-header { padding: 1rem; }
-  .nav-toggle { top: 0.5rem; right: 1rem; }
   .content-box { padding: 1.5rem; }
-}
-
-/* ======================================================= */
-/* CORREÇÕES PARA OS PROBLEMAS DO CHECKLIST               */
-/* ======================================================= */
-
-/* ------------------------------------- */
-/* 1. CORREÇÃO: PICTOGRAMAS NA MODALIDADES PAGE */
-/* ------------------------------------- */
-.modalidades-container .pictograma {
-  max-width: 80px !important;
-  max-height: 80px !important;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-}
-
-/* Container para pictogramas na ModalidadesPage */
-.pictograma-container {
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  overflow: hidden;
-}
-
-/* ------------------------------------- */
-/* 2. CORREÇÃO: BOX DE BUSCA CONSISTENTE */
-/* ------------------------------------- */
-.busca-com-botao {
-  display: flex;
-  gap: 8px;
-  align-items: stretch;
-}
-
-.busca-com-botao input {
-  flex: 1;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.btn-busca {
-  background: var(--cor-primaria);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  min-width: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-busca:hover {
-  background: var(--cor-primaria);
-  opacity: 0.9;
-}
-
-/* ------------------------------------- */
-/* 3. CORREÇÃO: LAYOUT PÁGINA INICIAL - ATLETAS MAIORES */
-/* ------------------------------------- */
-.destaques-lista {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  margin: 2rem 0;
-}
-
-/* Aumentar cards de atleta na página inicial */
-.hero-destaques .card {
-  max-width: 100% !important;
-  min-height: 520px !important;
-}
-
-/* ------------------------------------- */
-/* 4. CORREÇÃO: MODALIDADES MENORES NA PÁGINA INICIAL */
-/* ------------------------------------- */
-.preview-modalidades .modalidades-grid {
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-}
-
-.preview-modalidades .modalidade-preview {
-  padding: 1rem;
-}
-
-.preview-modalidades .modalidade-preview img {
-  width: 60px !important;
-  height: 60px !important;
-}
-
-.preview-modalidades .pictograma-placeholder {
-  font-size: 2rem !important;
-  margin-bottom: 0.5rem;
-}
-
-.preview-modalidades h3 {
-  font-size: 0.9rem;
-  margin: 0.5rem 0 0 0;
-}
-
-/* ------------------------------------- */
-/* 5. CORREÇÃO: GRID DE ATLETAS CONSISTENTE */
-/* ------------------------------------- */
-.atletas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin: 2rem 0;
-}
-
-/* ------------------------------------- */
-/* 6. CORREÇÃO: INFO DE RESULTADOS */
-/* ------------------------------------- */
-.resultados-info {
-  margin: 15px 0;
-  font-style: italic;
-  color: #666;
-  text-align: center;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 4px;
-}
-
-/* ------------------------------------- */
-/* 7. CORREÇÃO: GALERIA DE FOTOS NO ATLETACARD */
-/* ------------------------------------- */
-.galeria {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.fotoExpandida {
-  width: 100%;
-  height: 120px;
-  overflow: hidden;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.fotoExpandida img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }

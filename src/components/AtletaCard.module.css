@@ -2,196 +2,121 @@
 /* AtletaCard.module.css */
 /* ============================== */
 
-/* ------------------------------------- */
 /* 1. Estrutura e Container Principal */
-/* ------------------------------------- */
 .card {
-    /* Define uma largura mínima e máxima para manter uniformidade no grid */
-    max-width: 300px; 
-    min-height: 480px; /* Garante que todos os cards tenham a mesma altura */
-    display: flex;
-    flex-direction: column;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden; /* Importante para que a imagem não vaze */
-    margin: 10px;
+  max-width: 320px; /* Um pouco maior para melhor proporção */
+  /* min-height: 480px; <-- LINHA REMOVIDA */
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  margin: 0; /* A margem será controlada pelo gap do grid */
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* ------------------------------------- */
 /* 2. Cabeçalho e Foto Principal */
-/* ------------------------------------- */
 .cardHeader {
-    position: relative;
-    padding-bottom: 20px; /* Espaço para o texto que fica abaixo da imagem */
+  position: relative;
+  padding-bottom: 20px;
 }
 
 .foto {
-    /* AJUSTE CRÍTICO: Padronização da Imagem */
-    width: 100%;
-    height: 200px; /* Altura fixa para uniformidade */
-    object-fit: cover; /* Recorta para preencher o container sem distorcer */
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+  width: 100%;
+  height: 220px; /* Um pouco mais de altura para a foto */
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .infoPrincipal {
-    padding: 0 15px;
-    margin-top: -30px; /* Sobe o texto um pouco para sobrepor a foto */
+  padding: 0 15px;
+  margin-top: -30px;
+  position: relative; /* Para garantir que fique sobre a imagem */
+  z-index: 2;
 }
 
 .nome {
-    font-size: 1.5rem;
-    color: var(--cor-principal);
-    margin: 5px 0;
+  font-size: 1.4rem;
+  color: var(--cor-primaria);
+  margin: 5px 0;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline;
+  backdrop-filter: blur(2px);
 }
 
 .modalidade {
-    font-size: 1rem;
-    color: #666;
-    margin-top: 0;
+  font-size: 1rem;
+  color: #555;
+  margin-top: 5px;
+  font-weight: 500;
 }
 
-.atleta {
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: white;
-    background-color: var(--cor-secundaria-escura);
-    padding: 3px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    margin-bottom: 5px;
-}
-
-.fotoBadge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: bold;
-}
-
-/* ------------------------------------- */
 /* 3. Corpo e Rodapé */
-/* ------------------------------------- */
 .cardBody {
-    flex-grow: 1; /* Permite que o corpo ocupe o espaço restante */
-    padding: 0 15px;
-    margin-bottom: 10px;
+  flex-grow: 1; /* Permite que o corpo ocupe o espaço restante */
+  padding: 0 15px;
+  margin-bottom: 10px;
 }
 
 .biografiaResumo {
-    font-size: 0.9rem;
-    color: #444;
-    line-height: 1.4;
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.5;
+  /* Garante um tamanho de texto consistente */
+  height: 6.75em; /* Aprox. 5 linhas de texto */
+  overflow: hidden;
 }
 
 .cardFooter {
-    padding: 0 15px 15px 15px;
-    text-align: center;
+  padding: 0 15px 15px 15px;
+  text-align: center;
+  margin-top: auto; /* Empurra o rodapé para o final do card */
 }
 
 .btnConheca {
-  display: block; 
-  visibility: visible; 
-  opacity: 1; 
-}
-
-.btnConheca {
-    background-color: var(--cor-principal);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
-    width: 100%;
+  background-color: var(--cor-primaria);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 .btnConheca:hover {
-    background-color: var(--cor-principal-escura);
+  opacity: 0.9;
 }
 
-/* ------------------------------------- */
-/* 4. Detalhes Expandidos */
-/* ------------------------------------- */
+/* 4. Detalhes Expandidos (Sem alterações) */
 .detalhesExpandidos {
-    padding: 15px;
-    border-top: 1px solid #eee;
-    background-color: #f9f9f9;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9;
 }
-
 .detalhesExpandidos h4 {
-    color: var(--cor-secundaria);
-    margin-top: 15px;
-    margin-bottom: 5px;
-    border-bottom: 2px solid var(--cor-secundaria-clara);
-    padding-bottom: 3px;
-    font-size: 1.1rem;
+  color: var(--cor-primaria);
+  margin-top: 15px; margin-bottom: 5px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 3px; font-size: 1.1rem;
 }
-
-.detalhesExpandidos p {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin-bottom: 10px;
-}
-
 .galeria {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
 }
-
-.fotoExpandida {
-    width: 100px;
-    height: 100px;
-    overflow: hidden;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-}
-
 .fotoExpandida img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Garantir que as fotos da galeria não distorçam */
-}
-
-.legenda {
-    font-size: 0.75rem;
-    color: #555;
-    text-align: center;
-    margin-top: 5px;
-}
-
-.destaqueBadge {
-    background-color: gold;
-    color: black;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-size: 0.65rem;
-    margin-left: 5px;
-}
-
-.semFotos {
-    padding: 10px;
-    background-color: #ffebeb;
-    color: #c90000;
-    border: 1px solid #c90000;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    margin-top: 10px;
+  width: 100%; height: 100px;
+  object-fit: cover;
 }
