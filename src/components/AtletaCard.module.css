@@ -1,70 +1,120 @@
+
 /* ==========================================================
-   ATLETACARD.MODULE.CSS — Revisado
-   Correção de pictogramas e imagens estourando do layout
+   ATLETACARD.MODULE.CSS — Alinhado com o novo App.css
    ========================================================== */
 
 .card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  padding: 1rem;
+  background-color: var(--cor-fundo-branco);
+  border-radius: var(--raio-borda);
+  box-shadow: var(--sombra-card);
+  overflow: hidden;
+  transition: var(--transicao-padrao);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-8px);
+  box-shadow: var(--sombra-card-hover);
 }
 
-/* Imagem da atleta */
-.foto {
+.imageWrapper {
+  position: relative;
+  padding-top: 133.33%; /* Proporção 3:4 */
+}
+
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 160px;
-  height: 160px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-  border: 2px solid #eee;
+  object-position: center;
 }
 
-/* Corrige imagens/pictogramas estourando */
-img,
-.foto,
-.pictograma {
-  object-fit: contain;
-  max-width: 100%;
-  height: auto;
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
 }
 
-/* Nome e detalhes */
-.nome {
+.headerText {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem;
+  color: var(--cor-fundo-branco);
+}
+
+.name {
+  font-family: var(--fonte-titulos);
+  font-size: 2rem;
+  font-weight: var(--peso-bold);
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.modality {
+  color: var(--cor-amarelo-ouro);
+  font-weight: var(--peso-bold);
   font-size: 1.1rem;
-  font-weight: 600;
-  color: #111;
+  font-family: var(--fonte-corpo);
+}
+
+.content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.bio {
+  color: var(--cor-texto-secundario);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.achievements {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.achievementsTitle {
+  font-weight: var(--peso-bold);
+  color: var(--cor-texto-principal);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.achievementsList {
+  list-style-position: inside;
+  font-size: 0.9rem;
+  color: var(--cor-texto-secundario);
+}
+
+.achievementsList li {
   margin-bottom: 0.25rem;
 }
 
-.modalidade {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 0.5rem;
+.viewProfileButton {
+  width: 100%;
+  margin-top: 1.5rem;
+  background-color: var(--cor-verde-bandeira);
+  color: var(--cor-fundo-branco);
+  font-weight: var(--peso-bold);
+  font-size: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: calc(var(--raio-borda) / 2);
+  border: none;
+  text-align: center;
+  transition: var(--transicao-padrao);
 }
 
-/* Botão de ação */
-.link {
-  text-decoration: none;
-  background-color: #e91e63;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
-}
-
-.link:hover {
-  background-color: #d81b60;
+.viewProfileButton:hover {
+    background-color: #007d2f; /* Verde mais escuro */
+    transform: scale(1.02);
 }
