@@ -31,7 +31,7 @@ function AtletaForm() {
           if (fotosDaApi && fotosDaApi.length > 0) {
             setFotos(fotosDaApi.map(foto => ({
               ...foto,
-              localId: foto.id, // Usa o ID numérico como ID local para fotos existentes
+              localId: foto.id,
               preview: foto.url,
               isExisting: true,
               file: null,
@@ -45,7 +45,6 @@ function AtletaForm() {
     fetchInitialData();
   }, [id, isEditing, token]);
 
-  // ID temporário APENAS para o controle no React
   const generateLocalId = () => `new_${Date.now()}_${Math.random()}`;
 
   const handleChange = (e) => setAtleta(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -53,7 +52,7 @@ function AtletaForm() {
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files).map(file => ({
       localId: generateLocalId(),
-      id: null, // ID real para API é nulo para fotos novas
+      id: null,
       file: file,
       legenda: '',
       ehDestaque: false,
@@ -83,7 +82,6 @@ function AtletaForm() {
     );
   };
 
-  // ✅ FUNÇÃO CORRIGIDA PARA CORRESPONDER AO BACKEND
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
@@ -96,16 +94,13 @@ function AtletaForm() {
     const fotosParaAPI = fotos
       .filter(foto => !foto.isRemoved)
       .map(foto => ({
-        // Se a foto existe, converte seu ID numérico para String. Se for nova, usa o localId (que já é string).
         id: foto.isExisting ? foto.id.toString() : foto.localId, 
         legenda: foto.legenda, 
         ehDestaque: foto.ehDestaque,
         url: foto.isExisting ? foto.url : null,
-        // Envia o nome do arquivo para fotos novas, como esperado pelo backend.
         filename: foto.isExisting ? null : foto.file.name
       }));
 
-    // Lista de IDs numéricos para remoção (corresponde a List<Long> no DTO)
     const fotosRemovidas = fotos
       .filter(f => f.isRemoved && f.isExisting)
       .map(f => f.id); 
@@ -113,7 +108,6 @@ function AtletaForm() {
     const fotoDestaque = fotos.find(foto => foto.ehDestaque && !foto.isRemoved);
     let fotoDestaqueIdParaApi = null;
     if (fotoDestaque) {
-        // Usa o mesmo ID (em formato string) que será enviado na lista de fotos
         fotoDestaqueIdParaApi = fotoDestaque.isExisting ? fotoDestaque.id.toString() : fotoDestaque.localId;
     }
 
@@ -124,10 +118,9 @@ function AtletaForm() {
       fotosRemovidas: fotosRemovidas
     };
 
-    console.log("📤 Dados para API (CORRIGIDO):", dados);
+    console.log("📤 Dados para API (Versão Final Corrigida):", dados);
     formData.append('dados', JSON.stringify(dados));
 
-    // Adiciona os arquivos de FOTOS NOVAS ao FormData
     fotos.filter(foto => foto.file && !foto.isRemoved).forEach(foto => {
       formData.append('files', foto.file, foto.file.name);
     });
@@ -145,7 +138,6 @@ function AtletaForm() {
       setTimeout(() => navigate('/admin/dashboard'), 1500);
 
     } catch (err) {
-      // Tenta extrair a mensagem de erro específica do backend para dar um feedback melhor
       const errorMessage = err.response?.data?.message || 'Falha ao salvar a atleta. Verifique os dados e tente novamente.';
       console.error("❌ Erro ao salvar atleta:", err.response?.data || err);
       setError(errorMessage);
@@ -154,7 +146,6 @@ function AtletaForm() {
     }
   };
 
-  // Filtra as fotos que não foram marcadas para remoção para exibir na tela
   const fotosAtivas = fotos.filter(f => !f.isRemoved);
 
   return (
@@ -165,7 +156,6 @@ function AtletaForm() {
 
       <form onSubmit={handleSubmit} className="atleta-form content-box">
         
-        {/* CAMPOS DE TEXTO */}
         <div className="form-group">
           <label>Nome:</label>
           <input type="text" name="nome" value={atleta.nome} onChange={handleChange} required disabled={uploading}/>
@@ -191,7 +181,6 @@ function AtletaForm() {
           <input type="text" name="competicao" value={atleta.competicao} onChange={handleChange} disabled={uploading}/>
         </div>
 
-        {/* UPLOAD DE ARQUIVOS */}
         <div className="form-group file-upload-section">
           <h3>Galeria de Fotos</h3>
           <label htmlFor="foto-upload" className="btn-action btn-secondary" style={{ display: 'inline-block', cursor: 'pointer' }}>
@@ -208,7 +197,6 @@ function AtletaForm() {
           />
         </div>
 
-        {/* PRÉ-VISUALIZAÇÃO DE FOTOS E CONTROLES */}
         {fotosAtivas.length > 0 && (
           <div className="galeria-preview-container">
             {fotosAtivas.map(foto => (
@@ -244,7 +232,6 @@ function AtletaForm() {
           </div>
         )}
 
-        {/* BOTÕES DE AÇÃO */}
         <div className="form-actions">
           <button type="submit" className="btn-action" disabled={uploading || !atleta.nome || !atleta.modalidade}>
             {uploading ? 'Processando...' : (isEditing ? 'Salvar Alterações' : 'Criar Atleta')}
