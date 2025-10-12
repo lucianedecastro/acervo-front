@@ -19,13 +19,8 @@
     
     /* Tipografia com a fonte Poppins */
     --fonte-principal: 'Poppins', sans-serif;
-    --peso-regular: 400;
-    --peso-medio: 500;
-    --peso-semibold: 600;
-    --peso-bold: 700;
-    --peso-extrabold: 900;
 
-    /* Efeitos Visuais (Sombras, Bordas, Transições) */
+    /* Efeitos Visuais */
     --raio-borda: 0.75rem; /* 12px */
     --sombra-card: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
     --sombra-card-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.05);
@@ -36,9 +31,7 @@
    2. ESTILOS DE BASE E RESET
    ========================================================================== */
 
-*,
-*::before,
-*::after {
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -53,8 +46,6 @@ body {
     background-color: var(--cor-fundo-claro);
     color: var(--cor-texto-principal);
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 img, svg {
@@ -63,99 +54,72 @@ img, svg {
     display: block;
 }
 
-:focus {
-    outline: none;
-}
-:focus-visible {
-    outline: 2px solid var(--cor-azul-profundo);
-    outline-offset: 2px;
-}
-
-
 /* ==========================================================================
-   3. LAYOUTS E COMPONENTES GLOBAIS
+   3. LAYOUTS E GRIDS RESPONSIVOS
    ========================================================================== */
 
-/* Container */
-.container {
-    width: 100%;
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
-
-@media (min-width: 640px) {
-    .container {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
-}
-
-/* Header Override */
-header {
-    border-bottom: 1px solid var(--cor-borda-suave);
-}
-
-/* Hero Section */
-.hero-section {
-    position: relative;
-    padding: 6rem 0;
-    color: white;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 60vh;
-}
-
-.hero-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: rgba(20, 25, 40, 0.8); /* Overlay mais escuro e azulado */
-    z-index: 1;
-}
-
-.hero-section .container {
-    position: relative;
-    z-index: 2;
-}
-
-.hero-section .highlight {
-    color: var(--cor-amarelo-ouro);
-    font-weight: var(--peso-extrabold);
-    text-shadow: 0 0 8px rgba(255, 223, 0, 0.5);
-}
-
-/* Grid de Atletas */
+/* Grid de Atletas (Página Inicial) */
 .atletas-grid {
   display: grid;
   gap: 1.5rem;
-  grid-template-columns: 1fr;
-  justify-items: center; /* Centraliza os cards no grid */
+  /* Padrão Mobile: 1 coluna */
+  grid-template-columns: 1fr; 
 }
 
-/* Grid de Modalidades */
+/* Grid de Modalidades (Página Inicial) */
 .modalidades-grid {
   display: grid;
   gap: 1rem;
+  /* Padrão Mobile: Mínimo de 120px, preenche o espaço */
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
 }
 
+/* ==========================================================================
+   4. COMPONENTES ESTILIZADOS
+   ========================================================================== */
+
+/* AJUSTE: Garante que os pictogramas não "estourem" o layout do card */
+.modality-card svg {
+    width: 3.5rem;   /* Tamanho consistente */
+    height: 3.5rem;
+    margin: 0 auto 0.75rem; /* Centraliza o ícone */
+    color: var(--cor-texto-secundario);
+    transition: var(--transicao-padrao);
+}
+
+.modality-card:hover svg {
+    color: var(--cor-verde-bandeira);
+    transform: scale(1.1);
+}
+
+/* AJUSTE: Garante harmonia e alinhamento vertical nos cards de atletas */
+.athlete-card {
+    display: flex;
+    flex-direction: column;
+    /* Essencial para que todos os cards em uma linha tenham a mesma altura */
+    height: 100%; 
+    transition: var(--transicao-padrao);
+}
+
+.athlete-card .card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Faz esta área crescer para preencher o espaço */
+    padding: 1.5rem;
+}
+
+.athlete-card .card-achievements {
+    margin-top: auto; /* Empurra as conquistas para o final do card */
+}
 
 /* ==========================================================================
-   4. MEDIA QUERIES (Abordagem Mobile-First)
+   5. MEDIA QUERIES (Abordagem Mobile-First)
    ========================================================================== */
 
 /* Para Tablets (e telas maiores) */
 @media (min-width: 768px) {
-    .hero-section {
-        padding: 8rem 0;
-    }
     .atletas-grid {
+        /* Layout de 2 colunas para tablets */
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
     }
@@ -167,6 +131,7 @@ header {
 /* Para Desktops (e telas maiores) */
 @media (min-width: 1024px) {
     .atletas-grid {
+        /* Layout de 3 colunas para desktops, criando um visual mais dinâmico */
         grid-template-columns: repeat(3, 1fr);
     }
 }

@@ -1,41 +1,53 @@
 /* ============================== */
-/* AthleteCard.module.css */
+/* AtletaCard.module.css */
 /* ============================== */
 
 /* ------------------------------------- */
 /* 1. Estrutura e Container Principal */
 /* ------------------------------------- */
 .card {
-    width: 100%;
-    max-width: 380px;
     display: flex;
     flex-direction: column;
-    background: var(--cor-fundo-branco);
-    border-radius: var(--raio-borda);
-    box-shadow: var(--sombra-card);
-    transition: var(--transicao-padrao);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
-    border: 1px solid var(--cor-borda-suave);
 }
 
 .card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--sombra-card-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* ------------------------------------- */
 /* 2. Cabeçalho e Foto Principal */
 /* ------------------------------------- */
 .cardHeader {
-    flex-shrink: 0;
+    position: relative;
 }
 
 .foto {
     width: 100%;
-    height: 280px; 
-    object-fit: cover; 
-    object-position: center top;
-    background-color: var(--cor-fundo-claro);
+    height: 220px;
+    object-fit: cover;
+}
+
+.infoPrincipal {
+    padding: 1rem 1.5rem;
+}
+
+.nome {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--cor-texto-principal);
+    margin: 0;
+}
+
+.modalidade {
+    font-size: 1rem;
+    color: var(--cor-texto-secundario);
+    margin-top: 0.25rem;
 }
 
 /* ------------------------------------- */
@@ -43,35 +55,14 @@
 /* ------------------------------------- */
 .cardBody {
     flex-grow: 1;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.infoPrincipal {
-    margin-bottom: 1rem;
-}
-
-.nome {
-    font-size: 1.375rem;
-    font-weight: var(--peso-bold);
-    color: var(--cor-texto-principal);
-    margin-bottom: 0.125rem;
-    line-height: 1.2;
-}
-
-.modalidade {
-    font-size: 0.95rem;
-    font-weight: var(--peso-semibold);
-    color: var(--cor-verde-bandeira);
+    padding: 0 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .biografiaResumo {
-    font-size: 0.95rem;
-    color: var(--cor-texto-secundario);
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    flex-grow: 1;
+    font-size: 0.9rem;
+    color: #4A5568;
+    line-height: 1.5;
 }
 
 .cardFooter {
@@ -79,22 +70,25 @@
     margin-top: auto;
 }
 
+/* AJUSTE: Garantindo que o botão tenha uma cor de fundo visível por padrão */
 .btnConheca {
-    background-color: transparent;
-    color: var(--cor-verde-bandeira);
-    border: 2px solid var(--cor-verde-bandeira);
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-weight: var(--peso-bold);
-    text-transform: uppercase;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
+    display: block;
     width: 100%;
-    text-align: center;
+    /* Usa a variável global --cor-azul-profundo, mas se ela falhar,
+      usa a cor #002776 como alternativa. Isso garante a visibilidade.
+    */
+    background-color: var(--cor-azul-profundo, #002776);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
 }
 
 .btnConheca:hover {
-    background-color: var(--cor-verde-bandeira);
-    color: white;
+    /* Usando uma cor diretamente mais escura para o efeito hover */
+    background-color: #001f5c; 
 }
