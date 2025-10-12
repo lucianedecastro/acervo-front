@@ -1,120 +1,100 @@
+/* ============================== */
+/* AthleteCard.module.css */
+/* ============================== */
 
-/* ==========================================================
-   ATLETACARD.MODULE.CSS — Alinhado com o novo App.css
-   ========================================================== */
-
+/* ------------------------------------- */
+/* 1. Estrutura e Container Principal */
+/* ------------------------------------- */
 .card {
-  background-color: var(--cor-fundo-branco);
-  border-radius: var(--raio-borda);
-  box-shadow: var(--sombra-card);
-  overflow: hidden;
-  transition: var(--transicao-padrao);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    background: var(--cor-fundo-branco);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
+    transition: var(--transicao-padrao);
+    overflow: hidden;
+    border: 1px solid var(--cor-borda-suave);
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--sombra-card-hover);
+    transform: translateY(-8px);
+    box-shadow: var(--sombra-card-hover);
 }
 
-.imageWrapper {
-  position: relative;
-  padding-top: 133.33%; /* Proporção 3:4 */
+/* ------------------------------------- */
+/* 2. Cabeçalho e Foto Principal */
+/* ------------------------------------- */
+.cardHeader {
+    flex-shrink: 0;
 }
 
-.image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+.foto {
+    width: 100%;
+    height: 280px; 
+    object-fit: cover; 
+    object-position: center top;
+    background-color: var(--cor-fundo-claro);
 }
 
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
+/* ------------------------------------- */
+/* 3. Corpo e Rodapé */
+/* ------------------------------------- */
+.cardBody {
+    flex-grow: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
 }
 
-.headerText {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 1.5rem;
-  color: var(--cor-fundo-branco);
+.infoPrincipal {
+    margin-bottom: 1rem;
 }
 
-.name {
-  font-family: var(--fonte-titulos);
-  font-size: 2rem;
-  font-weight: var(--peso-bold);
-  line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+.nome {
+    font-size: 1.375rem;
+    font-weight: var(--peso-bold);
+    color: var(--cor-texto-principal);
+    margin-bottom: 0.125rem;
+    line-height: 1.2;
 }
 
-.modality {
-  color: var(--cor-amarelo-ouro);
-  font-weight: var(--peso-bold);
-  font-size: 1.1rem;
-  font-family: var(--fonte-corpo);
+.modalidade {
+    font-size: 0.95rem;
+    font-weight: var(--peso-semibold);
+    color: var(--cor-verde-bandeira);
 }
 
-.content {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+.biografiaResumo {
+    font-size: 0.95rem;
+    color: var(--cor-texto-secundario);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    flex-grow: 1;
 }
 
-.bio {
-  color: var(--cor-texto-secundario);
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
+.cardFooter {
+    padding: 0 1.5rem 1.5rem;
+    margin-top: auto;
 }
 
-.achievements {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid var(--cor-borda-suave);
+.btnConheca {
+    background-color: transparent;
+    color: var(--cor-verde-bandeira);
+    border: 2px solid var(--cor-verde-bandeira);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: var(--peso-bold);
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
 }
 
-.achievementsTitle {
-  font-weight: var(--peso-bold);
-  color: var(--cor-texto-principal);
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-
-.achievementsList {
-  list-style-position: inside;
-  font-size: 0.9rem;
-  color: var(--cor-texto-secundario);
-}
-
-.achievementsList li {
-  margin-bottom: 0.25rem;
-}
-
-.viewProfileButton {
-  width: 100%;
-  margin-top: 1.5rem;
-  background-color: var(--cor-verde-bandeira);
-  color: var(--cor-fundo-branco);
-  font-weight: var(--peso-bold);
-  font-size: 1rem;
-  padding: 0.8rem 1rem;
-  border-radius: calc(var(--raio-borda) / 2);
-  border: none;
-  text-align: center;
-  transition: var(--transicao-padrao);
-}
-
-.viewProfileButton:hover {
-    background-color: #007d2f; /* Verde mais escuro */
-    transform: scale(1.02);
+.btnConheca:hover {
+    background-color: var(--cor-verde-bandeira);
+    color: white;
 }
