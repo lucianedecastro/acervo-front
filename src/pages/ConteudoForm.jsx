@@ -9,13 +9,16 @@ function ConteudoForm() {
   const navigate = useNavigate();
   const { token } = useAuth(); 
   
-  // Define o modo baseado no slug
+  // Define o modo baseado no slug da URL
   const isCreating = slug === 'novo';
   const isEditing = !isCreating;
 
+  // ESTADOS
   const [titulo, setTitulo] = useState('');
   const [conteudo, setConteudo] = useState('');
-  const [loading, setLoading] = useState(isEditing); // Começa carregando se estiver editando
+  // ✅ NOVO ESTADO: Armazena o slug APENAS para o input na criação.
+  const [slugInput, setSlugInput] = useState(''); 
+  const [loading, setLoading] = useState(isEditing); 
   const [error, setError] = useState(null);
 
   // ✅ Lógica atualizada para buscar dados reais da API (APENAS SE ESTIVER EDITANDO)
@@ -27,6 +30,8 @@ function ConteudoForm() {
           const response = await axios.get(`/conteudos/${slug}`);
           setTitulo(response.data.titulo);
           setConteudo(response.data.conteudoHTML);
+          // Em edição, o slug é fixo e não é editável
+          setSlugInput(slug); 
         } catch (err) {
           console.error("Erro ao buscar conteúdo:", err);
           setError(`Não foi possível carregar o conteúdo com slug '${slug}' para edição.`);
@@ -48,17 +53,22 @@ function ConteudoForm() {
       setError("Autenticação inválida. Faça login novamente.");
       return;
     }
+    
+    // Validação do SLUG na Criação
+    if (isCreating && !slugInput) {
+      setError("O campo Slug é obrigatório para criar um novo conteúdo.");
+      return;
+    }
+    
     setLoading(true);
     setError(null);
 
-    // O nome da propriedade deve ser 'conteudoHTML' para bater com o DTO do backend
-    // Nota: No modo Criação, você precisará de um campo para inserir o SLUG também!
+    // O DTO completo agora exige o 'slug' (corrigido no backend na última iteração)
     const dados = { 
       titulo, 
       conteudoHTML: conteudo,
-      // Se estiver criando, o slug será gerado no backend ou inserido no form
-      // Por enquanto, usamos o slug da URL se estiver editando
-      slug: isEditing ? slug : undefined 
+      // ✅ CORREÇÃO CHAVE: Usa o slug da URL na edição, e o slug do input na criação
+      slug: isEditing ? slug : slugInput
     }; 
 
     const config = {
@@ -72,15 +82,13 @@ function ConteudoForm() {
         alert(`Conteúdo "${titulo}" salvo com sucesso!`);
       } else {
         // CRIAR (POST)
-        // Para CRIAR, o backend deve receber { titulo, conteudoHTML, slug } 
-        // O slug precisa ser gerado no backend ou inserido no frontend
-        await axios.post('/conteudos', dados, config); // Assumindo que o POST recebe o mesmo DTO
+        await axios.post('/conteudos', dados, config); 
         alert(`Conteúdo "${titulo}" criado com sucesso!`);
       }
       navigate('/admin/conteudos');
     } catch (err) {
       console.error("Erro ao salvar conteúdo:", err);
-      setError("Ocorreu um erro ao salvar o conteúdo. Verifique se o slug já existe.");
+      setError("Ocorreu um erro ao salvar o conteúdo. Verifique se o Slug já existe e tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -90,11 +98,10 @@ function ConteudoForm() {
     return <div className="pagina-conteudo">Carregando conteúdo para edição...</div>;
   }
 
-  // O JSX do formulário, ajustado para o título e adicionar o campo SLUG (necessário para a criação)
   return (
     <div className="pagina-conteudo">
       <div className="content-box">
-        <h2>{isEditing ? 'Editar Conteúdo:' : 'Criar Novo Conteúdo'} <span style={{ color: 'var(--cor-primaria)' }}>{titulo}</span></h2>
+        <h2>{isEditing ? 'Editar Conteúdo:' : 'Criar Novo Conteúdo'} <span style={{ color: 'var(--cor-primaria)' }}>{isEditing ? titulo : ''}</span></h2>
         <form onSubmit={handleSubmit} className="atleta-form">
           
           <div className="form-group">
@@ -105,8 +112,15 @@ function ConteudoForm() {
           {isCreating && (
             <div className="form-group">
               <label htmlFor="slug">Slug (URL Identificador, ex: 'sobre-o-projeto'):</label>
-              {/* Nota: Você deve adicionar o estado 'slug' na lista de states e gerenciar seu input */}
-              <input type="text" id="slug" value={slug === 'novo' ? '' : slug} onChange={(e) => navigate(`/admin/conteudos/novo?slug=${e.target.value}`)} required disabled={loading} />
+              {/* ✅ CORRIGIDO: Agora usa o estado slugInput */}
+              <input 
+                type="text" 
+                id="slug" 
+                value={slugInput} 
+                onChange={(e) => setSlugInput(e.target.value)} 
+                required 
+                disabled={loading} 
+              />
             </div>
           )}
 
