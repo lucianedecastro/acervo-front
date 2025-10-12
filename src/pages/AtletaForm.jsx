@@ -30,10 +30,10 @@ function AtletaForm() {
           
           if (fotosDaApi && fotosDaApi.length > 0) {
             setFotos(fotosDaApi.map(foto => ({
-              ...foto, // id, url, legenda, ehDestaque já vêm da API
-              localId: foto.id, // Usaremos um ID local para o React, que não será enviado
+              ...foto,
+              localId: foto.id, // Usa o ID numérico como ID local para fotos existentes
               preview: foto.url,
-              isExisting: true, // Marca como foto existente
+              isExisting: true,
               file: null,
             })));
           }
@@ -53,7 +53,7 @@ function AtletaForm() {
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files).map(file => ({
       localId: generateLocalId(),
-      id: null, // ✅ O ID real para a API é nulo
+      id: null, // ID real para API é nulo para fotos novas
       file: file,
       legenda: '',
       ehDestaque: false,
@@ -83,6 +83,7 @@ function AtletaForm() {
     );
   };
 
+  // ✅ FUNÇÃO CORRIGIDA PARA CORRESPONDER AO BACKEND
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
@@ -91,51 +92,43 @@ function AtletaForm() {
 
     const formData = new FormData();
     
-    // ✅ 1. PREPARA A LISTA DE FOTOS PARA A API
+    // Mapeia o objeto do frontend para corresponder EXATAMENTE ao FotoDTO.java
     const fotosParaAPI = fotos
       .filter(foto => !foto.isRemoved)
       .map(foto => ({
-        // Se a foto já existe, envia seu ID numérico. Se for nova, envia null.
-        id: foto.isExisting ? foto.id : null, 
+        // Se a foto existe, converte seu ID numérico para String. Se for nova, usa o localId (que já é string).
+        id: foto.isExisting ? foto.id.toString() : foto.localId, 
         legenda: foto.legenda, 
         ehDestaque: foto.ehDestaque,
-        // Campos que o DTO do backend usa
         url: foto.isExisting ? foto.url : null,
-        isExisting: foto.isExisting,
+        // Envia o nome do arquivo para fotos novas, como esperado pelo backend.
+        filename: foto.isExisting ? null : foto.file.name
       }));
 
-    // ✅ 2. PREPARA A LISTA DE IDs A SEREM REMOVIDOS
-    // A lista contém APENAS IDs numéricos de fotos que já existiam
+    // Lista de IDs numéricos para remoção (corresponde a List<Long> no DTO)
     const fotosRemovidas = fotos
       .filter(f => f.isRemoved && f.isExisting)
       .map(f => f.id); 
 
-    // ✅ 3. ENCONTRA O ID DA FOTO DESTAQUE
     const fotoDestaque = fotos.find(foto => foto.ehDestaque && !foto.isRemoved);
     let fotoDestaqueIdParaApi = null;
     if (fotoDestaque) {
-        // Se a foto destaque for uma nova, seu ID temporário será enviado.
-        // O backend deve ser capaz de associar isso com os arquivos recebidos.
+        // Usa o mesmo ID (em formato string) que será enviado na lista de fotos
         fotoDestaqueIdParaApi = fotoDestaque.isExisting ? fotoDestaque.id.toString() : fotoDestaque.localId;
     }
-
 
     const dados = { 
       ...atleta, 
       fotos: fotosParaAPI,
-      // O backend espera uma String para o ID da foto destaque, para poder lidar com IDs temporários de novas fotos
       fotoDestaqueId: fotoDestaqueIdParaApi,
       fotosRemovidas: fotosRemovidas
     };
 
-    console.log("📤 Dados para API:", dados);
+    console.log("📤 Dados para API (CORRIGIDO):", dados);
     formData.append('dados', JSON.stringify(dados));
 
-    // Adiciona apenas os arquivos de fotos NOVAS
-    fotos.filter(foto => foto.file && !foto.isRemoved).forEach((foto, index) => {
-      // É crucial que o backend possa relacionar o arquivo com os metadados.
-      // Uma abordagem é enviar o localId como parte do nome do arquivo ou em um header separado.
-      // A abordagem mais simples que pode funcionar é confiar na ordem.
+    // Adiciona os arquivos de FOTOS NOVAS ao FormData
+    fotos.filter(foto => foto.file && !foto.isRemoved).forEach(foto => {
       formData.append('files', foto.file, foto.file.name);
     });
     
@@ -149,12 +142,13 @@ function AtletaForm() {
         await axios.post('/atletas', formData, config);
         setSuccess('Atleta criada com sucesso!');
       }
-      // Redireciona para o painel após um tempo para o usuário ver a mensagem
       setTimeout(() => navigate('/admin/dashboard'), 1500);
 
     } catch (err) {
+      // Tenta extrair a mensagem de erro específica do backend para dar um feedback melhor
+      const errorMessage = err.response?.data?.message || 'Falha ao salvar a atleta. Verifique os dados e tente novamente.';
       console.error("❌ Erro ao salvar atleta:", err.response?.data || err);
-      setError('Falha ao salvar a atleta. Verifique os dados e tente novamente.');
+      setError(errorMessage);
     } finally {
       setUploading(false);
     }
