@@ -64,7 +64,8 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
   const imagemUrl = getFotoCard();
   
   return (
-    <div className={styles.card}>
+    // ✅ CORREÇÃO APLICADA AQUI: Adiciona a classe .expanded condicionalmente
+    <div className={`${styles.card} ${isExpanded ? styles.expanded : ''}`}>
       <div className={styles.cardHeader}>
         <img 
           src={imagemUrl}
@@ -98,6 +99,8 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
         </button>
       </div>
 
+      {/* A estrutura para o conteúdo expandido já estava perfeita.
+          Agora ela será animada pelo CSS. */}
       {isExpanded && (
         <div className={styles.detalhesExpandidos}>
           <h4>Biografia Completa</h4>
