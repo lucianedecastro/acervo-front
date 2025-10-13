@@ -59,6 +59,7 @@ h2:first-child {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--cor-primaria);
+    margin-bottom: 1rem; 
 }
 
 main {
