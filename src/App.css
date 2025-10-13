@@ -46,14 +46,12 @@ h2:first-child {
 
 /* --- Layout (Header, Main, Footer) --- */
 .app-header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
     background-color: white;
     padding: 1rem 2rem;
     border-bottom: 1px solid #dee2e6;
     margin-bottom: 2rem;
+     
+    text-align: center; 
 }
 
 .app-header h1 {
@@ -87,12 +85,11 @@ main section {
 
 /* --- Navegação --- */
 nav {
+    margin-top: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
-    width: 100%; /* Ocupa a largura para centralizar corretamente em telas maiores */
-    margin-top: 1rem;
 }
 
 /* Em telas de desktop, o menu fica na mesma linha do título */
@@ -537,4 +534,18 @@ nav a:hover {
     margin: 1.5rem auto;  /* Centraliza a imagem e adiciona espaço vertical */
     border-radius: 8px;   /* Adiciona bordas arredondadas para um visual suave */
     box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Adiciona uma sombra sutil */
+}
+
+/* ======================================================= */
+/* CORREÇÃO FINAL E ASSERTIVA PARA O MENU DESKTOP          */
+/* ======================================================= */
+
+/* Esta regra força a barra de navegação a ocupar 100% da largura 
+  do cabeçalho e a centralizar seus links internos.
+  Isso resolve o problema de alinhamento de forma definitiva.
+*/
+.app-header nav {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
