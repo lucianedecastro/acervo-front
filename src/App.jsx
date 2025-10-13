@@ -16,12 +16,13 @@ import AtletaForm from './pages/AtletaForm';
 import PaginaInicial from './pages/PaginaInicial';
 import ModalidadesPage from './pages/ModalidadesPage';
 import ModalidadeDetailPage from './pages/ModalidadeDetailPage';
-import AntessalaPage from './pages/AntessalaPage'; // O import pode ser removido depois
+// ✅ AÇÃO: Import da Antessala REMOVIDO para consertar o build
+// import AntessalaPage from './pages/AntessalaPage'; 
 import ContatoPage from './pages/ContatoPage';
 import AtletasPage from './pages/AtletasPage';
 import AdminModalidades from './pages/AdminModalidades';
 import ModalidadeForm from './pages/ModalidadeForm';
-// ✅ AÇÃO: Imports de Conteúdo comentados para desativar
+// Imports de Conteúdo já estavam comentados, o que está correto
 // import AdminConteudos from './pages/AdminConteudos';
 // import ConteudoForm from './pages/ConteudoForm';
 
@@ -52,10 +53,6 @@ function Layout() {
           <Link to="/" onClick={closeMenu}>Página Inicial</Link>
           <Link to="/atletas" onClick={closeMenu}>Atletas</Link>
           <Link to="/modalidades" onClick={closeMenu}>Modalidades</Link>
-          
-          {/* ✅ AÇÃO: Link para Antessala removido do menu de navegação */}
-          {/* <Link to="/antessala" onClick={closeMenu}>Antessala</Link> */}
-          
           <Link to="/contato" onClick={closeMenu}>Contato</Link>
           <Link to="/sobre" onClick={closeMenu}>Sobre</Link>
           {token && <Link to="/admin/dashboard" onClick={closeMenu}>Painel Admin</Link>}
@@ -84,7 +81,7 @@ function App() {
             <Route path="modalidades" element={<ModalidadesPage />} />
             <Route path="modalidades/:id" element={<ModalidadeDetailPage />} />
             
-            {/* ✅ AÇÃO: Rota da Antessala comentada para desativar a página */}
+            {/* Rota da Antessala já estava comentada, o que está correto */}
             {/* <Route path="antessala" element={<AntessalaPage />} /> */}
             
             <Route path="contato" element={<ContatoPage />} />
@@ -95,16 +92,14 @@ function App() {
             {/* Rotas de Admin Protegidas */}
             <Route path="admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             
-            {/* Gerenciar Atletas */}
             <Route path="admin/atletas/novo" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
             <Route path="admin/atletas/editar/:id" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
             
-            {/* Gerenciar Modalidades */}
             <Route path="admin/modalidades" element={<ProtectedRoute><AdminModalidades /></ProtectedRoute>} />
             <Route path="admin/modalidades/novo" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
             <Route path="admin/modalidades/editar/:id" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
 
-            {/* ✅ AÇÃO: Rotas para Conteúdos comentadas para desativar o módulo */}
+            {/* Rotas para Conteúdos já estavam comentadas, o que está correto */}
             {/*
             <Route path="admin/conteudos" element={<ProtectedRoute><AdminConteudos /></ProtectedRoute>} />
             <Route path="admin/conteudos/editar/:id" element={<ProtectedRoute><ConteudoForm /></ProtectedRoute>} />
