@@ -372,7 +372,6 @@ nav a:hover {
 @media (max-width: 900px) {
   .app-header { 
     position: relative; 
-    /* ✅ CORREÇÃO: Força o alinhamento lado a lado do título e do botão do menu */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -382,14 +381,13 @@ nav a:hover {
   .app-header h1 { 
       font-size: 1.2rem; 
       max-width: calc(100% - 60px); 
-      margin-bottom: 0; /* Remove a margem do título no mobile para alinhar com o botão */
+      margin-bottom: 0;
   }
   
   .nav-toggle { 
-      display: block; /* Mostra o botão do menu hambúrguer */
+      display: block;
   }
   
-  /* ✅ CORREÇÃO CRÍTICA: Torna a regra mais específica para garantir que o menu comece escondido */
   .app-header nav { 
       display: none; 
       flex-direction: column; 
@@ -405,7 +403,6 @@ nav a:hover {
       justify-content: flex-start; 
   }
   
-  /* ✅ CORREÇÃO: Torna a regra mais específica para mostrar o menu quando aberto */
   .app-header nav.nav-open { 
       display: flex; 
   }
@@ -417,194 +414,82 @@ nav a:hover {
       border-bottom: 1px solid #eee;
   }
 
-  .table-container { overflow-x: auto; width: 100%; }
-  .admin-table { min-width: 600px; }
-  .filtros-container { flex-direction: column; gap: 1rem; }
+   .table-container { 
+      overflow-x: auto; 
+      width: 100%; 
+  }
+
+  .admin-table { 
+      min-width: 600px; 
+  }
+
+  .filtros-container { 
+      flex-direction: column; 
+      gap: 1rem; 
+  }
+
+  .form-group-filtro { 
+      min-width: 100%; 
+  }
+
+  .galeria { 
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+  }
+
+  .lydia-galeria { 
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+  }
+
+  .fotoExpandida img { 
+      height: auto; 
+  }
+
+  .btn-action { 
+      padding: 10px 14px; 
+      font-size: 1rem; 
+  }
+
+  .pagina-conteudo { 
+      padding: 1rem; 
+  }
 }
 
-/* Ajustes finos para celulares pequenos */
+/* 🔧 CORREÇÃO URGENTE DE RESPONSIVIDADE */
 @media (max-width: 480px) {
-  #root { padding: 0 1rem; }
-  .app-header { padding: 1rem; }
-  .nav-toggle { top: 1rem; right: 1rem; } 
-  .content-box { padding: 1.5rem; }
-}
+  h2 {
+    font-size: 1.5rem;
+  }
 
+  nav a {
+    font-size: 1.1rem;
+    padding: 0.75rem 0;
+  }
 
-/* ======================================================= */
-/* CORREÇÕES PARA OS PROBLEMAS DO CHECKLIST                */
-/* ======================================================= */
-
-/* ------------------------------------- */
-/* 1. CORREÇÃO: PICTOGRAMAS NA MODALIDADES PAGE */
-/* ------------------------------------- */
-.modalidades-container .pictograma {
-  max-width: 80px !important;
-  max-height: 80px !important;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-}
-
-.pictograma-container {
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  overflow: hidden;
-}
-
-/* ------------------------------------- */
-/* 2. CORREÇÃO: BOX DE BUSCA CONSISTENTE */
-/* ------------------------------------- */
-.busca-com-botao {
-  display: flex;
-  gap: 8px;
-  align-items: stretch;
-}
-
-.busca-com-botao input {
-  flex: 1;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.btn-busca {
-  background: var(--cor-primaria);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  min-width: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-busca:hover {
-  background: var(--cor-primaria);
-  opacity: 0.9;
-}
-
-/* ------------------------------------- */
-/* 3. CORREÇÃO: LAYOUT PÁGINA INICIAL - ATLETAS MAIORES */
-/* ------------------------------------- */
-.destaques-lista {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  margin: 2rem 0;
-}
-
-.hero-destaques .card {
-  max-width: 100% !important;
-  min-height: 520px !important;
-}
-
-/* ------------------------------------- */
-/* 4. CORREÇÃO: MODALIDADES MENORES NA PÁGINA INICIAL */
-/* ------------------------------------- */
-.preview-modalidades .modalidades-grid {
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-}
-
-.preview-modalidades .modalidade-preview {
-  padding: 1rem;
-}
-
-.preview-modalidades .modalidade-preview img {
-  width: 60px !important;
-  height: 60px !important;
-}
-
-.preview-modalidades .pictograma-placeholder {
-  font-size: 2rem !important;
-  margin-bottom: 0.5rem;
-}
-
-.preview-modalidades h3 {
-  font-size: 0.9rem;
-  margin: 0.5rem 0 0 0;
-}
-
-/* ------------------------------------- */
-/* 5. CORREÇÃO: GRID DE ATLETAS CONSISTENTE */
-/* ------------------------------------- */
-.atletas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin: 2rem 0;
-}
-
-/* ------------------------------------- */
-/* 6. CORREÇÃO: INFO DE RESULTADOS */
-/* ------------------------------------- */
-.resultados-info {
-  margin: 15px 0;
-  font-style: italic;
-  color: #666;
-  text-align: center;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 4px;
-}
-
-/* ------------------------------------- */
-/* 7. CORREÇÃO: GALERIA DE FOTOS NO ATLETACARD */
-/* ------------------------------------- */
-.galeria {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.fotoExpandida {
-  width: 100%;
-  height: 120px;
-  overflow: hidden;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.fotoExpandida img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* ======================================================= */
-/* ESTILOS PARA IMAGENS DENTRO DE CONTEÚDO RICO (NOVO)     */
-/* ======================================================= */
-
-.conteudo-rico img {
-    max-width: 100%;      /* A imagem nunca será mais larga que o container pai */
-    height: auto;         /* Mantém a proporção da imagem */
-    display: block;       /* Remove espaços extras abaixo da imagem */
-    margin: 1.5rem auto;  /* Centraliza a imagem e adiciona espaço vertical */
-    border-radius: 8px;   /* Adiciona bordas arredondadas para um visual suave */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Adiciona uma sombra sutil */
-}
-
-/* ======================================================= */
-/* CORREÇÃO FINAL E ASSERTIVA PARA O MENU DESKTOP          */
-/* ======================================================= */
-
-/* Esta regra força a barra de navegação a ocupar 100% da largura 
-  do cabeçalho e a centralizar seus links internos.
-  Isso resolve o problema de alinhamento de forma definitiva.
-*/
-.app-header nav {
+  .btn-action {
     width: 100%;
-    display: flex;
-    justify-content: center;
+    text-align: center;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .atleta-form, .login-form {
+    width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .modalidades-grid,
+  .lydia-galeria,
+  .galeria {
+    grid-template-columns: 1fr;
+  }
 }
+
+/* Garantia de que o conteúdo não fica atrás do menu mobile */
+body.nav-open-active {
+  overflow: hidden;
+}
+
+/* FIM DO CSS */

@@ -10,6 +10,14 @@ function PaginaInicial() {
   const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
+    // 🔹 Adiciona classe ao body apenas enquanto esta página estiver montada
+    document.body.classList.add('pagina-inicial');
+    return () => {
+      document.body.classList.remove('pagina-inicial');
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         // Faz as duas chamadas à API em paralelo para mais eficiência
