@@ -85,14 +85,14 @@ main section {
 
 /* --- Navegação --- */
 nav {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
 }
 
-/* Em telas de desktop, o menu fica na mesma linha do título */
+
 @media (min-width: 900px) {
     nav {
         width: auto; /* Permite que o menu se ajuste ao conteúdo */
