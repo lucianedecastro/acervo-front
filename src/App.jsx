@@ -97,9 +97,12 @@ function App() {
             <Route path="admin/modalidades/novo" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
             <Route path="admin/modalidades/editar/:id" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
 
-            {/* ✅ NOVAS ROTAS PARA CONTEÚDOS */}
+            /*{/* NOVAS ROTAS PARA CONTEÚDOS */}
             <Route path="admin/conteudos" element={<ProtectedRoute><AdminConteudos /></ProtectedRoute>} />
-            <Route path="admin/conteudos/editar/:slug" element={<ProtectedRoute><ConteudoForm /></ProtectedRoute>} />
+            {/* A rota de criação é '/editar/novo', que é capturada pela rota abaixo */}
+            <Route path="admin/conteudos/editar/:id" element={<ProtectedRoute><ConteudoForm /></ProtectedRoute>} />
+
+            
 
           </Route>
         </Routes>

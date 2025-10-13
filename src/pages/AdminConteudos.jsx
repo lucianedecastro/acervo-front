@@ -1,27 +1,56 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../AuthContext'; 
 
 function AdminConteudos() {
+  const { token } = useAuth(); 
   const [conteudos, setConteudos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchConteudos = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/conteudos');
+      setConteudos(response.data);
+    } catch (err) {
+      console.error("Erro ao buscar conteúdos:", err);
+      setError("Não foi possível carregar a lista de conteúdos.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchConteudos = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get('/conteudos');
-        setConteudos(response.data);
-      } catch (err) {
-        console.error("Erro ao buscar conteúdos:", err);
-        setError("Não foi possível carregar a lista de conteúdos.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchConteudos();
   }, []);
+
+  
+  const handleDelete = async (conteudoId, conteudoTitulo) => {
+    if (window.confirm(`Tem certeza que deseja excluir o conteúdo "${conteudoTitulo}"?`)) {
+      if (!token) {
+        alert("Erro de autenticação. Faça login novamente.");
+        return;
+      }
+      try {
+        const config = {
+          headers: { 'Authorization': `Bearer ${token}` }
+        };
+        // Usa o ID para deletar
+        await axios.delete(`/conteudos/${conteudoId}`, config);
+        
+        // Atualiza a lista na tela imediatamente
+        setConteudos(conteudos.filter(c => c.id !== conteudoId));
+        alert('Conteúdo excluído com sucesso!');
+        
+      } catch (err) {
+        console.error("Erro ao excluir conteúdo:", err);
+        alert('Ocorreu um erro ao excluir o conteúdo.');
+      }
+    }
+  };
+
 
   if (loading) return <div className="pagina-conteudo admin-dashboard"><div className="content-box"><p>Carregando conteúdos...</p></div></div>;
   if (error) return <div className="pagina-conteudo admin-dashboard"><div className="content-box error-message"><p>{error}</p></div></div>;
@@ -47,18 +76,26 @@ function AdminConteudos() {
             </thead>
             <tbody>
               {conteudos.map(conteudo => (
-                // ✅ CORREÇÃO: A key agora é o ID único.
                 <tr key={conteudo.id}>
                   <td><strong>{conteudo.titulo}</strong></td>
                   <td>
                     <div className="action-buttons-wrapper">
-                      {/* ✅ CORREÇÃO: O link agora usa o ID, não o slug. */}
+                      
                       <Link
                         to={`/admin/conteudos/editar/${conteudo.id}`} 
                         className="btn-action btn-edit"
                       >
                         ✏️ Editar
                       </Link>
+
+                      
+                      <button
+                        className="btn-action btn-delete"
+                        onClick={() => handleDelete(conteudo.id, conteudo.titulo)}
+                      >
+                        🗑️ Excluir
+                      </button>
+
                     </div>
                   </td>
                 </tr>
