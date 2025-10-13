@@ -16,13 +16,14 @@ import AtletaForm from './pages/AtletaForm';
 import PaginaInicial from './pages/PaginaInicial';
 import ModalidadesPage from './pages/ModalidadesPage';
 import ModalidadeDetailPage from './pages/ModalidadeDetailPage';
-import AntessalaPage from './pages/AntessalaPage';
+import AntessalaPage from './pages/AntessalaPage'; // O import pode ser removido depois
 import ContatoPage from './pages/ContatoPage';
 import AtletasPage from './pages/AtletasPage';
 import AdminModalidades from './pages/AdminModalidades';
 import ModalidadeForm from './pages/ModalidadeForm';
-import AdminConteudos from './pages/AdminConteudos';   // ✅ IMPORTAR
-import ConteudoForm from './pages/ConteudoForm';     // ✅ IMPORTAR
+// ✅ AÇÃO: Imports de Conteúdo comentados para desativar
+// import AdminConteudos from './pages/AdminConteudos';
+// import ConteudoForm from './pages/ConteudoForm';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -51,7 +52,10 @@ function Layout() {
           <Link to="/" onClick={closeMenu}>Página Inicial</Link>
           <Link to="/atletas" onClick={closeMenu}>Atletas</Link>
           <Link to="/modalidades" onClick={closeMenu}>Modalidades</Link>
-          <Link to="/antessala" onClick={closeMenu}>Antessala</Link>
+          
+          {/* ✅ AÇÃO: Link para Antessala removido do menu de navegação */}
+          {/* <Link to="/antessala" onClick={closeMenu}>Antessala</Link> */}
+          
           <Link to="/contato" onClick={closeMenu}>Contato</Link>
           <Link to="/sobre" onClick={closeMenu}>Sobre</Link>
           {token && <Link to="/admin/dashboard" onClick={closeMenu}>Painel Admin</Link>}
@@ -79,7 +83,10 @@ function App() {
             <Route path="atletas" element={<AtletasPage />} />
             <Route path="modalidades" element={<ModalidadesPage />} />
             <Route path="modalidades/:id" element={<ModalidadeDetailPage />} />
-            <Route path="antessala" element={<AntessalaPage />} />
+            
+            {/* ✅ AÇÃO: Rota da Antessala comentada para desativar a página */}
+            {/* <Route path="antessala" element={<AntessalaPage />} /> */}
+            
             <Route path="contato" element={<ContatoPage />} />
             <Route path="sobre" element={<Sobre />} />
             <Route path="carmen-lydia" element={<CarmenLydia />} />
@@ -97,13 +104,12 @@ function App() {
             <Route path="admin/modalidades/novo" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
             <Route path="admin/modalidades/editar/:id" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
 
-            /*{/* NOVAS ROTAS PARA CONTEÚDOS */}
+            {/* ✅ AÇÃO: Rotas para Conteúdos comentadas para desativar o módulo */}
+            {/*
             <Route path="admin/conteudos" element={<ProtectedRoute><AdminConteudos /></ProtectedRoute>} />
-            {/* A rota de criação é '/editar/novo', que é capturada pela rota abaixo */}
             <Route path="admin/conteudos/editar/:id" element={<ProtectedRoute><ConteudoForm /></ProtectedRoute>} />
-
+            */}
             
-
           </Route>
         </Routes>
       </AuthProvider>

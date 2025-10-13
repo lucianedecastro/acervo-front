@@ -18,7 +18,6 @@ body {
     color: var(--cor-texto-principal);
     background-color: var(--cor-fundo);
     margin: 0;
-    /* --- MELHORIA ESTRUTURAL: Garante que o texto comece alinhado à esquerda por padrão --- */
     text-align: left;
 }
 
@@ -34,7 +33,6 @@ h1, h2, h3, h4 {
     color: var(--cor-texto-principal);
 }
 
-/* --- MELHORIA ESTRUTURAL: Espaçamento consistente para títulos de seção --- */
 h2 {
     font-size: 2rem;
     margin-top: 3rem;
@@ -66,7 +64,6 @@ main {
     padding-bottom: 4rem;
 }
 
-/* --- MELHORIA ESTRUTURAL: Espaçamento vertical entre seções em todas as páginas --- */
 main section {
     margin-bottom: 3.5rem;
 }
@@ -91,14 +88,14 @@ nav {
     display: flex;
     gap: 1.5rem;
     align-items: center;
-    /* --- MELHORIA ESTRUTURAL: Garante que o menu se centralize se houver espaço --- */
-    justify-content: flex-start;
+    /* ✅ CORREÇÃO: Centraliza os links do menu para uma distribuição harmoniosa no desktop. */
+    justify-content: center;
 }
 
 nav a {
     color: var(--cor-texto-secundario);
     text-decoration: none;
-    font-weight: 500; /* Fonte mais leve */
+    font-weight: 500;
     font-size: 1rem;
     padding-bottom: 5px;
     border-bottom: 2px solid transparent;
@@ -126,8 +123,6 @@ nav a:hover {
 }
 
 /* --- Componentes --- */
-
-/* Páginas de Conteúdo (Sobre, Carmen Lydia, etc.) */
 .pagina-conteudo {
     max-width: 1000px;
     margin: 0 auto;
@@ -135,7 +130,6 @@ nav a:hover {
     line-height: 1.6;
 }
 
-/* Caixa de conteúdo padrão */
 .content-box {
     background-color: white;
     border: 1px solid #eee;
@@ -161,7 +155,6 @@ nav a:hover {
     color: var(--cor-texto-principal);
 }
 
-/* --- Estilo da Página Carmen Lydia (Galeria) --- */
 .lydia-galeria {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -177,7 +170,6 @@ nav a:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Card de Atleta (Página Inicial) */
 .lista-atletas {
     display: flex;
     flex-direction: column;
@@ -317,7 +309,6 @@ nav a:hover {
 .modalidade-preview { text-align: center; padding: 1.5rem; background: white; border-radius: 8px; text-decoration: none; color: inherit; border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; display: block; }
 .modalidade-preview:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .modalidade-preview .pictograma-placeholder { font-size: 3rem; margin-bottom: 1rem; display: block; }
-.preview-antessala { text-align: center; padding: 2rem; }
 
 /* ESTILOS PARA O DASHBOARD ADMIN */
 .dashboard-navigation { margin: 2.5rem 0; padding-top: 2rem; border-top: 1px solid #eee; }
@@ -361,7 +352,7 @@ nav a:hover {
 }
 
 /* ======================================================= */
-/* CORREÇÕES PARA OS PROBLEMAS DO CHECKLIST               */
+/* CORREÇÕES PARA OS PROBLEMAS DO CHECKLIST                */
 /* ======================================================= */
 
 /* ------------------------------------- */
@@ -375,7 +366,6 @@ nav a:hover {
   object-fit: contain;
 }
 
-/* Container para pictogramas na ModalidadesPage */
 .pictograma-container {
   width: 100px;
   height: 100px;
@@ -433,7 +423,6 @@ nav a:hover {
   margin: 2rem 0;
 }
 
-/* Aumentar cards de atleta na página inicial */
 .hero-destaques .card {
   max-width: 100% !important;
   min-height: 520px !important;
@@ -511,4 +500,17 @@ nav a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* ======================================================= */
+/* ESTILOS PARA IMAGENS DENTRO DE CONTEÚDO RICO (NOVO)     */
+/* ======================================================= */
+
+.conteudo-rico img {
+    max-width: 100%;      /* A imagem nunca será mais larga que o container pai */
+    height: auto;         /* Mantém a proporção da imagem */
+    display: block;       /* Remove espaços extras abaixo da imagem */
+    margin: 1.5rem auto;  /* Centraliza a imagem e adiciona espaço vertical */
+    border-radius: 8px;   /* Adiciona bordas arredondadas para um visual suave */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Adiciona uma sombra sutil */
 }
