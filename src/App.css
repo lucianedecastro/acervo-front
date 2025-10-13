@@ -350,7 +350,7 @@ nav a:hover {
 .form-group-filtro input, .form-group-filtro select { padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 1rem; width: 100%; }
 
 /* ======================================================= */
-/* ESTILOS PARA RESPONSIVIDADE (VERSÃO FINAL)              */
+/* ESTILOS PARA RESPONSIVIDADE (VERSÃO FINAL E CORRIGIDA)  */
 /* ======================================================= */
 .nav-toggle { 
     display: none; 
@@ -361,7 +361,7 @@ nav a:hover {
     border-radius: 4px; 
     cursor: pointer; 
     position: absolute; 
-    top: 1.5rem; /* Ajustado para melhor alinhamento vertical */
+    top: 1.5rem; 
     right: 2rem; 
     z-index: 1001; 
     height: 44px; 
@@ -372,22 +372,25 @@ nav a:hover {
 @media (max-width: 900px) {
   .app-header { 
     position: relative; 
-    /* ✅ No mobile, o título volta para a esquerda para dar espaço ao botão */
+    /* ✅ CORREÇÃO: Força o alinhamento lado a lado do título e do botão do menu */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     text-align: left; 
   }
+  
   .app-header h1 { 
       font-size: 1.2rem; 
-      /* Garante que o título não passe por baixo do botão */
       max-width: calc(100% - 60px); 
-      margin-bottom: 0; /* Remove a margem extra no mobile */
+      margin-bottom: 0; /* Remove a margem do título no mobile para alinhar com o botão */
   }
   
   .nav-toggle { 
       display: block; /* Mostra o botão do menu hambúrguer */
   }
   
-  /* Esconde o menu por padrão no mobile */
-  nav { 
+  /* ✅ CORREÇÃO CRÍTICA: Torna a regra mais específica para garantir que o menu comece escondido */
+  .app-header nav { 
       display: none; 
       flex-direction: column; 
       align-items: flex-start; 
@@ -399,18 +402,17 @@ nav a:hover {
       background: white; 
       padding: 6rem 2rem 2rem; 
       z-index: 1000; 
-      /* Garante o alinhamento correto dos itens quando o menu está aberto */
       justify-content: flex-start; 
   }
   
-  /* Mostra o menu quando ele está aberto */
-  nav.nav-open { 
+  /* ✅ CORREÇÃO: Torna a regra mais específica para mostrar o menu quando aberto */
+  .app-header nav.nav-open { 
       display: flex; 
   }
   
-  nav a { 
+  .app-header nav a { 
       font-size: 1.2rem; 
-      width: 100%; /* Faz cada link ocupar a linha inteira */
+      width: 100%;
       padding: 1rem 0;
       border-bottom: 1px solid #eee;
   }
@@ -424,9 +426,11 @@ nav a:hover {
 @media (max-width: 480px) {
   #root { padding: 0 1rem; }
   .app-header { padding: 1rem; }
-  .nav-toggle { top: 1rem; right: 1rem; } /* Ajusta posição do botão */
+  .nav-toggle { top: 1rem; right: 1rem; } 
   .content-box { padding: 1.5rem; }
 }
+
+
 /* ======================================================= */
 /* CORREÇÕES PARA OS PROBLEMAS DO CHECKLIST                */
 /* ======================================================= */
