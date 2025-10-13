@@ -310,6 +310,19 @@ nav a:hover {
 .modalidade-preview:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .modalidade-preview .pictograma-placeholder { font-size: 3rem; margin-bottom: 1rem; display: block; }
 
+/* ✅ CORREÇÃO (NOVO): Adiciona regras para a página /modalidades, garantindo consistência */
+.modalidades-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+.modalidades-lista .modalidade-pictograma {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin: 0 auto 1rem;
+}
+
 /* ESTILOS PARA O DASHBOARD ADMIN */
 .dashboard-navigation { margin: 2.5rem 0; padding-top: 2rem; border-top: 1px solid #eee; }
 .admin-dashboard h3 { margin-top: 0; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #eee; color: var(--cor-primaria); }

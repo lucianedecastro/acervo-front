@@ -87,12 +87,12 @@ function PaginaInicial() {
         </Link>
       </section>
 
-      {/* Seção de Preview da Antessala (sem alterações) */}
+      {/* Seção de Preview de Sobre (sem alterações) */}
       <section className="preview-antessala content-box">
         <h2>Conheça Nossa História</h2>
         <p>Descubra a trajetória do Acervo Carmen Lydia e a importância da preservação da memória das mulheres no esporte brasileiro.</p>
-        <Link to="/antessala" className="btn-action">
-          Acessar Antessala
+        <Link to="/sobre" className="btn-action">
+          Acessar Sobre
         </Link>
       </section>
     </div>
