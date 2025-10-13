@@ -16,29 +16,34 @@ function AntessalaPage() {
       try {
         setLoading(true);
         
-        // ✅ CORREÇÃO: Buscar conteúdos da API em vez de mocks
-        const [historiaResponse, biografiaResponse] = await Promise.all([
-          axios.get('/conteudos/historia-acervo'),
-          axios.get('/conteudos/biografia-carmen')
-        ]);
+        // ✅ CORREÇÃO CRÍTICA: Faz uma única chamada para buscar TODOS os conteúdos
+        const conteudosResponse = await axios.get('/conteudos');
+        const todosConteudos = conteudosResponse.data;
+
+        // ✅ CORREÇÃO: Encontra os documentos necessários na lista usando o slug
+        const historiaDoc = todosConteudos.find(doc => doc.slug === 'historia-acervo');
+        const biografiaDoc = todosConteudos.find(doc => doc.slug === 'biografia-carmen');
+        
+        // (Lógica para carrossel foi movida para baixo para consistência)
 
         setConteudo({
-          historiaAcervo: historiaResponse.data.conteudoHTML || `
+          historiaAcervo: historiaDoc?.conteudoHTML || `
             <p>O Acervo "Carmen Lydia" da Mulher Brasileira no Esporte nasceu da necessidade de preservar e celebrar a memória das mulheres pioneiras que desafiaram convenções sociais para praticar esportes no Brasil.</p>
             <h3>Missão e Valores</h3>
             <p>Nossa missão é resgatar, preservar e divulgar a história das mulheres no esporte brasileiro, inspirando novas gerações através do exemplo de coragem, determinação e excelência das atletas que nos antecederam.</p>
           `,
-          biografiaCarmen: biografiaResponse.data.conteudoHTML || `
+          biografiaCarmen: biografiaDoc?.conteudoHTML || `
             <p><strong>Carmen Lydia (1898-1970)</strong> foi uma das primeiras nadadoras e saltadoras do Brasil, atuante nos anos 1910 em festivais aquáticos e pioneira na presença feminina nos esportes.</p>
           `
         });
 
-        // ✅ CORREÇÃO: Buscar imagens do carrossel da API
-        const carrosselResponse = await axios.get('/conteudos/carrossel-antessala');
-        if (carrosselResponse.data && carrosselResponse.data.length > 0) {
-          setCarrosselImagens(carrosselResponse.data);
+        // ✅ CORREÇÃO: A busca pelo carrossel agora usa a mesma lista de conteúdos
+        const carrosselDoc = todosConteudos.find(doc => doc.slug === 'carrossel-antessala');
+        // Assumindo que as imagens estão num campo 'imagens' dentro do documento do carrossel
+        if (carrosselDoc && carrosselDoc.imagens && carrosselDoc.imagens.length > 0) {
+          setCarrosselImagens(carrosselDoc.imagens);
         } else {
-          // ✅ FALLBACK: Dados mockados apenas se API não retornar
+          // FALLBACK: Dados mockados apenas se API não retornar
           setCarrosselImagens([
             {
               url: 'https://storage.googleapis.com/acervo-carmen-lydia-fotos/conteudos/carmen-lydia-1.jpg',
@@ -59,7 +64,7 @@ function AntessalaPage() {
         console.error("Erro ao carregar dados da antessala:", err);
         setError("Não foi possível carregar o conteúdo da antessala.");
         
-        // ✅ FALLBACK EM CASO DE ERRO: Usar dados locais
+        // A lógica de fallback em caso de erro permanece a mesma e está correta
         setCarrosselImagens([
           {
             url: 'https://storage.googleapis.com/acervo-carmen-lydia-fotos/conteudos/carmen-lydia-1.jpg',
@@ -114,7 +119,7 @@ function AntessalaPage() {
     fetchData();
   }, []);
 
-  // ✅ Efeito do carrossel apenas quando há imagens
+  // Efeito do carrossel apenas quando há imagens
   useEffect(() => {
     if (carrosselImagens.length > 0) {
       const interval = setInterval(() => {
