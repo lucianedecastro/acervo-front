@@ -88,11 +88,14 @@ function AdminDashboard() {
               <span className="nav-card-icon">🏊‍♀️</span>
               <span className="nav-card-title">Modalidades</span>
             </Link>
-            {/* ✅ CARD DE CONTEÚDOS ATIVADO */}
-            <Link to="/admin/conteudos" className="nav-card">
+            
+            {/* ✅ AÇÃO: Card de Conteúdos removido/comentado para limpar a interface */}
+            {/* <Link to="/admin/conteudos" className="nav-card">
               <span className="nav-card-icon">📚</span>
               <span className="nav-card-title">Conteúdos</span>
             </Link>
+            */}
+
             <div className="nav-card disabled">
               <span className="nav-card-icon">🖼️</span>
               <span className="nav-card-title">Galeria (em breve)</span>

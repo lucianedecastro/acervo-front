@@ -46,11 +46,14 @@ h2:first-child {
 
 /* --- Layout (Header, Main, Footer) --- */
 .app-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
     background-color: white;
     padding: 1rem 2rem;
     border-bottom: 1px solid #dee2e6;
     margin-bottom: 2rem;
-    text-align: left;
 }
 
 .app-header h1 {
@@ -84,12 +87,20 @@ main section {
 
 /* --- Navegação --- */
 nav {
-    margin-top: 1rem;
     display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    /* ✅ CORREÇÃO: Centraliza os links do menu para uma distribuição harmoniosa no desktop. */
     justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%; /* Ocupa a largura para centralizar corretamente em telas maiores */
+    margin-top: 1rem;
+}
+
+/* Em telas de desktop, o menu fica na mesma linha do título */
+@media (min-width: 900px) {
+    nav {
+        width: auto; /* Permite que o menu se ajuste ao conteúdo */
+        margin-top: 0;
+    }
 }
 
 nav a {
