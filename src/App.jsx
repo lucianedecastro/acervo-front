@@ -5,26 +5,24 @@ import { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
-// Páginas existentes
+
 import Sobre from './pages/Sobre';
 import CarmenLydia from './pages/CarmenLydia';
 import LoginPage from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import AtletaForm from './pages/AtletaForm';
 
-// Novas páginas
+
 import PaginaInicial from './pages/PaginaInicial';
 import ModalidadesPage from './pages/ModalidadesPage';
 import ModalidadeDetailPage from './pages/ModalidadeDetailPage';
-// ✅ AÇÃO: Import da Antessala REMOVIDO para consertar o build
-// import AntessalaPage from './pages/AntessalaPage'; 
+ 
 import ContatoPage from './pages/ContatoPage';
 import AtletasPage from './pages/AtletasPage';
+import AtletaDetalhesPage from './pages/AtletaDetalhesPage';
 import AdminModalidades from './pages/AdminModalidades';
 import ModalidadeForm from './pages/ModalidadeForm';
-// Imports de Conteúdo já estavam comentados, o que está correto
-// import AdminConteudos from './pages/AdminConteudos';
-// import ConteudoForm from './pages/ConteudoForm';
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -80,30 +78,23 @@ function App() {
             <Route path="atletas" element={<AtletasPage />} />
             <Route path="modalidades" element={<ModalidadesPage />} />
             <Route path="modalidades/:id" element={<ModalidadeDetailPage />} />
-            
-            {/* Rota da Antessala já estava comentada, o que está correto */}
-            {/* <Route path="antessala" element={<AntessalaPage />} /> */}
-            
+                                  
             <Route path="contato" element={<ContatoPage />} />
             <Route path="sobre" element={<Sobre />} />
             <Route path="carmen-lydia" element={<CarmenLydia />} />
             <Route path="login" element={<LoginPage />} />
-            
-            {/* Rotas de Admin Protegidas */}
+                        
             <Route path="admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             
             <Route path="admin/atletas/novo" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
             <Route path="admin/atletas/editar/:id" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
+            <Route path="atletas/:id" element={<AtletaDetalhesPage />} />
             
             <Route path="admin/modalidades" element={<ProtectedRoute><AdminModalidades /></ProtectedRoute>} />
             <Route path="admin/modalidades/novo" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
             <Route path="admin/modalidades/editar/:id" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
 
-            {/* Rotas para Conteúdos já estavam comentadas, o que está correto */}
-            {/*
-            <Route path="admin/conteudos" element={<ProtectedRoute><AdminConteudos /></ProtectedRoute>} />
-            <Route path="admin/conteudos/editar/:id" element={<ProtectedRoute><ConteudoForm /></ProtectedRoute>} />
-            */}
+            
             
           </Route>
         </Routes>

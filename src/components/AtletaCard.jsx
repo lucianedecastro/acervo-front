@@ -1,12 +1,11 @@
-// components/AtletaCard.jsx
-
 import React from 'react';
 import { Link } from 'react-router-dom'; 
 import styles from './AtletaCard.module.css';
 
-function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
+
+function AtletaCard({ atleta }) {
   
-  
+ 
   const getFotosUnicas = () => {
     if (!atleta.fotos?.length) return [];
     
@@ -57,7 +56,7 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
   
   return (
     
-    <div className={`${styles.card} ${isExpanded ? styles.expanded : ''}`}>
+    <div className={styles.card}>
       <div className={styles.cardHeader}>
         <img 
           src={imagemUrl}
@@ -93,50 +92,6 @@ function AtletaCard({ atleta, onToggleExpand, isExpanded }) {
       </div>
 
       
-      {isExpanded && (
-        <div className={styles.detalhesExpandidos}>
-          <h4>Biografia Completa</h4>
-          <p>{atleta.biografia}</p>
-          
-          <h4>Competições e Títulos</h4>
-          <p>{atleta.competicao}</p>
-          
-          {fotosValidas.length > 0 && (
-            <>
-              <h4>Galeria de Fotos ({fotosValidas.length})</h4>
-              <div className={styles.galeria}>
-                {fotosValidas.map((foto) => (
-                  <div 
-                    key={foto.id || foto.url} 
-                    className={styles.fotoExpandida}
-                  >
-                    <img 
-                      src={foto.url} 
-                      alt={foto.legenda || `Foto de ${atleta.nome}`}
-                      className={foto.ehDestaque ? styles.fotoDestaque : ''}
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/300x200/718096/FFFFFF?text=Foto+Não+Encontrada';
-                      }}
-                    />
-                    {foto.legenda && (
-                      <p className={styles.legenda}>
-                        {foto.legenda}
-                        {foto.ehDestaque && <span className={styles.destaqueBadge}> ⭐ Destaque</span>}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-          
-          {atleta.fotos?.length > 0 && fotosValidas.length === 0 && (
-            <div className={styles.semFotos}>
-              <p>⚠️ Esta atleta tem {atleta.fotos.length} foto(s) no cadastro, mas nenhuma foi encontrada no servidor.</p>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
