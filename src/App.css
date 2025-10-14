@@ -378,7 +378,7 @@ main section {
 /* ======================================================= */
 
 /* O "porta-retrato" que define o formato e corta o excesso */
-.foto-destaque-container {
+#root .pagina-conteudo .foto-destaque-container {
   width: 100% !important;
   height: 400px !important;
   border-radius: 8px !important;
@@ -387,7 +387,7 @@ main section {
 }
 
 /* A foto agora precisa apenas preencher 100% do porta-retrato */
-.foto-destaque-atleta {
+#root .pagina-conteudo .foto-destaque-atleta {
   width: 100% !important;
   height: 100% !important;
   background-size: cover !important;
