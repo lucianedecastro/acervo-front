@@ -75,7 +75,7 @@
     display: block;
     width: 100%;
     background-color: var(--cor-primaria);
-    color: white;
+    color: white !important; 
     border: none;
     padding: 12px 20px;
     border-radius: 6px;
