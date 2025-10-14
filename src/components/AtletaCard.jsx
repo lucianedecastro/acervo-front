@@ -2,10 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom'; 
 import styles from './AtletaCard.module.css';
 
-
 function AtletaCard({ atleta }) {
   
- 
+  
   const getFotosUnicas = () => {
     if (!atleta.fotos?.length) return [];
     
@@ -55,17 +54,17 @@ function AtletaCard({ atleta }) {
   const imagemUrl = getFotoCard();
   
   return (
-    
     <div className={styles.card}>
+      {/* O container da imagem não mudou */}
       <div className={styles.cardHeader}>
-        <img 
-          src={imagemUrl}
-          alt={atleta.nome} 
-          className={styles.foto} 
-          onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/300x200/4A5568/FFFFFF?text=Erro+ao+Carregar';
-          }}
-        />
+        
+        <div 
+          className={styles.foto}
+          style={{ backgroundImage: `url(${imagemUrl})` }}
+          role="img"
+          aria-label={`Foto de ${atleta.nome}`}
+        ></div>
+        
         <div className={styles.infoPrincipal}>
           <span className={styles.atleta}>ATLETA</span>
           <h3 className={styles.nome}>{atleta.nome}</h3>
@@ -82,7 +81,6 @@ function AtletaCard({ atleta }) {
         </p>
       </div>
       <div className={styles.cardFooter}>
-        
         <Link 
           to={`/atletas/${atleta.id}`}
           className={styles.btnConheca}
@@ -90,8 +88,6 @@ function AtletaCard({ atleta }) {
           CONHEÇA
         </Link>
       </div>
-
-      
     </div>
   );
 }
