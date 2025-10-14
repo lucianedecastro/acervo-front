@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import AtletaCard from '../components/AtletaCard';
+import cardStyles from '../components/AtletaCard.module.css'; 
 
 function AtletasPage() {
   const [atletas, setAtletas] = useState([]);
@@ -119,8 +120,8 @@ function AtletasPage() {
         </p>
       </div>
 
-      
-      <div className="lista-atletas">
+   
+      <div className={cardStyles.container}>
         {atletasFiltradas.length === 0 ? (
           <div className="content-box">
             <p>Nenhuma atleta encontrada com os filtros aplicados.</p>
@@ -137,7 +138,6 @@ function AtletasPage() {
             )}
           </div>
         ) : (
-          
           <>
             {atletasFiltradas.map(atleta => (
               <AtletaCard 

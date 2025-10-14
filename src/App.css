@@ -213,12 +213,6 @@ main section {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.lista-atletas {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
 /* Formulários (Login, AtletaForm) */
 .login-form, .atleta-form {
     display: flex;
