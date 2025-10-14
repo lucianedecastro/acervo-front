@@ -485,3 +485,12 @@ main section {
         grid-template-columns: 1fr; /* Força uma única coluna */
     }
 }
+
+.foto-destaque-atleta {
+  width: 100%;
+  height: 400px;
+  object-fit: cover; 
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  display: block; 
+}
