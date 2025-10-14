@@ -50,12 +50,18 @@ function AtletaDetalhesPage() {
   return (
     
     <>
+      
       <div className="pagina-conteudo content-box">
-        <img 
-          src={atleta.fotoDestaqueUrl || atleta.fotos?.[0]?.url} 
-          alt={`Foto de ${atleta.nome}`} 
-          className="foto-destaque-atleta" 
-        />
+      
+        <div className="foto-destaque-container">
+          <div 
+            className="foto-destaque-atleta"
+            style={{ backgroundImage: `url(${atleta.fotoDestaqueUrl || atleta.fotos?.[0]?.url})` }}
+            role="img"
+            aria-label={`Foto de ${atleta.nome}`}
+          ></div>
+        </div>
+
         <h1>{atleta.nome}</h1>
         <p style={{ marginTop: '-1rem', color: 'var(--cor-primaria)', fontWeight: 'bold' }}>{atleta.modalidade}</p>
         

@@ -70,8 +70,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-         
-            <Route path="/" element={<Layout />}>
+          
+          <Route path="/" element={<Layout />}>
+            {/* Rotas Públicas */}
             <Route index element={<PaginaInicial />} />
             <Route path="atletas" element={<AtletasPage />} />
             <Route path="atletas/:id" element={<AtletaDetalhesPage />} /> 
@@ -81,16 +82,15 @@ function App() {
             <Route path="sobre" element={<Sobre />} />
             <Route path="carmen-lydia" element={<CarmenLydia />} />
             <Route path="login" element={<LoginPage />} />
+            
+            {/* Rotas de Admin (protegidas) */}
+            <Route path="admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="admin/atletas/novo" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
+            <Route path="admin/atletas/editar/:id" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
+            <Route path="admin/modalidades" element={<ProtectedRoute><AdminModalidades /></ProtectedRoute>} />
+            <Route path="admin/modalidades/novo" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
+            <Route path="admin/modalidades/editar/:id" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
           </Route>
-
-          
-          <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/atletas/novo" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
-          <Route path="/admin/atletas/editar/:id" element={<ProtectedRoute><AtletaForm /></ProtectedRoute>} />
-          <Route path="/admin/modalidades" element={<ProtectedRoute><AdminModalidades /></ProtectedRoute>} />
-          <Route path="/admin/modalidades/novo" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
-          <Route path="/admin/modalidades/editar/:id" element={<ProtectedRoute><ModalidadeForm /></ProtectedRoute>} />
-          
         </Routes>
       </AuthProvider>
     </BrowserRouter>
