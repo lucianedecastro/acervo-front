@@ -50,36 +50,38 @@ function AtletaCard({ atleta }) {
     return 'https://via.placeholder.com/300x200/4A5568/FFFFFF?text=Imagem+Indisponível';
   };
 
-  const fotosValidas = getFotosValidas();
+  const fotosValidas = getFotosUnicas(); 
   const imagemUrl = getFotoCard();
   
   return (
     <div className={styles.card}>
-      {/* O container da imagem não mudou */}
-      <div className={styles.cardHeader}>
-        
-        <div 
-          className={styles.foto}
-          style={{ backgroundImage: `url(${imagemUrl})` }}
-          role="img"
-          aria-label={`Foto de ${atleta.nome}`}
-        ></div>
-        
+      
+      <div 
+        className={styles.foto}
+        style={{ backgroundImage: `url(${imagemUrl})` }}
+        role="img"
+        aria-label={`Foto de ${atleta.nome}`}
+      ></div>
+      
+     
+      <div className={styles.contentWrapper}>
         <div className={styles.infoPrincipal}>
           <span className={styles.atleta}>ATLETA</span>
           <h3 className={styles.nome}>{atleta.nome}</h3>
           <p className={styles.modalidade}>{atleta.modalidade}</p>
           
-          {fotosValidas.length > 1 && (
-            <span className={styles.fotoBadge}>📸 {fotosValidas.length} fotos</span>
+          {fotosValidas.length > 0 && (
+            <span className={styles.fotoBadge}>📸 {fotosValidas.length} foto{fotosValidas.length > 1 ? 's' : ''}</span>
           )}
         </div>
+        <div className={styles.cardBody}>
+          <p className={styles.biografiaResumo}>
+            {atleta.biografia?.substring(0, 150)}...
+          </p>
+        </div>
       </div>
-      <div className={styles.cardBody}>
-        <p className={styles.biografiaResumo}>
-          {atleta.biografia?.substring(0, 150)}...
-        </p>
-      </div>
+
+      
       <div className={styles.cardFooter}>
         <Link 
           to={`/atletas/${atleta.id}`}

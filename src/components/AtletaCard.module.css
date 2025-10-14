@@ -1,13 +1,9 @@
-/* ============================== */
-/* AtletaCard.module.css */
-/* ============================== */
-
 /* ------------------------------------- */
 /* 1. Estrutura e Container Principal */
 /* ------------------------------------- */
 .card {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Essencial para empilhar a foto e o conteúdo */
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -24,18 +20,22 @@
 /* ------------------------------------- */
 /* 2. Cabeçalho e Foto Principal */
 /* ------------------------------------- */
-.cardHeader {
-    position: relative;
-}
+
 
 .foto {
     width: 100%;
-    height: 66.66%;
-    object-fit: cover;
+    padding-top: 66.66%; 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-.infoPrincipal {
-    padding: 1rem 1.5rem;
+/* Nova classe para agrupar todo o conteúdo de texto e evitar sobreposição. */
+.contentWrapper {
+    padding: 1rem 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; 
 }
 
 .nome {
@@ -56,7 +56,7 @@
 /* ------------------------------------- */
 .cardBody {
     flex-grow: 1;
-    padding: 0 1.5rem;
+    padding: 0 1.5rem; 
     margin-bottom: 1.5rem;
 }
 
@@ -68,7 +68,7 @@
 
 .cardFooter {
     padding: 0 1.5rem 1.5rem;
-    margin-top: auto;
+    margin-top: auto; /* Garante que o rodapé fique sempre embaixo */
 }
 
 .btnConheca {
@@ -90,7 +90,7 @@
 }
 
 /* ------------------------------------- */
-/* 4. Estilos para a Expansão do Card (NOVO) */
+/* 4. Estilos para a Expansão do Card */
 /* ------------------------------------- */
 
 /* Oculta os detalhes por padrão de forma animável */
@@ -99,14 +99,14 @@
     max-height: 0;
     opacity: 0;
     transition: max-height 0.7s ease-in-out, opacity 0.5s ease-in-out, padding 0.7s ease-in-out;
-    padding: 0 1.5rem; /* Começa sem padding vertical */
+    padding: 0 1.5rem;
 }
 
 /* Quando o card tem a classe .expanded, revela os detalhes */
 .card.expanded .detalhesExpandidos {
-    max-height: 2000px; /* Um valor alto para permitir qualquer conteúdo */
+    max-height: 2000px;
     opacity: 1;
-    padding: 1rem 1.5rem 1.5rem; /* Adiciona o padding vertical quando visível */
+    padding: 1rem 1.5rem 1.5rem;
 }
 
 /* Estilos internos da seção expandida */
@@ -168,7 +168,7 @@
 @media (min-width: 900px) {
   .container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
 }
@@ -176,6 +176,6 @@
 /* Para a página inicial, que terá mais cards */
 @media (min-width: 1200px) {
   .container.destaques {
-    grid-template-columns: repeat(3, 1fr); /* 3 colunas em telas bem largas */
+    grid-template-columns: repeat(3, 1fr);
   }
 }
