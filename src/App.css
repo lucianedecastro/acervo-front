@@ -315,6 +315,17 @@ main section {
     background-color: #6c757d;
     color: white !important;
 }
+
+/* Esta regra afeta APENAS os botões que estão dentro dos cards de modalidade */
+.modalidade-card .btn-action,
+.modalidade-preview .btn-action {
+  display: block; 
+  width: 100%;    
+  margin-top: 1rem; 
+  margin-right: 0;  
+  box-sizing: border-box; 
+}
+
 /* Sistema de Galeria de Fotos */
 .galeria-preview { margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
 .galeria-preview h4 { margin: 0 0 1rem 0; color: var(--cor-primaria); font-size: 1.1rem; }
