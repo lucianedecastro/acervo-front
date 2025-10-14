@@ -44,9 +44,9 @@ function ModalidadeDetailPage() {
       <div className="modalidade-hero content-box">
         <div className="modalidade-header">
           {modalidade.pictogramaUrl ? (
-            <img src={modalidade.pictogramaUrl} alt={modalidade.nome} className="hero-pictograma" />
+            <img src={modalidade.pictogramaUrl} alt={modalidade.nome} className="pictograma-detalhe" />
           ) : (
-            <div className="pictograma-placeholder hero">🏆</div>
+            <div className="pictograma-placeholder">🏆</div>
           )}
           <div className="modalidade-info">
             <h1>{modalidade.nome}</h1>

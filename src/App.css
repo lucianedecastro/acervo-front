@@ -481,6 +481,29 @@ main section {
     }
 }
 
+/* ======================================================= */
+/* ✅ ESTILOS PARA PICTOGRAMA E PLACEHOLDER             */
+/* ======================================================= */
+
+/* Regra 1: Para a imagem REAL do pictograma */
+.pictograma-detalhe {
+  max-width: 100%; /* Garante que a imagem nunca seja maior que o container */
+  width: 250px;    /* Define uma largura máxima agradável */
+  height: auto;    /* Mantém a proporção da imagem */
+  display: block;  /* Melhora o alinhamento */
+  margin: 0 auto 2rem; /* Centraliza a imagem e dá um respiro embaixo */
+  object-fit: contain; /* Garante que a imagem inteira apareça sem distorcer */
+}
+
+/* Regra 2: Para o emoji de TROFÉU quando a imagem não existe */
+.pictograma-placeholder {
+  font-size: 80px; /* Um tamanho grande para o emoji */
+  text-align: center;
+  margin: 0 auto 2rem;
+  width: 250px; /* Mesma largura da imagem para manter o alinhamento */
+  line-height: 1;
+}
+
 
 /* ======================================================= */
 /* 5. AJUSTES FINOS PARA TELAS MUITO PEQUENAS (< 480px)   */
