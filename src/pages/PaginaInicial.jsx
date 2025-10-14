@@ -56,7 +56,7 @@ function PaginaInicial() {
       {/* Seção de Atletas em Destaque (agora com a classe correta) */}
       <section className="hero-destaques">
         <h2>Atletas em Destaque</h2>
-        <div className="atletas-grid"> {/* <-- ESTA É A ÚNICA LINHA ALTERADA */}
+        <div className="lista-atletas"> {/* <-- ESTA É A ÚNICA LINHA ALTERADA */}
           {atletasDestaque.map(atleta => (
             <AtletaCard 
               key={atleta.id} 

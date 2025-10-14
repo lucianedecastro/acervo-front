@@ -32,20 +32,16 @@ function AtletasPage() {
     fetchData();
   }, []);
   
-  // ✅ CORREÇÃO: Busca com botão e Enter
   const handleBuscar = (e) => {
-    if (e) e.preventDefault(); // Previne submit do form
-    // A filtragem já é feita automaticamente pelo useEffect abaixo
+    if (e) e.preventDefault();
   };
 
-  // ✅ CORREÇÃO: Buscar ao pressionar Enter
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleBuscar();
     }
   };
 
-  // Lógica de filtragem (mantida)
   useEffect(() => {
     let resultado = atletas;
     if (filtroNome) {
@@ -67,7 +63,6 @@ function AtletasPage() {
       <h1>Todas as Atletas</h1>
       <p>Conheça as mulheres pioneiras que fizeram história no esporte brasileiro.</p>
       
-      {/* ✅ CORREÇÃO: Form com submit e botão */}
       <form onSubmit={handleBuscar} className="filtros-container content-box">
         <div className="form-group-filtro">
           <label htmlFor="busca-nome">Buscar por Nome:</label>
@@ -78,7 +73,7 @@ function AtletasPage() {
               placeholder="Digite o nome da atleta..." 
               value={filtroNome} 
               onChange={(e) => setFiltroNome(e.target.value)}
-              onKeyPress={handleKeyPress} // ✅ Busca com Enter
+              onKeyPress={handleKeyPress}
             />
             <button type="submit" className="btn-busca">
               🔍
@@ -100,7 +95,6 @@ function AtletasPage() {
           </select>
         </div>
 
-        {/* ✅ Botão para limpar filtros */}
         {(filtroNome || filtroModalidade) && (
           <div className="form-group-filtro">
             <button 
@@ -117,7 +111,6 @@ function AtletasPage() {
         )}
       </form>
 
-      {/* ✅ Contador de resultados */}
       <div className="resultados-info">
         <p>
           {atletasFiltradas.length === 0 ? 'Nenhuma' : atletasFiltradas.length} 
@@ -126,7 +119,7 @@ function AtletasPage() {
         </p>
       </div>
 
-      {/* Lista de atletas */}
+      
       <div className="lista-atletas">
         {atletasFiltradas.length === 0 ? (
           <div className="content-box">
@@ -144,7 +137,8 @@ function AtletasPage() {
             )}
           </div>
         ) : (
-          <div className="atletas-grid">
+          
+          <>
             {atletasFiltradas.map(atleta => (
               <AtletaCard 
                 key={atleta.id}
@@ -153,7 +147,7 @@ function AtletasPage() {
                 onToggleExpand={handleToggleExpand}
               />
             ))}
-          </div>
+          </>
         )}
       </div>
     </div>
