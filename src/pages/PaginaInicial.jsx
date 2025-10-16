@@ -65,7 +65,7 @@ function PaginaInicial() {
       <section className="preview-modalidades">
         <h2>Modalidades</h2>
         <div className="modalidades-grid">
-          {modalidades.slice(0, 6).map(modalidade => ( 
+          {modalidades.slice(0, 8).map(modalidade => ( 
             modalidade.id && (
               <Link 
                 key={modalidade.id} 
