@@ -57,6 +57,7 @@ function Layout() {
       </header>
       <main><Outlet /></main>
       <footer className="app-footer">
+        <p>Software Acervo Carmen Lydia - Registrado no INPI sob o nº BR512025005170-0.</p>
         <p>© 2025 Acervo Carmen Lydia - Todos os direitos reservados.</p>
         <p>Desenvolvido com apoio do MDE Lab</p>
         {!token && <Link to="/login">Área Administrativa</Link>}
