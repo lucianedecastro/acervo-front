@@ -18,7 +18,20 @@ export default function Home() {
         </p>
 
         <a href="/modalidades">
-          <button>Ver modalidades</button>
+          <button style={{ cursor: "pointer" }}>Ver modalidades</button>
+        </a>
+      </section>
+
+      {/* ===== NOVA SEÇÃO: ATLETAS ===== */}
+      <section style={{ marginBottom: "3rem" }}>
+        <h2>Atletas</h2>
+        <p>
+          Explore o perfil das atletas que construíram a história do esporte no Brasil,
+          seus feitos e itens de acervo pessoal.
+        </p>
+
+        <a href="/atletas">
+          <button style={{ cursor: "pointer" }}>Conhecer atletas</button>
         </a>
       </section>
 

@@ -29,9 +29,30 @@ export default function LayoutAdmin({ children }: LayoutAdminProps) {
           alignItems: "center",
         }}
       >
-        <strong style={{ cursor: "pointer" }} onClick={() => navigate("/admin/modalidades")}>
-          Painel Administrativo
-        </strong>
+        <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
+          <strong 
+            style={{ cursor: "pointer", fontSize: "1.2rem" }} 
+            onClick={() => navigate("/admin/modalidades")}
+          >
+            Acervo Atleta
+          </strong>
+          
+          {/* Menu de Navegação Admin */}
+          <nav style={{ display: "flex", gap: "1rem" }}>
+            <span 
+              style={{ cursor: "pointer", opacity: 0.8 }} 
+              onClick={() => navigate("/admin/modalidades")}
+            >
+              Modalidades
+            </span>
+            <span 
+              style={{ cursor: "pointer", opacity: 0.8 }} 
+              onClick={() => navigate("/admin/atletas")}
+            >
+              Atletas
+            </span>
+          </nav>
+        </div>
 
         <button
           onClick={handleLogout}
@@ -54,6 +75,7 @@ export default function LayoutAdmin({ children }: LayoutAdminProps) {
           maxWidth: "1100px",
           margin: "0 auto",
           background: "#fff",
+          minHeight: "80vh"
         }}
       >
         {children}
