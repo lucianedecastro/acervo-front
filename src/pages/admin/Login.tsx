@@ -12,10 +12,13 @@ export default function Login() {
   const [senha, setSenha] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
     setError(null)
+    setSuccess(null)
     setLoading(true)
 
     try {
@@ -31,10 +34,21 @@ export default function Login() {
       }
 
       login(token)
-      navigate("/admin/modalidades")
-    } catch (err) {
+      setSuccess("Login realizado com sucesso. Redirecionando...")
+
+      // pequeno delay só para UX (feedback visual)
+      setTimeout(() => {
+        navigate("/admin/modalidades")
+      }, 800)
+
+    } catch (err: any) {
       console.error("Erro no login:", err)
-      setError("Email ou senha inválidos.")
+
+      if (err.response?.status === 401) {
+        setError("Email ou senha inválidos.")
+      } else {
+        setError("Erro inesperado ao realizar login. Tente novamente.")
+      }
     } finally {
       setLoading(false)
     }
@@ -46,27 +60,39 @@ export default function Login() {
 
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "1rem" }}>
-          <label>Email</label>
+          <label htmlFor="email">Email</label>
           <input
+            id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="username"
           />
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
-          <label>Senha</label>
+          <label htmlFor="senha">Senha</label>
           <input
+            id="senha"
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required
+            autoComplete="current-password"
           />
         </div>
 
         {error && (
-          <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>
+          <p style={{ color: "red", marginBottom: "1rem" }}>
+            {error}
+          </p>
+        )}
+
+        {success && (
+          <p style={{ color: "green", marginBottom: "1rem" }}>
+            {success}
+          </p>
         )}
 
         <button type="submit" disabled={loading}>

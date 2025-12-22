@@ -11,6 +11,7 @@ import ModalidadeDetail from "@/pages/public/ModalidadeDetail"
 import Login from "@/pages/admin/Login"
 import AdminModalidades from "@/pages/admin/AdminModalidades"
 import ModalidadeForm from "@/pages/admin/ModalidadeForm"
+import LayoutAdmin from "@/pages/admin/LayoutAdmin"
 
 export function AppRoutes() {
   return (
@@ -32,7 +33,9 @@ export function AppRoutes() {
         path="/admin/modalidades"
         element={
           <ProtectedRoute>
-            <AdminModalidades />
+            <LayoutAdmin>
+              <AdminModalidades />
+            </LayoutAdmin>
           </ProtectedRoute>
         }
       />
@@ -41,7 +44,9 @@ export function AppRoutes() {
         path="/admin/modalidades/nova"
         element={
           <ProtectedRoute>
-            <ModalidadeForm />
+            <LayoutAdmin>
+              <ModalidadeForm />
+            </LayoutAdmin>
           </ProtectedRoute>
         }
       />
@@ -50,7 +55,9 @@ export function AppRoutes() {
         path="/admin/modalidades/editar/:id"
         element={
           <ProtectedRoute>
-            <ModalidadeForm />
+            <LayoutAdmin>
+              <ModalidadeForm />
+            </LayoutAdmin>
           </ProtectedRoute>
         }
       />
