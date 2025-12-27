@@ -28,6 +28,6 @@ export const atletaService = {
 
   // Chamada protegida (Admin)
   remover: async (id: string) => {
-    await api.delete(`/atletas/${id}`);
+    return await api.delete(`/atletas/${id}`);
   },
 };
