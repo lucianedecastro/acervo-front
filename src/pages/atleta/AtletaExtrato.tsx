@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
 import { licenciamentoService } from "@/services/licenciamentoService"
-import { ExtratoLicenciamentoDTO } from "@/types/licenciamento"
+import { atletaService } from "@/services/atletaService"
+import { ExtratoLicenciamentoDTO, TransacaoLicenciamento } from "@/types/licenciamento"
 
 export default function AtletaExtrato() {
+  // O extrato consolidado agora é um objeto, conforme o Swagger (Imagem 5)
   const [extrato, setExtrato] = useState<ExtratoLicenciamentoDTO | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   /* ==========================
-      CARREGAR EXTRATO
+      CARREGAR EXTRATO DINÂMICO
      ========================== */
   useEffect(() => {
     async function carregar() {
@@ -16,8 +18,15 @@ export default function AtletaExtrato() {
         setLoading(true)
         setError(null)
 
-        // O backend identifica a atleta logada via Token JWT
-        const data = await licenciamentoService.extratoAtleta("me")
+        // 1. Busca o perfil da atleta logada para capturar o ID real do banco (Imagem 8)
+        const perfil = await atletaService.buscarMeuPerfil()
+        
+        if (!perfil || !perfil.id) {
+          throw new Error("Identificação da atleta não encontrada.")
+        }
+
+        // 2. Busca o extrato consolidado (Saldo + Transações) (Imagem 5)
+        const data = await licenciamentoService.extratoConsolidado(perfil.id)
         setExtrato(data)
       } catch (err) {
         console.error("Erro ao carregar extrato:", err)
@@ -51,9 +60,6 @@ export default function AtletaExtrato() {
     )
   }
 
-  /* ==========================
-      RENDERIZAÇÃO
-     ========================== */
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
       <header style={{ marginBottom: "3rem" }}>
@@ -61,16 +67,17 @@ export default function AtletaExtrato() {
           Meu Extrato Financeiro
         </h1>
         <p style={{ color: "#666", fontSize: "1.1rem" }}>
-          Acompanhe detalhadamente seus ganhos com o licenciamento de acervo.
+          Bem-vinda, {extrato.nomeAtleta}. Acompanhe detalhadamente seus ganhos com o licenciamento de acervo.
         </p>
       </header>
 
       {/* ===== RESUMO (CARDS) ===== */}
       <div style={gridStyle}>
+        {/* Usando o campo 'saldoTotal' conforme Swagger (Imagem 5) */}
         <div style={cardStyle("#27ae60")}>
-          <small style={labelStyle}>Total Recebido (Líquido)</small>
+          <small style={labelStyle}>Saldo Total (Meu Repasse)</small>
           <h2 style={valueStyle}>
-            {extrato.totalAtleta.toLocaleString("pt-BR", {
+            {extrato.saldoTotal.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })}
@@ -78,23 +85,13 @@ export default function AtletaExtrato() {
         </div>
 
         <div style={cardStyle("#2980b9")}>
-          <small style={labelStyle}>Total Bruto</small>
-          <h2 style={valueStyle}>
-            {extrato.totalBruto.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}
-          </h2>
+          <small style={labelStyle}>Status do Acervo</small>
+          <h2 style={{ ...valueStyle, fontSize: "1.4rem" }}>Acervo Ativo</h2>
         </div>
 
         <div style={cardStyle("#7f8c8d")}>
-          <small style={labelStyle}>Taxa da Plataforma</small>
-          <h2 style={valueStyle}>
-            {extrato.totalPlataforma.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}
-          </h2>
+          <small style={labelStyle}>Total de Operações</small>
+          <h2 style={valueStyle}>{extrato.transacoes.length}</h2>
         </div>
       </div>
 
@@ -112,33 +109,42 @@ export default function AtletaExtrato() {
               <thead>
                 <tr style={{ borderBottom: "2px solid #f0f0f0" }}>
                   <th style={thStyle}>Data</th>
-                  <th style={thStyle}>Item do Acervo</th>
-                  <th style={thStyle}>Tipo de Uso</th>
-                  <th style={thStyle}>Valor Bruto</th>
+                  <th style={thStyle}>ID do Item</th>
+                  <th style={thStyle}>Licença</th>
+                  <th style={thStyle}>Valor Total</th>
                   <th style={thStyle}>Meu Repasse</th>
+                  <th style={thStyle}>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {extrato.transacoes.map((t) => (
+                {extrato.transacoes.map((t: TransacaoLicenciamento) => (
                   <tr key={t.id} style={trStyle}>
                     <td style={tdStyle}>
-                      {new Date(t.criadoEm).toLocaleDateString("pt-BR")}
+                      {/* Usando dataTransacao (Imagem 9) */}
+                      {new Date(t.dataTransacao).toLocaleDateString("pt-BR")}
                     </td>
                     <td style={tdStyle}><strong>{t.itemAcervoId}</strong></td>
                     <td style={tdStyle}>
-                      <span style={badgeStyle}>{t.tipoUso}</span>
+                      <span style={badgeStyle}>{t.tipoLicenca}</span>
                     </td>
                     <td style={tdStyle}>
-                      {t.valorBruto.toLocaleString("pt-BR", {
+                      {/* Usando valorTotal (Imagem 9) */}
+                      {t.valorTotal.toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
                     </td>
                     <td style={{ ...tdStyle, color: "#27ae60", fontWeight: "bold" }}>
-                      {t.valorAtleta.toLocaleString("pt-BR", {
+                      {/* Usando valorRepasseAtleta (Imagem 9) */}
+                      {t.valorRepasseAtleta.toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
+                    </td>
+                    <td style={tdStyle}>
+                      <span style={{ color: t.status === "CONCLUIDO" ? "#27ae60" : "#f39c12" }}>
+                        {t.status}
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -152,7 +158,7 @@ export default function AtletaExtrato() {
 }
 
 /* ==========================
-    ESTILOS (CSS-IN-JS)
+    ESTILOS (MANTIDOS)
    ========================== */
 const gridStyle: React.CSSProperties = {
   display: "grid",
@@ -166,7 +172,7 @@ const cardStyle = (color: string): React.CSSProperties => ({
   padding: "24px",
   borderRadius: "16px",
   boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
-  borderLeft: `6px solid ${color}`, // Mudei para borda lateral para diferenciar do Dashboard
+  borderLeft: `6px solid ${color}`,
 })
 
 const labelStyle: React.CSSProperties = {

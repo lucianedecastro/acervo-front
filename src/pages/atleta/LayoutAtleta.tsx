@@ -11,7 +11,6 @@ export default function LayoutAtleta() {
     navigate("/login")
   }
 
-  // Estilo padrão para os links do menu
   const linkStyle = {
     textDecoration: "none",
     color: "#ccc",
@@ -20,20 +19,16 @@ export default function LayoutAtleta() {
     transition: "color 0.2s"
   }
 
-  // Estilo aplicado automaticamente quando a rota estiver ativa
   const activeLinkStyle = {
     ...linkStyle,
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "bold" as const,
     borderBottom: "2px solid #fff",
     paddingBottom: "4px"
   }
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#fdfdfd" }}>
-      {/* =========================
-          NAVBAR ATLETA (ÁREA LOGADA)
-          ========================= */}
       <nav
         style={{
           backgroundColor: "#1a1a1a",
@@ -64,14 +59,14 @@ export default function LayoutAtleta() {
           </NavLink>
 
           <NavLink 
-            to="/atleta/perfil" 
+            to="/dashboard/perfil" 
             style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
           >
             Meu Perfil
           </NavLink>
 
           <NavLink 
-            to="/atleta/extrato" 
+            to="/dashboard/extrato" 
             style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
           >
             Extrato
@@ -102,16 +97,10 @@ export default function LayoutAtleta() {
         </div>
       </nav>
 
-      {/* =========================
-          CONTEÚDO DO PAINEL
-          ========================= */}
       <main style={{ flex: 1, padding: "2rem", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
         <Outlet />
       </main>
 
-      {/* =========================
-          RODAPÉ (INCLUÍDO)
-          ========================= */}
       <Footer />
     </div>
   )

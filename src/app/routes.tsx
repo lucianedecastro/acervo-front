@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom"
-
 import { ProtectedRoute } from "@/auth/ProtectedRoute"
 
 /* ======================
@@ -17,7 +16,6 @@ import ModalidadesList from "@/pages/public/ModalidadesList"
 import ModalidadeDetail from "@/pages/public/ModalidadeDetail"
 import AtletasList from "@/pages/public/AtletasList"
 import AtletaDetail from "@/pages/public/AtletaDetail"
-// 🔹 ADICIONADOS:
 import Sobre from "@/pages/public/Sobre"
 import Arquitetura from "@/pages/public/Arquitetura"
 
@@ -50,11 +48,8 @@ export function AppRoutes() {
           ===================================================== */}
       <Route element={<LayoutPublic />}>
         <Route path="/" element={<Home />} />
-        
-        {/* 🔹 ROTAS INSTITUCIONAIS ADICIONADAS */}
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/arquitetura" element={<Arquitetura />} />
-
         <Route path="/modalidades" element={<ModalidadesList />} />
         <Route path="/modalidades/:id" element={<ModalidadeDetail />} />
         <Route path="/atletas" element={<AtletasList />} />
@@ -103,9 +98,6 @@ export function AppRoutes() {
         <Route path="configuracao-fiscal" element={<AdminConfiguracaoFiscal />} />
       </Route>
 
-      {/* =====================================================
-          FALLBACK
-          ===================================================== */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

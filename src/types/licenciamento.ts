@@ -1,43 +1,43 @@
 /* =====================================================
    Tipos de Licenciamento e Transações
-   Alinhado ao Swagger
+   Totalmente Alinhado ao Swagger (Imagens 5, 6, 9, 10)
    ===================================================== */
 
 export interface SimulacaoLicenciamentoDTO {
-  itemAcervoId: string
-  tipoUso: string
-  valorBruto: number
+  itemAcervoId: string;
+  atletaId: string;
+  tipoUso: string;
+  prazoMeses: number;
 }
 
 export interface ResultadoSimulacaoDTO {
-  valorBruto: number
-  percentualAtleta: number
-  percentualPlataforma: number
-  valorAtleta: number
-  valorPlataforma: number
+  itemTitulo: string;
+  valorTotal: number;
+  repasseAtleta: number;
+  comissaoPlataforma: number;
+  chavePixAtleta: string;
 }
 
 export interface EfetivarLicenciamentoDTO {
-  itemAcervoId: string
-  tipoUso: string
-  valorBruto: number
-  observacao?: string
+  itemAcervoId: string;
+  atletaId: string;
+  tipoUso: string;
+  prazoMeses: number;
 }
 
 export interface TransacaoLicenciamento {
-  id: string
-  atletaId: string
-  itemAcervoId: string
-  tipoUso: string
-  valorBruto: number
-  valorAtleta: number
-  valorPlataforma: number
-  criadoEm: string
+  id: string;
+  itemAcervoId: string;
+  atletaId: string;
+  valorTotal: number; // Alinhado ao Swagger (Imagens 5, 9)
+  valorRepasseAtleta: number; // Alinhado ao Swagger (Imagens 5, 9)
+  dataTransacao: string; // Alinhado ao Swagger (Imagens 5, 9)
+  status: string;
+  tipoLicenca: string;
 }
 
 export interface ExtratoLicenciamentoDTO {
-  totalBruto: number
-  totalAtleta: number
-  totalPlataforma: number
-  transacoes: TransacaoLicenciamento[]
+  nomeAtleta: string; // Presente no consolidado (Imagem 5)
+  saldoTotal: number; // Presente no consolidado (Imagem 5)
+  transacoes: TransacaoLicenciamento[];
 }
