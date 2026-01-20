@@ -13,7 +13,7 @@ export default function AdminAtletas() {
         setLoading(true)
         setError(null)
 
-        // ✅ MÉTODO CORRETO (ADMIN)
+        // Endpoint ADMIN correto
         const data = await atletaService.listarTodasAdmin()
         setAtletas(data)
       } catch (err) {
@@ -55,20 +55,15 @@ export default function AdminAtletas() {
           </thead>
 
           <tbody>
-            {atletas.map((a) => (
-              <tr key={a.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={tdStyle}>{a.nome}</td>
-                <td style={tdStyle}>{a.email}</td>
-                <td style={tdStyle}>{a.categoria}</td>
-                <td style={tdStyle}>{a.statusAtleta}</td>
-
-                {/* ✅ CORREÇÃO DA ANOTAÇÃO */}
+            {atletas.map((atleta) => (
+              <tr key={atleta.id} style={{ borderBottom: "1px solid #eee" }}>
+                <td style={tdStyle}>{atleta.nome}</td>
+                <td style={tdStyle}>{atleta.email}</td>
+                <td style={tdStyle}>{atleta.categoria}</td>
+                <td style={tdStyle}>{atleta.statusAtleta}</td>
+                <td style={tdStyle}>{atleta.modalidadesIds.length}</td>
                 <td style={tdStyle}>
-                  {a.modalidadesIds.length}
-                </td>
-
-                <td style={tdStyle}>
-                  {/* ações futuras: editar / remover */}
+                  {/* em breve: editar / verificar / remover */}
                   —
                 </td>
               </tr>

@@ -1,48 +1,19 @@
 import { useEffect, useState } from "react"
-import { atletaService } from "@/services/atletaService"
-import { itemAcervoService } from "@/services/itemAcervoService"
-import { licenciamentoService } from "@/services/licenciamentoService"
-
-interface DashboardStats {
-  totalAtletas: number
-  totalItensAcervo: number
-  faturamentoTotalBruto: number
-}
+import {
+  adminDashboardService,
+  AdminDashboardStatsDTO,
+} from "@/services/adminDashboardService"
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalAtletas: 0,
-    totalItensAcervo: 0,
-    faturamentoTotalBruto: 0,
-  })
-
+  const [stats, setStats] = useState<AdminDashboardStatsDTO | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function carregarDashboard() {
       try {
-        const [atletas, itens] = await Promise.all([
-          atletaService.listarTodasAdmin(),       // ✔ existe
-          itemAcervoService.listarAdmin(),   // ✅ CORRETO
-        ])
-
-        let faturamento = 0
-        try {
-          const vendas = await licenciamentoService.listarTodos()
-          faturamento = vendas.reduce(
-            (acc, v) => acc + (v.valorBruto || 0),
-            0
-          )
-        } catch {
-          faturamento = 0
-        }
-
-        setStats({
-          totalAtletas: atletas.length,
-          totalItensAcervo: itens.length,
-          faturamentoTotalBruto: faturamento,
-        })
+        const data = await adminDashboardService.obterResumo()
+        setStats(data)
       } catch (err) {
         console.error("Erro ao carregar dashboard admin:", err)
         setError("Não foi possível carregar os indicadores do sistema.")
@@ -58,7 +29,7 @@ export default function AdminDashboard() {
     return <div style={{ padding: "2rem" }}>Carregando indicadores globais…</div>
   }
 
-  if (error) {
+  if (error || !stats) {
     return <div style={{ padding: "2rem", color: "red" }}>{error}</div>
   }
 
@@ -75,9 +46,17 @@ export default function AdminDashboard() {
       >
         <Card label="Total de Atletas" value={stats.totalAtletas} />
         <Card label="Itens no Acervo" value={stats.totalItensAcervo} />
+        <Card label="Modalidades" value={stats.totalModalidades} />
+        <Card label="Itens Aguardando Publicação" value={stats.itensAguardandoPublicacao} />
         <Card
           label="Faturamento Bruto"
           value={`R$ ${stats.faturamentoTotalBruto.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+          })}`}
+        />
+        <Card
+          label="Comissões da Plataforma"
+          value={`R$ ${stats.totalComissoesPlataforma.toLocaleString("pt-BR", {
             minimumFractionDigits: 2,
           })}`}
         />
@@ -95,21 +74,21 @@ function Card({ label, value }: { label: string; value: number | string }) {
   )
 }
 
-const cardStyle = {
+const cardStyle: React.CSSProperties = {
   padding: "1.5rem",
   backgroundColor: "white",
   borderRadius: "8px",
   border: "1px solid #eee",
 }
 
-const labelStyle = {
+const labelStyle: React.CSSProperties = {
   display: "block",
   color: "#666",
   fontSize: "0.85rem",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
 }
 
-const numberStyle = {
+const numberStyle: React.CSSProperties = {
   fontSize: "2rem",
   fontWeight: "bold",
 }
