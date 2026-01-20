@@ -42,45 +42,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!token) {
-      setRole(null)
-      setIsLoading(false)
-      return
-    }
-
-    try {
-      const decoded = jwtDecode<TokenPayload>(token)
-
-      // ⛔ TOKEN EXPIRADO
-      if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-        console.warn("⛔ Token expirado")
-        logout()
+    async function validateToken() {
+      if (!token) {
+        setRole(null)
+        setIsLoading(false)
         return
       }
 
-      const resolvedRole =
-        decoded.role ||
-        decoded.roles?.[0] ||
-        decoded.scope?.split(" ")?.[0] ||
-        null
+      try {
+        const decoded = jwtDecode<TokenPayload>(token)
 
-      if (!resolvedRole) {
+        // ⛔ TOKEN EXPIRADO
+        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+          console.warn("⛔ Token expirado")
+          logout()
+          return
+        }
+
+        const resolvedRole =
+          decoded.role ||
+          decoded.roles?.[0] ||
+          decoded.scope?.split(" ")?.[0] ||
+          null
+
+        if (!resolvedRole) {
+          logout()
+          return
+        }
+
+        setRole(resolvedRole)
+      } catch {
         logout()
-        return
+      } finally {
+        setIsLoading(false)
       }
-
-      setRole(resolvedRole)
-    } catch {
-      logout()
-    } finally {
-      setIsLoading(false)
     }
+
+    validateToken()
   }, [token, logout])
 
   function login(newToken: string) {
     localStorage.setItem("authToken", newToken)
     setToken(newToken)
-    setIsLoading(true)
+    setIsLoading(true) // Força o estado de carregamento para processar o novo token
   }
 
   return (
@@ -88,6 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         token,
         role,
+        // Só é considerado autenticado se tiver token E o role já foi processado
         isAuthenticated: Boolean(token && role),
         isLoading,
         login,

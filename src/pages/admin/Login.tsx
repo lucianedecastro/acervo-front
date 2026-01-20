@@ -10,7 +10,7 @@ interface LoginResponse {
 
 export default function Login() {
   const navigate = useNavigate()
-  const { login, role, isAuthenticated } = useAuth()
+  const { login, role, isAuthenticated, isLoading } = useAuth()
 
   const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
@@ -21,16 +21,19 @@ export default function Login() {
      REDIRECT APÓS LOGIN
      ========================== */
   useEffect(() => {
-    if (!isAuthenticated) return
+    // Se ainda está carregando o estado de auth, não redireciona ainda
+    if (isLoading) return
 
-    if (role === "ROLE_ADMIN") {
-      navigate("/admin/modalidades", { replace: true })
-    } else if (role === "ROLE_ATLETA") {
-      navigate("/dashboard/atleta", { replace: true })
-    } else {
-      navigate("/", { replace: true })
+    if (isAuthenticated && role) {
+      if (role === "ROLE_ADMIN") {
+        navigate("/admin", { replace: true })
+      } else if (role === "ROLE_ATLETA") {
+        navigate("/dashboard/atleta", { replace: true })
+      } else {
+        navigate("/", { replace: true })
+      }
     }
-  }, [isAuthenticated, role, navigate])
+  }, [isAuthenticated, role, navigate, isLoading])
 
   /* ==========================
      SUBMIT
@@ -53,7 +56,6 @@ export default function Login() {
       login(data.token)
     } catch (err: any) {
       console.error("Erro no login:", err)
-
       if (err.response?.status === 401) {
         setError("Email ou senha inválidos.")
       } else {
@@ -64,9 +66,10 @@ export default function Login() {
     }
   }
 
-  /* ==========================
-     RENDER
-     ========================== */
+  if (isLoading && !isAuthenticated) {
+    return <p style={{ textAlign: "center", marginTop: "2rem" }}>Carregando...</p>
+  }
+
   return (
     <main style={{ padding: "2rem", maxWidth: "420px", margin: "0 auto" }}>
       <h1>Acesso ao Acervo</h1>
@@ -76,6 +79,7 @@ export default function Login() {
           <label>Email</label>
           <input
             type="email"
+            style={{ width: '100%', padding: '8px' }}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -86,6 +90,7 @@ export default function Login() {
           <label>Senha</label>
           <input
             type="password"
+            style={{ width: '100%', padding: '8px' }}
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required
@@ -94,7 +99,11 @@ export default function Login() {
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <button type="submit" disabled={loading}>
+        <button 
+          type="submit" 
+          disabled={loading}
+          style={{ width: '100%', padding: '10px', cursor: 'pointer' }}
+        >
           {loading ? "Entrando..." : "Entrar"}
         </button>
       </form>

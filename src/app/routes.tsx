@@ -20,7 +20,7 @@ import AtletaDetail from "@/pages/public/AtletaDetail"
 
 /* ======================
    Admin
-   ====================== */
+   ===================== */
 import Login from "@/pages/admin/Login"
 import AdminDashboard from "@/pages/admin/AdminDashboard"
 import AdminModalidades from "@/pages/admin/AdminModalidades"
@@ -44,82 +44,84 @@ export function AppRoutes() {
     <Routes>
       {/* =====================================================
           ROTAS PÚBLICAS
-         ===================================================== */}
+          ===================================================== */}
       <Route element={<LayoutPublic />}>
         <Route path="/" element={<Home />} />
-
         <Route path="/modalidades" element={<ModalidadesList />} />
         <Route path="/modalidades/:id" element={<ModalidadeDetail />} />
-
         <Route path="/atletas" element={<AtletasList />} />
         <Route path="/atletas/:id" element={<AtletaDetail />} />
-
         <Route path="/login" element={<Login />} />
       </Route>
 
       {/* =====================================================
           ROTAS DA ATLETA (PROTEGIDAS)
-         ===================================================== */}
+          Prefixadas com /dashboard para evitar conflitos
+          ===================================================== */}
       <Route
+        path="/dashboard"
         element={
           <ProtectedRoute allowedRoles={["ROLE_ATLETA"]}>
             <LayoutAtleta />
           </ProtectedRoute>
         }
       >
+        {/* Redireciona /dashboard para /dashboard/atleta */}
         <Route index element={<Navigate to="/dashboard/atleta" replace />} />
-        <Route path="/dashboard/atleta" element={<AtletaDashboard />} />
-        <Route path="/atleta/perfil" element={<AtletaPerfil />} />
-        <Route path="/atleta/extrato" element={<AtletaExtrato />} />
+        <Route path="atleta" element={<AtletaDashboard />} />
+        <Route path="perfil" element={<AtletaPerfil />} />
+        <Route path="extrato" element={<AtletaExtrato />} />
       </Route>
 
       {/* =====================================================
           ROTAS ADMIN (PROTEGIDAS)
-         ===================================================== */}
+          Prefixadas explicitamente com /admin
+          ===================================================== */}
       <Route
+        path="/admin"
         element={
           <ProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
             <LayoutAdmin />
           </ProtectedRoute>
         }
       >
-        {/* 🔹 ADMIN DASHBOARD */}
+        {/* 🔹 ADMIN DASHBOARD - Acessado via /admin */}
         <Route index element={<AdminDashboard />} />
 
         {/* 🔹 ADMIN – LICENCIAMENTOS & FINANCEIRO */}
-        <Route path="/admin/licenciamentos" element={<AdminLicenciamentos />} />
+        <Route path="licenciamentos" element={<AdminLicenciamentos />} />
         <Route
-          path="/admin/licenciamentos/simulacao"
+          path="licenciamentos/simulacao"
           element={<AdminSimulacaoLicenciamento />}
         />
         <Route
-          path="/admin/licenciamentos/extratos"
+          path="licenciamentos/extratos"
           element={<AdminExtratoAtleta />}
         />
 
         {/* 🔹 ADMIN – MODALIDADES */}
-        <Route path="/admin/modalidades" element={<AdminModalidades />} />
-        <Route path="/admin/modalidades/nova" element={<ModalidadeForm />} />
+        <Route path="modalidades" element={<AdminModalidades />} />
+        <Route path="modalidades/nova" element={<ModalidadeForm />} />
         <Route
-          path="/admin/modalidades/editar/:id"
+          path="modalidades/editar/:id"
           element={<ModalidadeForm />}
         />
 
         {/* 🔹 ADMIN – ATLETAS */}
-        <Route path="/admin/atletas" element={<AdminAtletas />} />
-        <Route path="/admin/atletas/nova" element={<AtletaForm />} />
-        <Route path="/admin/atletas/editar/:id" element={<AtletaForm />} />
+        <Route path="atletas" element={<AdminAtletas />} />
+        <Route path="atletas/nova" element={<AtletaForm />} />
+        <Route path="atletas/editar/:id" element={<AtletaForm />} />
 
         {/* 🔹 ADMIN – CONFIGURAÇÃO FISCAL */}
         <Route
-          path="/admin/configuracao-fiscal"
+          path="configuracao-fiscal"
           element={<AdminConfiguracaoFiscal />}
         />
       </Route>
 
       {/* =====================================================
           FALLBACK
-         ===================================================== */}
+          ===================================================== */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

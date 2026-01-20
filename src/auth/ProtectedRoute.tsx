@@ -15,10 +15,14 @@ export function ProtectedRoute({
   const location = useLocation()
 
   /* ==========================
-     ⏳ Aguarda AuthContext
+     ⏳ Aguarda AuthContext (Evita tela branca)
      ========================== */
   if (isLoading) {
-    return null
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>
+        <p>Verificando permissões...</p>
+      </div>
+    )
   }
 
   /* ==========================
@@ -32,6 +36,7 @@ export function ProtectedRoute({
      🚫 Role não autorizada
      ========================== */
   if (allowedRoles && (!role || !allowedRoles.includes(role))) {
+    console.warn(`Acesso negado para a role: ${role}`)
     return <Navigate to="/" replace />
   }
 
