@@ -1,73 +1,34 @@
 /* =====================================================
    SERVIÇO: LICENCIAMENTO / FINANCEIRO
-   Totalmente alinhado ao Swagger
+   Contrato fiel ao Swagger e Backend
    ===================================================== */
 
 import api from "@/services/api"
-
-/* ======================
-   TIPOS
-   ====================== */
-
-export interface LicenciamentoDTO {
-  id: string
-  data: string
-  atletaNome: string
-  itemTitulo: string
-  tipoLicenca: string
-  valorBruto: number
-  repasseAtleta: number
-  status: string
-}
-
-export interface SimulacaoLicenciamentoDTO {
-  itemAcervoId: string
-  atletaId: string
-  tipoUso: string
-  prazoMeses: number
-}
-
-export interface ResultadoSimulacaoDTO {
-  itemTitulo: string
-  valorTotal: number
-  repasseAtleta: number
-  comissaoPlataforma: number
-  chavePixAtleta: string
-}
-
-export interface TransacaoLicenciamento {
-  id: string
-  itemAcervoId: string
-  atletaId: string
-  valorTotal: number
-  valorRepasseAtleta: number
-  dataTransacao: string
-  status: string
-  tipoLicenca: string
-}
-
-export interface ExtratoLicenciamentoDTO {
-  nomeAtleta: string
-  saldoTotal: number
-  transacoes: TransacaoLicenciamento[]
-}
-
-/* ======================
-   SERVICE
-   ====================== */
+import {
+  SimulacaoLicenciamentoDTO,
+  ResultadoSimulacaoDTO,
+  ExtratoLicenciamentoDTO,
+  TransacaoLicenciamentoDTO,
+} from "@/types/licenciamento"
 
 export const licenciamentoService = {
-  /* ===== ATLETA ===== */
+  /* ======================
+     ATLETA
+     ====================== */
 
   // GET /licenciamento/extrato/atleta/{atletaId}
-  async buscarExtratoPorAtleta(atletaId: string): Promise<LicenciamentoDTO[]> {
-    const response = await api.get<LicenciamentoDTO[]>(
+  async buscarExtratoPorAtleta(
+    atletaId: string
+  ): Promise<TransacaoLicenciamentoDTO[]> {
+    const response = await api.get<TransacaoLicenciamentoDTO[]>(
       `/licenciamento/extrato/atleta/${atletaId}`
     )
     return response.data
   },
 
-  /* ===== ADMIN ===== */
+  /* ======================
+     ADMIN
+     ====================== */
 
   // GET /licenciamento/extrato/consolidado/{atletaId}
   async buscarExtratoConsolidado(
@@ -79,19 +40,19 @@ export const licenciamentoService = {
     return response.data
   },
 
-  // GET /licenciamentos
-  async listarTodos(): Promise<LicenciamentoDTO[]> {
-    const response = await api.get<LicenciamentoDTO[]>("/licenciamentos")
+  // GET /licenciamento/transacoes/atleta/{atletaId}
+  async listarTransacoesPorAtleta(
+    atletaId: string
+  ): Promise<TransacaoLicenciamentoDTO[]> {
+    const response = await api.get<TransacaoLicenciamentoDTO[]>(
+      `/licenciamento/transacoes/atleta/${atletaId}`
+    )
     return response.data
   },
 
-  // GET /licenciamentos/{id}
-  async buscarPorId(id: string): Promise<LicenciamentoDTO> {
-    const response = await api.get<LicenciamentoDTO>(`/licenciamentos/${id}`)
-    return response.data
-  },
-
-  /* ===== SIMULAÇÃO ===== */
+  /* ======================
+     SIMULAÇÃO
+     ====================== */
 
   // POST /licenciamento/simular
   async simular(

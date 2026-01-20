@@ -61,7 +61,7 @@ export default function AdminAtletas() {
                 <td style={tdStyle}>{atleta.email}</td>
                 <td style={tdStyle}>{atleta.categoria}</td>
                 <td style={tdStyle}>{atleta.statusAtleta}</td>
-                <td style={tdStyle}>{atleta.modalidadesIds.length}</td>
+                <td style={tdStyle}>{atleta.modalidadesIds.length ?? 0}</td>
                 <td style={tdStyle}>
                   {/* em breve: editar / verificar / remover */}
                   —
