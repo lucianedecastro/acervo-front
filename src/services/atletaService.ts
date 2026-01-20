@@ -1,82 +1,79 @@
-import api from "@/services/api"
-import {
-  Atleta,
-  AtletaFormDTO,
-  DashboardAtletaDTO,
-} from "@/types/atleta"
+/* =====================================================
+   SERVIÇO: ATLETA
+   Funcionalidade: Gestão de Atletas (Público, Me e Admin)
+   Alinhado ao Swagger: Imagens a1cbf9, a25301 e ad3063
+   ===================================================== */
 
-/**
- * Serviço de Atletas
- * Alinhado com AtletaController (backend)
- */
+import api from "@/services/api";
+import { Atleta, AtletaUpdateDTO, DashboardAtletaDTO } from "@/types/atleta";
+
 export const atletaService = {
-  /* ==========================
-     ROTAS PÚBLICAS
-     ========================== */
-
-  /**
-   * GET /atletas
-   */
-  async listarTodas(): Promise<Atleta[]> {
-    const { data } = await api.get<Atleta[]>("/atletas")
-    return data
+  /* =====================================================
+      1. ROTAS PÚBLICAS (Acessíveis por qualquer visitante)
+     ===================================================== */
+  
+  // Lista atletas para a vitrine (Imagem 1.1)
+  async listarPublico(): Promise<Atleta[]> {
+    const response = await api.get<Atleta[]>("/atletas/public");
+    return response.data;
   },
 
-  /**
-   * GET /atletas/{id}
-   */
-  async buscarPorId(id: string): Promise<Atleta> {
-    const { data } = await api.get<Atleta>(`/atletas/${id}`)
-    return data
+  // Busca detalhe pelo slug para a vitrine pública (Imagem 1.1)
+  async buscarPorSlug(slug: string): Promise<Atleta> {
+    const response = await api.get<Atleta>(`/atletas/public/${slug}`);
+    return response.data;
   },
 
-  /* ==========================
-     ROTAS DA ATLETA LOGADA
-     ========================== */
-
-  /**
-   * GET /atletas/me
-   */
+  /* =====================================================
+      2. VISÃO DA ATLETA LOGADA (Área Privada)
+     ===================================================== */
+  
+  // Perfil completo da atleta logada (Swagger image_a1cbf9)
   async buscarMeuPerfil(): Promise<Atleta> {
-    const { data } = await api.get<Atleta>("/atletas/me")
-    return data
+    const response = await api.get<Atleta>("/atletas/me");
+    return response.data;
   },
 
-  /**
-   * GET /dashboard/atleta
-   */
+  // Indicadores do dashboard da atleta (Imagem 1.1)
   async buscarDashboard(): Promise<DashboardAtletaDTO> {
-    const { data } = await api.get<DashboardAtletaDTO>("/dashboard/atleta")
-    return data
+    const response = await api.get<DashboardAtletaDTO>("/dashboard/atleta");
+    return response.data;
   },
 
-  /* ==========================
-     ROTAS ADMIN
-     ========================== */
-
-  /**
-   * POST /atletas
-   */
-  async criar(payload: AtletaFormDTO): Promise<Atleta> {
-    const { data } = await api.post<Atleta>("/atletas", payload)
-    return data
+  /* =====================================================
+      3. VISÃO ADMINISTRATIVA (Controle Total)
+     ===================================================== */
+  
+  // Lista todas as atletas para o grid do Admin (Swagger image_a25301)
+  async listarTodasAdmin(): Promise<Atleta[]> {
+    const response = await api.get<Atleta[]>("/atletas");
+    return response.data;
   },
 
-  /**
-   * PUT /atletas/{id}
-   */
-  async atualizar(
-    id: string,
-    payload: AtletaFormDTO
-  ): Promise<Atleta> {
-    const { data } = await api.put<Atleta>(`/atletas/${id}`, payload)
-    return data
+  // Busca uma atleta por ID para o AtletaForm (Swagger image_a25301)
+  async buscarPorId(id: string): Promise<Atleta> {
+    const response = await api.get<Atleta>(`/atletas/${id}`);
+    return response.data;
   },
 
-  /**
-   * DELETE /atletas/{id}
-   */
+  // Cadastro de nova atleta - POST /atletas (Resolve erro image_ad1e1f)
+  async criar(payload: AtletaUpdateDTO): Promise<void> {
+    await api.post("/atletas", payload);
+  },
+
+  // Atualização total da atleta - PUT /atletas/{id} (Swagger image_a25301)
+  async atualizar(id: string, data: AtletaUpdateDTO): Promise<Atleta> {
+    const response = await api.put<Atleta>(`/atletas/${id}`, data);
+    return response.data;
+  },
+
+  // Validação administrativa (Imagem 1.12)
+  async verificarAtleta(id: string, status: "VERIFICADO" | "REJEITADO", observacoes?: string): Promise<void> {
+    await api.patch(`/atletas/${id}/verificacao`, { status, observacoes });
+  },
+
+  // Exclusão de atleta - DELETE /atletas/{id} (Resolve erro image_aca97a)
   async remover(id: string): Promise<void> {
-    await api.delete(`/atletas/${id}`)
-  },
-}
+    await api.delete(`/atletas/${id}`);
+  }
+};

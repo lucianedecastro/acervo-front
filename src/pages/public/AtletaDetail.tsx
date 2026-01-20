@@ -1,14 +1,20 @@
+/* =====================================================
+   DETALHE DA ATLETA (PÚBLICO)
+   Funcionalidade: Vitrine biográfica e acervo para visitantes
+   Alinhado ao Swagger: GET /atletas/public/{slug}
+   ===================================================== */
+
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 
 import { atletaService } from "@/services/atletaService"
 import { itemAcervoService } from "@/services/itemAcervoService"
 
-import { Atleta, Foto } from "@/types/atleta"
+import { Atleta } from "@/types/atleta"
 import { ItemAcervoResponseDTO } from "@/types/itemAcervo"
 
 export default function AtletaDetail() {
-  const { id } = useParams<{ id: string }>()
+  const { slug } = useParams<{ slug: string }>() 
   const navigate = useNavigate()
 
   const [atleta, setAtleta] = useState<Atleta | null>(null)
@@ -17,64 +23,50 @@ export default function AtletaDetail() {
   const [error, setError] = useState<string | null>(null)
 
   /* ==========================
-      CARREGAR DADOS
-      ========================== */
+      CARREGAR DADOS PÚBLICOS
+     ========================== */
   useEffect(() => {
-    if (!id) return
+    // CORREÇÃO: Validação para garantir que 'slug' seja string antes de chamar o service
+    if (!slug) return
 
     async function carregar() {
       try {
         setLoading(true)
+        setError(null)
 
-        const [dadosAtleta, itens] = await Promise.all([
-          atletaService.buscarPorId(id as string),
-          itemAcervoService.listarPorAtleta(id as string),
-        ])
+        // Buscamos pelo slug (rota pública do service)
+        const dadosAtleta = await atletaService.buscarPorSlug(slug as string)
+        
+        // Buscamos itens do acervo vinculados
+        const itens = await itemAcervoService.listarPorAtleta(dadosAtleta.id)
 
-        // Normaliza fotos para evitar undefined
-        setAtleta({
-          ...dadosAtleta,
-          fotos: dadosAtleta.fotos ?? [],
-        })
-
+        setAtleta(dadosAtleta)
         setItensAcervo(itens)
       } catch (err) {
-        console.error("Erro ao carregar dados:", err)
-        setError("Atleta não encontrada ou erro na conexão.")
+        console.error("Erro ao carregar perfil público:", err)
+        setError("Perfil não encontrado ou temporariamente indisponível.")
       } finally {
         setLoading(false)
       }
     }
 
     carregar()
-  }, [id])
+  }, [slug])
 
-  /* ==========================
-      STATES DE ERRO / LOADING
-      ========================== */
-  if (loading) {
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>
-        <p>Carregando perfil e acervo...</p>
-      </div>
-    )
-  }
+  if (loading) return (
+    <div style={{ padding: "5rem", textAlign: "center", color: "#666" }}>
+      <p>Carregando história e conquistas...</p>
+    </div>
+  )
 
-  if (error || !atleta) {
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>
-        <p style={{ color: "#d93025", marginBottom: "1rem" }}>
-          {error || "Atleta não encontrada."}
-        </p>
-        <button onClick={() => navigate("/atletas")} style={backButtonStyle}>
-          Voltar para a lista
-        </button>
-      </div>
-    )
-  }
-
-  const fotos: Foto[] = atleta.fotos ?? []
-  const fotoDestaque = fotos.find((f) => f.isDestaque) || fotos[0] || null
+  if (error || !atleta) return (
+    <div style={{ padding: "5rem", textAlign: "center" }}>
+      <p style={{ color: "#d93025", marginBottom: "1.5rem" }}>{error}</p>
+      <button onClick={() => navigate("/atletas")} style={backButtonStyle}>
+        Voltar para a Galeria
+      </button>
+    </div>
+  )
 
   return (
     <main style={containerStyle}>
@@ -83,44 +75,45 @@ export default function AtletaDetail() {
       </button>
 
       <article>
+        {/* CABEÇALHO DO PERFIL */}
         <header style={headerGridStyle}>
+          {/* CORREÇÃO: Incluído objeto de estilo em falta */}
           <div style={photoContainerStyle}>
-            {fotoDestaque && (
+            {atleta.fotoDestaqueUrl ? (
               <img
-                src={fotoDestaque.url}
+                src={atleta.fotoDestaqueUrl}
                 alt={atleta.nome}
                 style={photoStyle}
               />
+            ) : (
+              <div style={photoPlaceholderStyle}>Imagem em processamento</div>
             )}
           </div>
 
           <div style={infoContainerStyle}>
+            <span style={categoryBadgeStyle(atleta.categoria)}>{atleta.categoria}</span>
             <h1 style={nameStyle}>{atleta.nome}</h1>
-
-            {atleta.modalidades.length > 0 && (
-              <h3 style={modalidadeLabelStyle}>
-                {atleta.modalidades.join(" · ")}
-              </h3>
-            )}
+            
+            <h3 style={modalidadeLabelStyle}>
+              {atleta.modalidadesIds && atleta.modalidadesIds.length > 0 
+                ? "Representante do Esporte Brasileiro" 
+                : "Trajetória Histórica"}
+            </h3>
           </div>
         </header>
 
-        {/* ===== BIOGRAFIA ===== */}
+        {/* BIOGRAFIA */}
         <section style={sectionStyle}>
           <h2 style={sectionTitleStyle}>Biografia e Trajetória</h2>
           <div style={bioTextStyle}>
-            {atleta.biografia}
+            {atleta.biografia || "Biografia em fase de pesquisa histórica."}
           </div>
         </section>
 
-        {/* ===== ITENS DO ACERVO ===== */}
+        {/* ITENS DO ACERVO */}
         {itensAcervo.length > 0 && (
           <section style={acervoContainerStyle}>
             <h2 style={sectionTitleStyle}>Itens do Acervo Histórico</h2>
-            <p style={{ color: "#666", marginBottom: "1.5rem" }}>
-              Objetos, medalhas e documentos que fazem parte da história desta atleta.
-            </p>
-
             <div style={itemsGridStyle}>
               {itensAcervo.map((item) => (
                 <div key={item.id} style={itemCardStyle}>
@@ -131,37 +124,11 @@ export default function AtletaDetail() {
                       style={itemImageStyle}
                     />
                   )}
-                  <h4 style={{ marginTop: "1rem", color: "#111" }}>
-                    {item.titulo}
-                  </h4>
-                  <p style={itemDescriptionStyle}>
-                    {item.descricao}
-                  </p>
+                  <div style={{ padding: "1rem" }}>
+                    <h4 style={{ margin: "0 0 0.5rem 0", color: "#111" }}>{item.titulo}</h4>
+                    <p style={itemDescriptionStyle}>{item.descricao}</p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ===== GALERIA ===== */}
-        {fotos.length > 1 && (
-          <section style={sectionStyle}>
-            <h2 style={sectionTitleStyle}>Galeria de Imagens</h2>
-            <div style={galleryGridStyle}>
-              {fotos.map((foto) => (
-                <a
-                  key={foto.id}
-                  href={foto.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={galleryItemStyle}
-                >
-                  <img
-                    src={foto.url}
-                    alt="Acervo fotográfico"
-                    style={galleryImageStyle}
-                  />
-                </a>
               ))}
             </div>
           </section>
@@ -172,135 +139,42 @@ export default function AtletaDetail() {
 }
 
 /* =========================
-   ESTILOS (CSS-IN-JS)
+    ESTILOS (CSS-IN-JS)
    ========================= */
 
-const containerStyle: React.CSSProperties = {
-  padding: "2rem 1.5rem",
-  maxWidth: "960px",
-  margin: "0 auto",
-}
+const containerStyle: React.CSSProperties = { padding: "2rem 1.5rem", maxWidth: "1000px", margin: "0 auto" }
 
-const backButtonStyle: React.CSSProperties = {
-  marginBottom: "2rem",
-  cursor: "pointer",
-  backgroundColor: "transparent",
-  border: "1px solid #ddd",
-  padding: "0.5rem 1rem",
-  borderRadius: "4px",
-  fontSize: "0.9rem",
-  color: "#555",
-  transition: "all 0.2s",
-}
+const backButtonStyle: React.CSSProperties = { marginBottom: "2rem", cursor: "pointer", backgroundColor: "transparent", border: "1px solid #ddd", padding: "0.5rem 1.2rem", borderRadius: "20px", fontSize: "0.85rem", color: "#666" }
 
-const headerGridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-  gap: "2.5rem",
-  marginBottom: "4rem",
-  alignItems: "center",
-}
+const headerGridStyle: React.CSSProperties = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "3rem", marginBottom: "4rem", alignItems: "center" }
 
-const photoContainerStyle: React.CSSProperties = {
-  textAlign: "center",
-}
+// CORREÇÃO: Adicionado estilo que estava faltando no seu print
+const photoContainerStyle: React.CSSProperties = { textAlign: "center" }
 
-const photoStyle: React.CSSProperties = {
-  width: "100%",
-  maxWidth: "350px",
-  borderRadius: "12px",
-  boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
-  objectFit: "cover",
-}
+const photoStyle: React.CSSProperties = { width: "100%", maxWidth: "400px", borderRadius: "4px", boxShadow: "0 20px 40px rgba(0,0,0,0.08)", objectFit: "cover" }
 
-const infoContainerStyle: React.CSSProperties = {
-  textAlign: "left",
-}
+const infoContainerStyle: React.CSSProperties = { textAlign: "left" }
 
-const nameStyle: React.CSSProperties = {
-  fontSize: "clamp(2rem, 5vw, 3rem)",
-  marginBottom: "0.75rem",
-  color: "#111",
-  lineHeight: "1.1",
-}
+const nameStyle: React.CSSProperties = { fontSize: "clamp(2.5rem, 6vw, 3.5rem)", marginBottom: "1rem", color: "#1a1a1a", fontWeight: "800", lineHeight: "1" }
 
-const modalidadeLabelStyle: React.CSSProperties = {
-  color: "#c5a059",
-  textTransform: "uppercase",
-  letterSpacing: "1.5px",
-  fontSize: "0.9rem",
-  fontWeight: "600",
-}
+const categoryBadgeStyle = (cat: string): React.CSSProperties => ({ display: "inline-block", backgroundColor: "#f0f0f0", padding: "4px 12px", borderRadius: "4px", fontSize: "0.7rem", fontWeight: "bold", textTransform: "uppercase", marginBottom: "1rem", color: "#555" })
 
-const sectionStyle: React.CSSProperties = {
-  marginBottom: "4rem",
-}
+const modalidadeLabelStyle: React.CSSProperties = { color: "#c5a059", textTransform: "uppercase", letterSpacing: "2px", fontSize: "0.85rem", fontWeight: "700" }
 
-const sectionTitleStyle: React.CSSProperties = {
-  fontSize: "1.5rem",
-  marginBottom: "1.5rem",
-  borderBottom: "1px solid #eee",
-  paddingBottom: "10px",
-  color: "#111",
-}
+const sectionStyle: React.CSSProperties = { marginBottom: "5rem" }
 
-const bioTextStyle: React.CSSProperties = {
-  lineHeight: "1.8",
-  whiteSpace: "pre-wrap",
-  color: "#444",
-  fontSize: "1.1rem",
-}
+const sectionTitleStyle: React.CSSProperties = { fontSize: "1.25rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "2rem", borderBottom: "2px solid #1a1a1a", display: "inline-block", paddingBottom: "5px" }
 
-const acervoContainerStyle: React.CSSProperties = {
-  marginBottom: "4rem",
-  padding: "2rem",
-  background: "#fdfdfd",
-  border: "1px solid #f0f0f0",
-  borderRadius: "12px",
-}
+const bioTextStyle: React.CSSProperties = { lineHeight: "1.9", whiteSpace: "pre-wrap", color: "#333", fontSize: "1.15rem", textAlign: "justify" }
 
-const itemsGridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-  gap: "2rem",
-}
+const acervoContainerStyle: React.CSSProperties = { marginBottom: "5rem", padding: "3rem", background: "#f9f9f9", borderRadius: "16px" }
 
-const itemCardStyle: React.CSSProperties = {
-  background: "#fff",
-  padding: "1rem",
-  borderRadius: "8px",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-  border: "1px solid #f5f5f5",
-}
+const itemsGridStyle: React.CSSProperties = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "2.5rem" }
 
-const itemImageStyle: React.CSSProperties = {
-  width: "100%",
-  height: "200px",
-  objectFit: "cover",
-  borderRadius: "6px",
-}
+const itemCardStyle: React.CSSProperties = { background: "#fff", borderRadius: "8px", overflow: "hidden", boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }
 
-const itemDescriptionStyle: React.CSSProperties = {
-  fontSize: "0.9rem",
-  color: "#666",
-  marginTop: "0.5rem",
-  lineHeight: "1.4",
-}
+const itemImageStyle: React.CSSProperties = { width: "100%", height: "250px", objectFit: "cover" }
 
-const galleryGridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-  gap: "1rem",
-}
+const itemDescriptionStyle: React.CSSProperties = { fontSize: "0.9rem", color: "#666", lineHeight: "1.5" }
 
-const galleryItemStyle: React.CSSProperties = {
-  display: "block",
-  transition: "opacity 0.2s",
-}
-
-const galleryImageStyle: React.CSSProperties = {
-  width: "100%",
-  height: "140px",
-  objectFit: "cover",
-  borderRadius: "6px",
-}
+const photoPlaceholderStyle: React.CSSProperties = { width: "100%", height: "400px", backgroundColor: "#eee", display: "flex", alignItems: "center", justifyContent: "center", color: "#aaa" }

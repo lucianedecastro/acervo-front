@@ -1,28 +1,58 @@
 /* =====================================================
-   Tipo Modalidade
-   Alinhado com Swagger
+   Tipo Modalidade (Sincronizado com Swagger ad3fa4)
    ===================================================== */
 
+/**
+ * Interface para fotos históricas associadas à modalidade
+ * Alinhado ao Schema FotoAcervo (Imagem ad4002)
+ */
+export interface FotoAcervo {
+  publicId: string;
+  urlVisualizacao: string;
+  urlAltaResolucao: string;
+  legenda: string;
+  nomeArquivo: string;
+  destaque: boolean;
+}
+
 export interface Modalidade {
-  /** ID único */
-  id: string
+  /** ID único gerado pelo banco */
+  id: string;
 
-  /** Nome da modalidade */
-  nome: string
+  /** Nome oficial do esporte */
+  nome: string;
 
-  /** Slug opcional (quando existir) */
-  slug?: string
+  /** URL amigável para SEO (gerada no backend) */
+  slug: string;
 
-  /** Texto histórico */
-  historia?: string
+  /** Breve histórico da modalidade no Brasil */
+  historia?: string;
 
-  /** URL do pictograma */
-  pictogramaUrl?: string
+  /** Ícone/pictograma (URL do Cloudinary) */
+  pictogramaUrl?: string;
 
-  /** Flag de ativação (admin) */
-  ativa?: boolean
+  /** Lista de fotos da galeria histórica */
+  fotos: FotoAcervo[];
 
-  /** Auditoria (admin) */
-  criadoEm?: string
-  atualizadoEm?: string
+  /** Referência da imagem principal no Cloudinary */
+  fotoDestaquePublicId: string;
+
+  /** Controle de visibilidade no portal público */
+  ativa: boolean;
+
+  /** Metadados de auditoria */
+  criadoEm: string;
+  atualizadoEm: string;
+}
+
+/**
+ * DTO Unificado para Criação e Edição (Schema ModalidadeDTO ad3fa4)
+ */
+export interface ModalidadeDTO {
+  nome: string;
+  historia?: string;
+  pictogramaUrl?: string;
+  ativa: boolean;
+  fotos: FotoAcervo[];
+  fotoDestaquePublicId: string;
 }

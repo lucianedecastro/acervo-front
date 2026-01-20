@@ -1,66 +1,63 @@
-import api from "./api"
-import { Modalidade } from "@/types/modalidade"
+/* =====================================================
+   SERVIÇO: MODALIDADE
+   Funcionalidade: Gestão de Categorias Esportivas
+   Endpoints: Imagens ad92b5, ad927c, ad9241, ad91df
+   ===================================================== */
 
-/**
- * DTOs explícitos (Swagger-aligned)
- */
-export interface ModalidadeCreateDTO {
-  nome: string
-  historia?: string
-  pictogramaUrl?: string
-}
+import api from "./api";
+import { Modalidade, ModalidadeDTO } from "@/types/modalidade";
 
-export interface ModalidadeUpdateDTO extends ModalidadeCreateDTO {
-  ativa?: boolean
-}
-
-/**
- * Serviço de Modalidades
- */
 export const modalidadeService = {
   /**
-   * GET /modalidades (pública)
+   * Lista TODAS as modalidades (ativas e inativas) para o Admin
+   * GET /modalidades/admin (Imagem ad92b5)
    */
-  async listar(): Promise<Modalidade[]> {
-    const { data } = await api.get<Modalidade[]>("/modalidades")
-    return data
+  async listarAdmin(): Promise<Modalidade[]> {
+    const response = await api.get<Modalidade[]>("/modalidades/admin");
+    return response.data;
   },
 
   /**
-   * GET /modalidades/{id} (pública)
+   * Busca detalhe público pelo Slug (Visitantes)
+   * GET /modalidades/slug/{slug} (Imagem ad927c)
+   */
+  async buscarPorSlug(slug: string): Promise<Modalidade> {
+    const response = await api.get<Modalidade>(`/modalidades/slug/${slug}`);
+    return response.data;
+  },
+
+  /**
+   * Busca detalhe completo para o formulário de edição
+   * GET /modalidades/{id}
    */
   async buscarPorId(id: string): Promise<Modalidade> {
-    const { data } = await api.get<Modalidade>(`/modalidades/${id}`)
-    return data
+    const response = await api.get<Modalidade>(`/modalidades/${id}`);
+    return response.data;
   },
 
   /**
-   * POST /modalidades (ADMIN)
+   * Cria uma nova modalidade esportiva
+   * POST /modalidades (Imagem ad9241)
    */
-  async criar(payload: ModalidadeCreateDTO): Promise<Modalidade> {
-    const { data } = await api.post<Modalidade>("/modalidades", payload)
-    return data
+  async criar(payload: ModalidadeDTO): Promise<Modalidade> {
+    const response = await api.post<Modalidade>("/modalidades", payload);
+    return response.data;
   },
 
   /**
-   * PUT /modalidades/{id} (ADMIN)
+   * Atualiza dados de uma modalidade existente
+   * PUT /modalidades/{id} (Imagem ad91df)
    */
-  async atualizar(
-    id: string,
-    payload: ModalidadeUpdateDTO
-  ): Promise<Modalidade> {
-    const { data } = await api.put<Modalidade>(
-      `/modalidades/${id}`,
-      payload
-    )
-    return data
+  async atualizar(id: string, payload: ModalidadeDTO): Promise<Modalidade> {
+    const response = await api.put<Modalidade>(`/modalidades/${id}`, payload);
+    return response.data;
   },
 
   /**
-   * DELETE /modalidades/{id} (ADMIN)
-   * Backend retorna 204
+   * Remove permanentemente uma modalidade
+   * DELETE /modalidades/{id} (Imagem ad9203)
    */
   async remover(id: string): Promise<void> {
-    await api.delete(`/modalidades/${id}`)
-  },
-}
+    await api.delete(`/modalidades/${id}`);
+  }
+};

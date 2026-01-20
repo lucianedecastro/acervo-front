@@ -1,3 +1,9 @@
+/* =====================================================
+   LISTAGEM DE ATLETAS (PÚBLICO)
+   Funcionalidade: Vitrine principal do acervo
+   Alinhado ao Swagger: GET /atletas/public
+   ===================================================== */
+
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -11,12 +17,16 @@ export default function AtletasList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  /* ==========================
+      CARREGAR ACERVO PÚBLICO
+     ========================== */
   useEffect(() => {
+    // CORREÇÃO: Utilizando o método público correto do serviço
     atletaService
-      .listarTodas()
+      .listarPublico()
       .then(setAtletas)
       .catch((err) => {
-        console.error("Erro ao carregar atletas:", err)
+        console.error("Erro ao carregar vitrine de atletas:", err)
         setError("Não foi possível carregar o acervo de atletas no momento.")
       })
       .finally(() => setLoading(false))
@@ -25,7 +35,7 @@ export default function AtletasList() {
   if (loading) {
     return (
       <div style={{ padding: "4rem", textAlign: "center" }}>
-        <p style={{ color: "#666" }}>Carregando acervo de atletas...</p>
+        <p style={{ color: "#666" }}>Carregando trajetórias históricas...</p>
       </div>
     )
   }
@@ -34,57 +44,65 @@ export default function AtletasList() {
     return (
       <div style={{ padding: "4rem", textAlign: "center" }}>
         <p style={{ color: "#d93025" }}>{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          style={{ marginTop: "1rem", cursor: "pointer" }}
+        >
+          Tentar novamente
+        </button>
       </div>
     )
   }
 
   return (
     <main style={containerStyle}>
-      <header style={{ marginBottom: "3rem" }}>
+      <header style={{ marginBottom: "3rem", textAlign: "center" }}>
         <h1 style={titleStyle}>Atletas</h1>
         <p style={subtitleStyle}>
-          Conheça as trajetórias das mulheres que transformaram o esporte brasileiro através de seus acervos pessoais.
+          Conheça as mulheres que transformaram o esporte brasileiro através de seus acervos pessoais.
         </p>
       </header>
 
       {atletas.length === 0 ? (
-        <p style={{ textAlign: "center", color: "#666", padding: "2rem" }}>
-          Nenhuma atleta cadastrada no momento.
+        <p style={{ textAlign: "center", color: "#666", padding: "4rem" }}>
+          O acervo está sendo atualizado. Volte em breve!
         </p>
       ) : (
         <div style={gridStyle}>
           {atletas.map((atleta) => {
-            const fotoDestaque =
-              atleta.fotos?.find((f) => f.isDestaque)?.url ||
-              atleta.fotos?.[0]?.url
+            // CORREÇÃO: Usando o campo de foto de destaque unificado
+            const imagemExibicao = atleta.fotoDestaqueUrl;
 
             return (
               <article
                 key={atleta.id}
-                onClick={() => navigate(`/atletas/${atleta.id}`)}
+                // CORREÇÃO: Navegação agora utiliza SLUG para SEO
+                onClick={() => navigate(`/atleta/${atleta.slug}`)}
                 style={cardStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-5px)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-8px)"
+                  e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.1)"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)"
+                  e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.02)"
+                }}
               >
                 <div style={imageContainerStyle}>
-                  {fotoDestaque ? (
+                  {imagemExibicao ? (
                     <img
-                      src={fotoDestaque}
+                      src={imagemExibicao}
                       alt={`Foto de ${atleta.nome}`}
                       style={imageStyle}
                     />
                   ) : (
-                    <div style={placeholderStyle}>Sem imagem</div>
+                    <div style={placeholderStyle}>Imagem em pesquisa</div>
                   )}
                 </div>
 
                 <div style={cardContentStyle}>
+                  <span style={categoryLabelStyle}>{atleta.categoria}</span>
                   <strong style={nameStyle}>{atleta.nome}</strong>
-                  {atleta.modalidades?.length > 0 && (
-                    <span style={modalidadeStyle}>
-                      {atleta.modalidades.join(" · ")}
-                    </span>
-                  )}
                 </div>
               </article>
             )
@@ -96,48 +114,51 @@ export default function AtletasList() {
 }
 
 /* =========================
-   ESTILOS (CSS-IN-JS)
+    ESTILOS (CSS-IN-JS)
    ========================= */
 
 const containerStyle: React.CSSProperties = {
-  padding: "3rem 1.5rem",
-  maxWidth: "960px",
+  padding: "4rem 1.5rem",
+  maxWidth: "1100px",
   margin: "0 auto",
 }
 
 const titleStyle: React.CSSProperties = {
-  fontSize: "2.5rem",
+  fontSize: "3rem",
   marginBottom: "1rem",
-  color: "#111",
+  color: "#1a1a1a",
+  fontWeight: "800",
 }
 
 const subtitleStyle: React.CSSProperties = {
-  fontSize: "1.1rem",
-  color: "#555",
+  fontSize: "1.2rem",
+  color: "#666",
   lineHeight: "1.6",
+  maxWidth: "600px",
+  margin: "0 auto",
 }
 
 const gridStyle: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-  gap: "2rem",
-  marginTop: "1rem",
+  gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+  gap: "2.5rem",
+  marginTop: "2rem",
 }
 
 const cardStyle: React.CSSProperties = {
   backgroundColor: "#fff",
-  border: "1px solid #eee",
-  borderRadius: "12px",
+  borderRadius: "4px",
   overflow: "hidden",
   cursor: "pointer",
-  transition: "all 0.3s ease",
+  transition: "all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)",
   boxShadow: "0 4px 6px rgba(0,0,0,0.02)",
+  border: "1px solid #f0f0f0",
 }
 
 const imageContainerStyle: React.CSSProperties = {
   width: "100%",
-  height: "240px",
-  backgroundColor: "#f9f9f9",
+  height: "320px",
+  backgroundColor: "#f5f5f5",
   overflow: "hidden",
 }
 
@@ -153,26 +174,29 @@ const placeholderStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  color: "#999",
-  fontSize: "0.9rem",
+  color: "#aaa",
+  fontSize: "0.8rem",
+  textTransform: "uppercase",
+  letterSpacing: "1px",
 }
 
 const cardContentStyle: React.CSSProperties = {
-  padding: "1.2rem",
-  textAlign: "center",
+  padding: "1.5rem",
+  textAlign: "left",
+}
+
+const categoryLabelStyle: React.CSSProperties = {
+  fontSize: "0.7rem",
+  color: "#999",
+  fontWeight: "700",
+  textTransform: "uppercase",
+  display: "block",
+  marginBottom: "0.5rem",
 }
 
 const nameStyle: React.CSSProperties = {
   display: "block",
-  fontSize: "1.1rem",
-  color: "#111",
-  marginBottom: "0.4rem",
-}
-
-const modalidadeStyle: React.CSSProperties = {
-  fontSize: "0.85rem",
-  color: "#c5a059",
-  fontWeight: "600",
-  textTransform: "uppercase",
-  letterSpacing: "0.5px",
+  fontSize: "1.25rem",
+  color: "#1a1a1a",
+  lineHeight: "1.2",
 }

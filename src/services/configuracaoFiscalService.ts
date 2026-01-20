@@ -1,32 +1,32 @@
-import api from "@/services/api"
+import api from "@/services/api";
 import {
   ConfiguracaoFiscal,
   ConfiguracaoFiscalDTO,
-} from "@/types/configuracaoFiscal"
+} from "@/types/configuracaoFiscal";
 
 export const configuracaoFiscalService = {
   /**
-   * Busca configuração fiscal atual
-   * GET /configuracao-fiscal
+   * Busca as taxas fiscais atuais
+   * GET /configuracoes/fiscal (Imagem 13)
    */
   async buscar(): Promise<ConfiguracaoFiscal> {
     const response = await api.get<ConfiguracaoFiscal>(
-      "/configuracao-fiscal"
-    )
-    return response.data
+      "/configuracoes/fiscal"
+    );
+    return response.data;
   },
 
   /**
-   * Atualiza regras fiscais
-   * PUT /configuracao-fiscal
+   * Atualiza as regras de taxas globais
+   * PUT /configuracoes/fiscal (Imagem 14)
    */
   async atualizar(
     data: ConfiguracaoFiscalDTO
   ): Promise<ConfiguracaoFiscal> {
     const response = await api.put<ConfiguracaoFiscal>(
-      "/configuracao-fiscal",
+      "/configuracoes/fiscal",
       data
-    )
-    return response.data
+    );
+    return response.data;
   },
-}
+};

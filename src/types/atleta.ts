@@ -1,97 +1,77 @@
 /* =====================================================
-   Tipos relacionados a ATLETA
-   Alinhado com Swagger (Público / Atleta / Admin)
+   Tipos para Atleta (Sincronizado com Swagger ad3063)
    ===================================================== */
 
-/* ==========================
-   Foto
-   ========================== */
-export interface Foto {
-  id: string
-  url: string
-  isDestaque: boolean
-}
+// Atualizado: Adicionado ESPOLIO conforme Imagem ad3063
+export type CategoriaAtleta = "HISTORICA" | "ATIVA" | "REVELACAO" | "ESPOLIO"; 
 
-/* ==========================
-   Dashboard do atleta
-   GET /dashboard/atleta
-   ========================== */
-export interface DashboardAtletaDTO {
-  totalMeusItens: number
-  itensPublicados: number
-  itensEmRascunho: number
-  itensNoMemorial: number
-  totalLicenciamentosVendidos: number
-  saldoTotalAtleta: number
-}
+export type StatusVerificacao = "PENDENTE" | "VERIFICADO" | "REJEITADO";
 
-/* ==========================
-   Enums
-   ========================== */
-export type RoleUsuario = "ROLE_ADMIN" | "ROLE_ATLETA"
+// Atualizado: Alinhado com as opções de status do DTO ad3063
+export type StatusAtleta = "ATIVO" | "INATIVO" | "SUSPENSO";
 
-export type StatusVerificacaoAtleta =
-  | "PENDENTE"
-  | "VERIFICADO"
-  | "REJEITADO"
+// Atualizado: Adicionado NENHUM conforme Imagem ad3063
+export type TipoChavePix = "CPF" | "EMAIL" | "TELEFONE" | "ALEATORIA" | "NENHUM";
 
-export type StatusAtleta =
-  | "ATIVO"
-  | "INATIVO"
-  | "ESPOLIO"
-
-/* ==========================
-   Atleta (modelo retornado pela API)
-   ========================== */
 export interface Atleta {
-  id: string
+  id: string;
+  nome: string;
+  nomeSocial?: string;
+  slug: string;
+  cpf: string;
+  email: string;
+  senha?: string; // Adicionado: AtletaFormDTO prevê campo senha (ad3063)
+  role: string;
+  modalidadesIds: string[];
+  biografia: string;
+  categoria: CategoriaAtleta;
+  
+  // Gestão de Contrato e Verificação (ad3063)
+  contratoAssinado: boolean;
+  linkContratoDigital?: string;
+  dataAssinaturaContrato?: string;
+  statusVerificacao: StatusVerificacao;
+  observacoesAdmin?: string;
+  dataVerificacao?: string;
 
-  nome: string
-  nomeSocial?: string
+  // Representante Legal (ad3063)
+  nomeRepresentante?: string;
+  cpfRepresentante?: string;
+  vinculoRepresentante?: string;
+  
+  // Financeiro e Repasse (ad3063)
+  dadosContato?: string;
+  tipoChavePix: TipoChavePix;
+  chavePix: string;
+  banco: string;
+  agencia: string;
+  conta: string;
+  tipoConta: string;
+  percentualRepasse: number;
+  comissaoPlataformaDiferenciada: number;
 
-  /**
-   * ⚠️ Campos sensíveis
-   * Só vêm em /atletas/me ou admin
-   */
-  email?: string
-  role?: RoleUsuario
-
-  biografia: string
-
-  /**
-   * Array simples (Swagger)
-   */
-  modalidades: string[]
-
-  statusVerificacao?: StatusVerificacaoAtleta
-  statusAtleta?: StatusAtleta
-
-  /**
-   * Galeria (pode vir vazia)
-   */
-  fotos?: Foto[]
+  // Mídia e Status (ad3063)
+  fotoDestaqueUrl?: string;
+  fotoDestaqueId?: string; // Adicionado para gerenciar o upload/vínculo de mídia
+  statusAtleta: StatusAtleta;
+  criadoEm: string;
+  atualizadoEm: string;
 }
 
-/* ==========================
-   DTO de criação / edição (ADMIN)
-   ========================== */
-export interface AtletaFormDTO {
-  nome: string
-  biografia: string
-  modalidades: string[]
+/**
+ * DTO para Criação/Edição (Request Body do PUT/POST)
+ * Omitimos campos gerados pelo servidor para evitar erros de envio
+ */
+export interface AtletaUpdateDTO extends Partial<Omit<Atleta, 'id' | 'criadoEm' | 'atualizadoEm' | 'slug' | 'role'>> {
+  // Garantimos que a senha possa ser enviada opcionalmente na atualização
+  senha?: string;
+}
 
-  /**
-   * Fotos atuais
-   */
-  fotos: Foto[]
-
-  /**
-   * Foto destaque
-   */
-  fotoDestaqueId?: string
-
-  /**
-   * Fotos removidas
-   */
-  fotosRemovidas: string[]
+export interface DashboardAtletaDTO {
+  totalMeusItens: number;
+  itensPublicados: number;
+  itensEmRascunho: number;
+  itensNoMemorial: number;
+  totalLicenciamentosVendidos: number;
+  saldoTotalAtleta: number;
 }

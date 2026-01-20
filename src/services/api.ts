@@ -1,22 +1,32 @@
-// src/services/api.ts
+/* =====================================================
+   CONFIGURAÇÃO DA API (AXIOS)
+   Funcionalidade: Comunicação centralizada com o backend
+   ===================================================== */
+
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios"
 
+// Define a URL base priorizando variáveis de ambiente para deploy seguro
 const API_BASE_URL =
   import.meta.env.VITE_API_URL ?? "https://acervo-api.onrender.com"
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 30000, // 30 segundos de limite para uploads de mídia pesados
+  headers: {
+    "Content-Type": "application/json",
+  },
 })
 
 /* ==========================
-   REQUEST
-   ========================== */
+    INTERCEPTOR: REQUEST
+    ========================== */
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // Busca o token salvo pelo AuthContext no momento do login
     const token = localStorage.getItem("authToken")
 
-    if (token) {
+    if (token && config.headers) {
+      // Aplica o token em todas as chamadas privadas (Atleta e Admin)
       config.headers.Authorization = `Bearer ${token}`
     }
 
@@ -26,19 +36,23 @@ api.interceptors.request.use(
 )
 
 /* ==========================
-   RESPONSE
-   ========================== */
+    INTERCEPTOR: RESPONSE
+    ========================== */
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
+    // Gerenciamento de erro de autenticação (401)
     if (error.response?.status === 401) {
-      console.warn("⚠️ 401 Unauthorized")
+      console.warn("⚠️ Sessão expirada ou acesso não autorizado.")
 
-      // 🔴 NÃO REDIRECIONAR AQUI
-      // 🔴 NÃO window.location
-      // 🔴 NÃO forçar login global
-
+      // Removemos o token inválido, mas deixamos o AuthContext lidar com o 
+      // redirecionamento para não interromper fluxos de salvamento
       localStorage.removeItem("authToken")
+    }
+
+    // Tratamento genérico de erros para facilitar o debug no console
+    if (import.meta.env.DEV) {
+      console.error(`[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url}:`, error.response?.data || error.message)
     }
 
     return Promise.reject(error)

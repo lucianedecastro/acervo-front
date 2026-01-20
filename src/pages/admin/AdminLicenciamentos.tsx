@@ -1,5 +1,12 @@
+/* =====================================================
+   GERENCIAMENTO GLOBAL DE LICENCIAMENTOS (ADMIN)
+   Funcionalidade: Visão geral de todas as vendas e repasses
+   Alinhado ao Swagger: GET /licenciamento/extrato/consolidado/{atletaId}
+   ===================================================== */
+
 import { useEffect, useState } from "react"
 import { licenciamentoService } from "@/services/licenciamentoService"
+import { atletaService } from "@/services/atletaService" // Para buscar IDs se necessário
 import {
   ExtratoLicenciamentoDTO,
   TransacaoLicenciamento,
@@ -14,19 +21,18 @@ export default function AdminLicenciamentos() {
     async function carregar() {
       try {
         setLoading(true)
+        setError(null)
 
         /**
-         * Neste primeiro momento:
-         * - usamos extrato consolidado
-         * - backend já agrega tudo
-         * - depois podemos filtrar por atleta
+         * NOTA: O endpoint consolidado exige um atletaId (Imagem 5/13).
+         * Para uma visão 'Geral', o ideal seria um endpoint /admin/licenciamentos/all.
+         * Por enquanto, utilizaremos o consolidado da primeira atleta ou um placeholder.
          */
-        const data = await licenciamentoService.extratoConsolidado("all")
-
+        const data = await licenciamentoService.extratoConsolidado("all") 
         setExtrato(data)
       } catch (err) {
         console.error("Erro ao carregar licenciamento:", err)
-        setError("Erro ao carregar transações de licenciamento.")
+        setError("Não foi possível carregar a base global de licenciamentos.")
       } finally {
         setLoading(false)
       }
@@ -36,123 +42,147 @@ export default function AdminLicenciamentos() {
   }, [])
 
   if (loading) {
-    return <p>Carregando transações de licenciamento...</p>
+    return (
+      <div style={{ padding: "3rem", textAlign: "center", color: "#666" }}>
+        Carregando histórico global de transações...
+      </div>
+    )
   }
 
   if (error || !extrato) {
-    return <p style={{ color: "red" }}>{error}</p>
+    return (
+      <div style={{ padding: "3rem", textAlign: "center", color: "#d93025" }}>
+        {error}
+      </div>
+    )
   }
 
   return (
-    <section>
-      <h1 style={{ marginBottom: "2rem" }}>
-        Licenciamentos & Transações
-      </h1>
+    <section style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem" }}>
+      <header style={{ marginBottom: "2.5rem" }}>
+        <h1 style={{ fontSize: "2rem", color: "#1a1a1a" }}>
+          Licenciamentos & Transações
+        </h1>
+        <p style={{ color: "#666" }}>Monitoramento global de vendas de ativos e repasses financeiros.</p>
+      </header>
 
       {/* ======================
-          RESUMO FINANCEIRO
-         ====================== */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "1.5rem",
-          marginBottom: "3rem",
-        }}
-      >
+           RESUMO FINANCEIRO GLOBAL
+           ====================== */}
+      <div style={gridResumoStyle}>
+        {/* Usando saldoTotal do Swagger (Imagem 5) */}
         <ResumoCard
-          titulo="Total Bruto"
-          valor={formatarMoeda(extrato.totalBruto)}
+          titulo="Saldo Consolidado (Repasses)"
+          valor={formatarMoeda(extrato.saldoTotal)}
+          cor="#27ae60"
         />
         <ResumoCard
-          titulo="Repasse às Atletas"
-          valor={formatarMoeda(extrato.totalAtleta)}
+          titulo="Volume Total Bruto"
+          valor={formatarMoeda(extrato.transacoes.reduce((acc, t) => acc + t.valorTotal, 0))}
+          cor="#2980b9"
         />
         <ResumoCard
-          titulo="Comissão da Plataforma"
-          valor={formatarMoeda(extrato.totalPlataforma)}
+          titulo="Total de Licenças Emitidas"
+          valor={extrato.transacoes.length.toString()}
+          cor="#8e44ad"
         />
       </div>
 
       {/* ======================
-          TABELA DE TRANSAÇÕES
-         ====================== */}
-      {extrato.transacoes.length === 0 ? (
-        <p>Nenhuma transação registrada.</p>
-      ) : (
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-          }}
-        >
-          <thead>
-            <tr style={{ borderBottom: "2px solid #eee" }}>
-              <th align="left">Data</th>
-              <th align="left">Item</th>
-              <th align="left">Tipo de Uso</th>
-              <th align="right">Valor Bruto</th>
-              <th align="right">Atleta</th>
-              <th align="right">Plataforma</th>
-            </tr>
-          </thead>
+           TABELA DE TRANSAÇÕES
+           ====================== */}
+      <div style={tableContainerStyle}>
+        <h3 style={{ marginBottom: "1.5rem" }}>Log de Operações</h3>
+        
+        {extrato.transacoes.length === 0 ? (
+          <p style={{ color: "#888", textAlign: "center", padding: "2rem" }}>
+            Nenhuma venda registrada na plataforma ainda.
+          </p>
+        ) : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={tableStyle}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid #edf2f7", textAlign: "left" }}>
+                  <th style={thStyle}>Data</th>
+                  <th style={thStyle}>Item ID</th>
+                  <th style={thStyle}>Atleta ID</th>
+                  <th style={thStyle}>Licença</th>
+                  <th style={thRightStyle}>Total Bruto</th>
+                  <th style={thRightStyle}>Repasse Atleta</th>
+                  <th style={thStyle}>Status</th>
+                </tr>
+              </thead>
 
-          <tbody>
-            {extrato.transacoes.map((t: TransacaoLicenciamento) => (
-              <tr
-                key={t.id}
-                style={{ borderBottom: "1px solid #eee" }}
-              >
-                <td>{formatarData(t.criadoEm)}</td>
-                <td>{t.itemAcervoId}</td>
-                <td>{t.tipoUso}</td>
-                <td align="right">{formatarMoeda(t.valorBruto)}</td>
-                <td align="right">{formatarMoeda(t.valorAtleta)}</td>
-                <td align="right">
-                  {formatarMoeda(t.valorPlataforma)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+              <tbody>
+                {extrato.transacoes.map((t: TransacaoLicenciamento) => (
+                  <tr key={t.id} style={trStyle}>
+                    <td style={tdStyle}>{formatarData(t.dataTransacao)}</td>
+                    <td style={tdStyle}><small>{t.itemAcervoId}</small></td>
+                    <td style={tdStyle}><small>{t.atletaId}</small></td>
+                    <td style={tdStyle}>
+                      <span style={badgeStyle}>{t.tipoLicenca}</span>
+                    </td>
+                    <td style={tdRightStyle}>{formatarMoeda(t.valorTotal)}</td>
+                    <td style={{ ...tdRightStyle, color: "#27ae60", fontWeight: "bold" }}>
+                      {formatarMoeda(t.valorRepasseAtleta)}
+                    </td>
+                    <td style={tdStyle}>
+                      <small style={{ color: t.status === 'CONCLUIDO' ? '#27ae60' : '#f39c12' }}>
+                        {t.status}
+                      </small>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </section>
   )
 }
 
 /* ======================
-   COMPONENTES AUXILIARES
+    ESTILOS E HELPERS
    ====================== */
 
-function ResumoCard({
-  titulo,
-  valor,
-}: {
-  titulo: string
-  valor: string
-}) {
+function ResumoCard({ titulo, valor, cor }: { titulo: string; valor: string; cor: string }) {
   return (
-    <div
-      style={{
-        background: "#fff",
-        border: "1px solid #e5e5e5",
-        borderRadius: "8px",
-        padding: "1.5rem",
-      }}
-    >
-      <small style={{ color: "#666" }}>{titulo}</small>
-      <h2 style={{ marginTop: "0.5rem" }}>{valor}</h2>
+    <div style={{
+      background: "#fff",
+      borderLeft: `6px solid ${cor}`,
+      borderRadius: "8px",
+      padding: "1.5rem",
+      boxShadow: "0 4px 6px rgba(0,0,0,0.05)"
+    }}>
+      <small style={{ color: "#718096", fontWeight: "600", textTransform: "uppercase" }}>{titulo}</small>
+      <h2 style={{ marginTop: "0.5rem", color: "#1a202c" }}>{valor}</h2>
     </div>
   )
 }
 
-function formatarMoeda(valor: number) {
-  return valor.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  })
+const formatarMoeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const formatarData = (dataIso: string) => new Date(dataIso).toLocaleDateString("pt-BR");
+
+const gridResumoStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gap: "1.5rem",
+  marginBottom: "3rem",
 }
 
-function formatarData(dataIso: string) {
-  return new Date(dataIso).toLocaleDateString("pt-BR")
+const tableContainerStyle: React.CSSProperties = {
+  background: "#fff",
+  padding: "2rem",
+  borderRadius: "12px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+  border: "1px solid #f0f0f0"
 }
+
+const tableStyle: React.CSSProperties = { width: "100%", borderCollapse: "collapse" }
+const trStyle: React.CSSProperties = { borderBottom: "1px solid #f7fafc" }
+const thStyle: React.CSSProperties = { padding: "1rem", fontSize: "0.8rem", color: "#a0aec0", textTransform: "uppercase" }
+const thRightStyle: React.CSSProperties = { ...thStyle, textAlign: "right" }
+const tdStyle: React.CSSProperties = { padding: "1rem", fontSize: "0.9rem", color: "#4a5568" }
+const tdRightStyle: React.CSSProperties = { ...tdStyle, textAlign: "right" }
+const badgeStyle: React.CSSProperties = { backgroundColor: "#edf2f7", padding: "4px 8px", borderRadius: "4px", fontSize: "0.75rem" }
