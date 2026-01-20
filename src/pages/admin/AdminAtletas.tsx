@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { atletaService } from "@/services/atletaService"
 import { Atleta } from "@/types/atleta"
 
 export default function AdminAtletas() {
+  const navigate = useNavigate()
   const [atletas, setAtletas] = useState<Atleta[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -37,7 +39,23 @@ export default function AdminAtletas() {
 
   return (
     <section style={{ padding: "2rem" }}>
-      <h1 style={{ marginBottom: "1.5rem" }}>Gestão de Atletas</h1>
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "1.5rem"
+        }}
+      >
+        <h1>Gestão de Atletas</h1>
+        {/* Mantendo o padrão de botão de adição caso precise criar uma nova futuramente */}
+        <button 
+          onClick={() => navigate("/admin/atletas/nova")}
+          style={addButtonStyle}
+        >
+          + Nova Atleta
+        </button>
+      </header>
 
       {atletas.length === 0 ? (
         <p>Nenhuma atleta cadastrada.</p>
@@ -64,8 +82,12 @@ export default function AdminAtletas() {
                 {/* CORREÇÃO AQUI: Adicionado ?. para evitar erro se modalidadesIds for null */}
                 <td style={tdStyle}>{atleta.modalidadesIds?.length ?? 0}</td>
                 <td style={tdStyle}>
-                  {/* em breve: editar / verificar / remover */}
-                  —
+                  <button
+                    style={actionButtonStyle("#3182ce")}
+                    onClick={() => navigate(`/admin/atletas/editar/${atleta.id}`)}
+                  >
+                    Editar
+                  </button>
                 </td>
               </tr>
             ))}
@@ -75,6 +97,26 @@ export default function AdminAtletas() {
     </section>
   )
 }
+
+const addButtonStyle: React.CSSProperties = { 
+  backgroundColor: "#1a1a1a", 
+  color: "white", 
+  padding: "0.6rem 1.2rem", 
+  border: "none", 
+  borderRadius: "4px", 
+  cursor: "pointer", 
+  fontWeight: "bold" 
+}
+
+const actionButtonStyle = (color: string): React.CSSProperties => ({
+  backgroundColor: "transparent",
+  border: `1px solid ${color}`,
+  color: color,
+  padding: "0.4rem 0.8rem",
+  borderRadius: "4px",
+  cursor: "pointer",
+  fontSize: "0.8rem"
+})
 
 const thStyle: React.CSSProperties = {
   textAlign: "left",
