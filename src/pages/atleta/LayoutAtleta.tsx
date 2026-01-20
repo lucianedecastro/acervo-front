@@ -5,7 +5,7 @@ export default function LayoutAtleta() {
   const navigate = useNavigate()
   const { logout, role, isAuthenticated } = useAuth()
 
-  // Proteção extra: apenas atleta
+  // Proteção: apenas atleta
   if (!isAuthenticated || role !== "ROLE_ATLETA") {
     navigate("/")
     return null
@@ -37,6 +37,7 @@ export default function LayoutAtleta() {
           alignItems: "center",
         }}
       >
+        {/* Marca / Home do Dashboard */}
         <div
           style={{ fontWeight: "bold", fontSize: "1.2rem", cursor: "pointer" }}
           onClick={() => navigate("/dashboard/atleta")}
@@ -44,19 +45,50 @@ export default function LayoutAtleta() {
           Acervo da Atleta Brasileira
         </div>
 
-        <button
-          onClick={handleLogout}
-          style={{
-            backgroundColor: "#e74c3c",
-            color: "white",
-            border: "none",
-            padding: "0.5rem 1rem",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Sair
-        </button>
+        {/* Navegação da Atleta */}
+        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          <span
+            style={{ cursor: "pointer", opacity: 0.85 }}
+            onClick={() => navigate("/dashboard/atleta")}
+          >
+            Dashboard
+          </span>
+
+          <span
+            style={{ cursor: "pointer", opacity: 0.85 }}
+            onClick={() => navigate("/atleta/perfil")}
+          >
+            Meu Perfil
+          </span>
+
+          <span
+            style={{ cursor: "pointer", opacity: 0.85 }}
+            onClick={() => navigate("/atleta/extrato")}
+          >
+            Extrato
+          </span>
+
+          <span
+            style={{ cursor: "pointer", opacity: 0.7 }}
+            onClick={() => navigate("/")}
+          >
+            Site Público
+          </span>
+
+          <button
+            onClick={handleLogout}
+            style={{
+              backgroundColor: "#e74c3c",
+              color: "white",
+              border: "none",
+              padding: "0.4rem 0.8rem",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Sair
+          </button>
+        </div>
       </nav>
 
       {/* ======================

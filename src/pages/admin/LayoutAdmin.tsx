@@ -18,7 +18,9 @@ export default function LayoutAdmin() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#f5f5f5" }}>
-      {/* ===== Header Admin ===== */}
+      {/* ======================
+          Header Admin
+         ====================== */}
       <header
         style={{
           background: "#111",
@@ -30,26 +32,73 @@ export default function LayoutAdmin() {
         }}
       >
         <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
+          {/* Marca → Dashboard */}
           <strong
             style={{ cursor: "pointer", fontSize: "1.2rem" }}
-            onClick={() => navigate("/admin/modalidades")}
+            onClick={() => navigate("/admin")}
           >
-            Acervo Atleta
+            Acervo da Atleta Brasileira
           </strong>
 
           {/* Menu Admin */}
-          <nav style={{ display: "flex", gap: "1rem" }}>
+          <nav style={{ display: "flex", gap: "1.2rem", alignItems: "center" }}>
             <span
-              style={{ cursor: "pointer", opacity: 0.8 }}
+              style={{ cursor: "pointer", opacity: 0.9 }}
+              onClick={() => navigate("/admin")}
+            >
+              Dashboard
+            </span>
+
+            <span
+              style={{ cursor: "pointer", opacity: 0.85 }}
               onClick={() => navigate("/admin/modalidades")}
             >
               Modalidades
             </span>
+
             <span
-              style={{ cursor: "pointer", opacity: 0.8 }}
+              style={{ cursor: "pointer", opacity: 0.85 }}
               onClick={() => navigate("/admin/atletas")}
             >
               Atletas
+            </span>
+
+            {/* ===== LICENCIAMENTOS ===== */}
+            <span
+              style={{ cursor: "pointer", opacity: 0.85 }}
+              onClick={() => navigate("/admin/licenciamentos")}
+            >
+              Licenciamentos
+            </span>
+
+            <span
+              style={{ cursor: "pointer", opacity: 0.7, fontSize: "0.9rem" }}
+              onClick={() => navigate("/admin/licenciamentos/simulacao")}
+            >
+              ↳ Simulação
+            </span>
+
+            <span
+              style={{ cursor: "pointer", opacity: 0.7, fontSize: "0.9rem" }}
+              onClick={() => navigate("/admin/licenciamentos/extratos")}
+            >
+              ↳ Extratos
+            </span>
+
+            {/* ===== CONFIGURAÇÃO FISCAL ===== */}
+            <span
+              style={{ cursor: "pointer", opacity: 0.85 }}
+              onClick={() => navigate("/admin/configuracao-fiscal")}
+            >
+              Configuração Fiscal
+            </span>
+
+            {/* ===== SITE PÚBLICO ===== */}
+            <span
+              style={{ cursor: "pointer", opacity: 0.7 }}
+              onClick={() => navigate("/")}
+            >
+              Site Público
             </span>
           </nav>
         </div>
@@ -68,7 +117,9 @@ export default function LayoutAdmin() {
         </button>
       </header>
 
-      {/* ===== Conteúdo ===== */}
+      {/* ======================
+          Conteúdo
+         ====================== */}
       <main
         style={{
           padding: "2rem",

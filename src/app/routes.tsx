@@ -22,15 +22,22 @@ import AtletaDetail from "@/pages/public/AtletaDetail"
    Admin
    ====================== */
 import Login from "@/pages/admin/Login"
+import AdminDashboard from "@/pages/admin/AdminDashboard"
 import AdminModalidades from "@/pages/admin/AdminModalidades"
 import ModalidadeForm from "@/pages/admin/ModalidadeForm"
 import AtletaForm from "@/pages/admin/AtletaForm"
 import AdminAtletas from "@/pages/admin/AdminAtletas"
+import AdminConfiguracaoFiscal from "@/pages/admin/AdminConfiguracaoFiscal"
+import AdminLicenciamentos from "@/pages/admin/AdminLicenciamentos"
+import AdminSimulacaoLicenciamento from "@/pages/admin/AdminSimulacaoLicenciamento"
+import AdminExtratoAtleta from "@/pages/admin/AdminExtratoAtleta"
 
 /* ======================
    Atleta
    ====================== */
 import AtletaDashboard from "@/pages/atleta/AtletaDashboard"
+import AtletaPerfil from "@/pages/atleta/AtletaPerfil"
+import AtletaExtrato from "@/pages/atleta/AtletaExtrato"
 
 export function AppRoutes() {
   return (
@@ -51,7 +58,7 @@ export function AppRoutes() {
       </Route>
 
       {/* =====================================================
-          ROTAS DA ATLETA
+          ROTAS DA ATLETA (PROTEGIDAS)
          ===================================================== */}
       <Route
         element={
@@ -62,10 +69,12 @@ export function AppRoutes() {
       >
         <Route index element={<Navigate to="/dashboard/atleta" replace />} />
         <Route path="/dashboard/atleta" element={<AtletaDashboard />} />
+        <Route path="/atleta/perfil" element={<AtletaPerfil />} />
+        <Route path="/atleta/extrato" element={<AtletaExtrato />} />
       </Route>
 
       {/* =====================================================
-          ROTAS ADMIN
+          ROTAS ADMIN (PROTEGIDAS)
          ===================================================== */}
       <Route
         element={
@@ -74,7 +83,21 @@ export function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        {/* Modalidades */}
+        {/* 🔹 ADMIN DASHBOARD */}
+        <Route index element={<AdminDashboard />} />
+
+        {/* 🔹 ADMIN – LICENCIAMENTOS & FINANCEIRO */}
+        <Route path="/admin/licenciamentos" element={<AdminLicenciamentos />} />
+        <Route
+          path="/admin/licenciamentos/simulacao"
+          element={<AdminSimulacaoLicenciamento />}
+        />
+        <Route
+          path="/admin/licenciamentos/extratos"
+          element={<AdminExtratoAtleta />}
+        />
+
+        {/* 🔹 ADMIN – MODALIDADES */}
         <Route path="/admin/modalidades" element={<AdminModalidades />} />
         <Route path="/admin/modalidades/nova" element={<ModalidadeForm />} />
         <Route
@@ -82,10 +105,16 @@ export function AppRoutes() {
           element={<ModalidadeForm />}
         />
 
-        {/* Atletas */}
+        {/* 🔹 ADMIN – ATLETAS */}
         <Route path="/admin/atletas" element={<AdminAtletas />} />
         <Route path="/admin/atletas/nova" element={<AtletaForm />} />
         <Route path="/admin/atletas/editar/:id" element={<AtletaForm />} />
+
+        {/* 🔹 ADMIN – CONFIGURAÇÃO FISCAL */}
+        <Route
+          path="/admin/configuracao-fiscal"
+          element={<AdminConfiguracaoFiscal />}
+        />
       </Route>
 
       {/* =====================================================
