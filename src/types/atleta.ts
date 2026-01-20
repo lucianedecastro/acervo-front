@@ -22,7 +22,8 @@ export interface Atleta {
   email: string;
   senha?: string; // Adicionado: AtletaFormDTO prevê campo senha (ad3063)
   role: string;
-  modalidadesIds: string[];
+  // Ajustado: Permitindo null ou undefined para evitar erro de leitura de length
+  modalidadesIds?: string[] | null;
   biografia: string;
   categoria: CategoriaAtleta;
   
