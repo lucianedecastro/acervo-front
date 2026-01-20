@@ -1,99 +1,98 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import api from "@/services/api"
 import { useAuth } from "@/auth/AuthContext"
 
+interface LoginResponse {
+  token: string
+}
+
 export default function Login() {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { login, role, isAuthenticated } = useAuth()
 
   const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
 
+  /* ==========================
+     REDIRECT APÓS LOGIN
+     ========================== */
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    if (role === "ROLE_ADMIN") {
+      navigate("/admin/modalidades", { replace: true })
+    } else if (role === "ROLE_ATLETA") {
+      navigate("/dashboard/atleta", { replace: true })
+    } else {
+      navigate("/", { replace: true })
+    }
+  }, [isAuthenticated, role, navigate])
+
+  /* ==========================
+     SUBMIT
+     ========================== */
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-
     setError(null)
-    setSuccess(null)
     setLoading(true)
 
     try {
-      const response = await api.post("/admin/login", {
+      const { data } = await api.post<LoginResponse>("/auth/login", {
         email,
         senha,
       })
 
-      const token = response.data?.token
-
-      if (!token || typeof token !== "string") {
-        throw new Error("Token inválido recebido da API")
+      if (!data?.token) {
+        throw new Error("Token não retornado")
       }
 
-      login(token)
-      setSuccess("Login realizado com sucesso. Redirecionando...")
-
-      // pequeno delay só para UX (feedback visual)
-      setTimeout(() => {
-        navigate("/admin/modalidades")
-      }, 800)
-
+      login(data.token)
     } catch (err: any) {
       console.error("Erro no login:", err)
 
       if (err.response?.status === 401) {
         setError("Email ou senha inválidos.")
       } else {
-        setError("Erro inesperado ao realizar login. Tente novamente.")
+        setError("Erro ao realizar login.")
       }
     } finally {
       setLoading(false)
     }
   }
 
+  /* ==========================
+     RENDER
+     ========================== */
   return (
     <main style={{ padding: "2rem", maxWidth: "420px", margin: "0 auto" }}>
-      <h1>Login Administrativo</h1>
+      <h1>Acesso ao Acervo</h1>
 
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="email">Email</label>
+          <label>Email</label>
           <input
-            id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            autoComplete="username"
           />
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="senha">Senha</label>
+          <label>Senha</label>
           <input
-            id="senha"
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required
-            autoComplete="current-password"
           />
         </div>
 
-        {error && (
-          <p style={{ color: "red", marginBottom: "1rem" }}>
-            {error}
-          </p>
-        )}
-
-        {success && (
-          <p style={{ color: "green", marginBottom: "1rem" }}>
-            {success}
-          </p>
-        )}
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
         <button type="submit" disabled={loading}>
           {loading ? "Entrando..." : "Entrar"}

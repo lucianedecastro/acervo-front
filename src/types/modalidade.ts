@@ -1,17 +1,28 @@
-// src/types/modalidade.ts
+/* =====================================================
+   Tipo Modalidade
+   Alinhado com Swagger
+   ===================================================== */
 
 export interface Modalidade {
+  /** ID único */
   id: string
 
-  /** Nome da modalidade (ex: Futebol, Atletismo) */
+  /** Nome da modalidade */
   nome: string
 
-  /** Texto histórico / descritivo */
+  /** Slug opcional (quando existir) */
+  slug?: string
+
+  /** Texto histórico */
   historia?: string
 
-  /** URL do pictograma ou ícone */
+  /** URL do pictograma */
   pictogramaUrl?: string
 
-  /** Data de criação (ISO string vinda do backend) */
+  /** Flag de ativação (admin) */
+  ativa?: boolean
+
+  /** Auditoria (admin) */
   criadoEm?: string
+  atualizadoEm?: string
 }

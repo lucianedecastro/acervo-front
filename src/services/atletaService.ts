@@ -1,33 +1,82 @@
-import api from "./api";
-import { Atleta, AtletaFormDTO } from "../types/atleta";
+import api from "@/services/api"
+import {
+  Atleta,
+  AtletaFormDTO,
+  DashboardAtletaDTO,
+} from "@/types/atleta"
 
+/**
+ * Serviço de Atletas
+ * Alinhado com AtletaController (backend)
+ */
 export const atletaService = {
-  // Chamada pública
-  listarTodas: async () => {
-    const response = await api.get<Atleta[]>("/atletas");
-    return response.data;
+  /* ==========================
+     ROTAS PÚBLICAS
+     ========================== */
+
+  /**
+   * GET /atletas
+   */
+  async listarTodas(): Promise<Atleta[]> {
+    const { data } = await api.get<Atleta[]>("/atletas")
+    return data
   },
 
-  // Chamada pública
-  buscarPorId: async (id: string) => {
-    const response = await api.get<Atleta>(`/atletas/${id}`);
-    return response.data;
+  /**
+   * GET /atletas/{id}
+   */
+  async buscarPorId(id: string): Promise<Atleta> {
+    const { data } = await api.get<Atleta>(`/atletas/${id}`)
+    return data
   },
 
-  // Chamada protegida (Admin)
-  criar: async (atleta: AtletaFormDTO) => {
-    const response = await api.post<Atleta>("/atletas", atleta);
-    return response.data;
+  /* ==========================
+     ROTAS DA ATLETA LOGADA
+     ========================== */
+
+  /**
+   * GET /atletas/me
+   */
+  async buscarMeuPerfil(): Promise<Atleta> {
+    const { data } = await api.get<Atleta>("/atletas/me")
+    return data
   },
 
-  // Chamada protegida (Admin)
-  atualizar: async (id: string, atleta: AtletaFormDTO) => {
-    const response = await api.put<Atleta>(`/atletas/${id}`, atleta);
-    return response.data;
+  /**
+   * GET /dashboard/atleta
+   */
+  async buscarDashboard(): Promise<DashboardAtletaDTO> {
+    const { data } = await api.get<DashboardAtletaDTO>("/dashboard/atleta")
+    return data
   },
 
-  // Chamada protegida (Admin)
-  remover: async (id: string) => {
-    return await api.delete(`/atletas/${id}`);
+  /* ==========================
+     ROTAS ADMIN
+     ========================== */
+
+  /**
+   * POST /atletas
+   */
+  async criar(payload: AtletaFormDTO): Promise<Atleta> {
+    const { data } = await api.post<Atleta>("/atletas", payload)
+    return data
   },
-};
+
+  /**
+   * PUT /atletas/{id}
+   */
+  async atualizar(
+    id: string,
+    payload: AtletaFormDTO
+  ): Promise<Atleta> {
+    const { data } = await api.put<Atleta>(`/atletas/${id}`, payload)
+    return data
+  },
+
+  /**
+   * DELETE /atletas/{id}
+   */
+  async remover(id: string): Promise<void> {
+    await api.delete(`/atletas/${id}`)
+  },
+}

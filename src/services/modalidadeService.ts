@@ -1,64 +1,66 @@
 import api from "./api"
-import { Modalidade } from "../types/modalidade"
+import { Modalidade } from "@/types/modalidade"
+
+/**
+ * DTOs explícitos (Swagger-aligned)
+ */
+export interface ModalidadeCreateDTO {
+  nome: string
+  historia?: string
+  pictogramaUrl?: string
+}
+
+export interface ModalidadeUpdateDTO extends ModalidadeCreateDTO {
+  ativa?: boolean
+}
 
 /**
  * Serviço de Modalidades
- * Alinhado com o backend (ModalidadeController)
  */
 export const modalidadeService = {
   /**
-   * Lista todas as modalidades (rota pública)
-   * GET /modalidades
+   * GET /modalidades (pública)
    */
-  listar(): Promise<Modalidade[]> {
-    return api.get<Modalidade[]>("/modalidades")
-      .then(response => response.data)
+  async listar(): Promise<Modalidade[]> {
+    const { data } = await api.get<Modalidade[]>("/modalidades")
+    return data
   },
 
   /**
-   * Busca modalidade por ID (rota pública)
-   * GET /modalidades/{id}
+   * GET /modalidades/{id} (pública)
    */
-  buscarPorId(id: string): Promise<Modalidade> {
-    return api.get<Modalidade>(`/modalidades/${id}`)
-      .then(response => response.data)
+  async buscarPorId(id: string): Promise<Modalidade> {
+    const { data } = await api.get<Modalidade>(`/modalidades/${id}`)
+    return data
   },
 
   /**
-   * Cria nova modalidade (rota ADMIN – JWT)
-   * POST /modalidades
+   * POST /modalidades (ADMIN)
    */
-  criar(data: {
-    nome: string
-    historia?: string
-    pictogramaUrl?: string
-  }): Promise<Modalidade> {
-    return api.post<Modalidade>("/modalidades", data)
-      .then(response => response.data)
+  async criar(payload: ModalidadeCreateDTO): Promise<Modalidade> {
+    const { data } = await api.post<Modalidade>("/modalidades", payload)
+    return data
   },
 
   /**
-   * Atualiza modalidade existente (rota ADMIN – JWT)
-   * PUT /modalidades/{id}
+   * PUT /modalidades/{id} (ADMIN)
    */
-  atualizar(
+  async atualizar(
     id: string,
-    data: {
-      nome: string
-      historia?: string
-      pictogramaUrl?: string
-    }
+    payload: ModalidadeUpdateDTO
   ): Promise<Modalidade> {
-    return api.put<Modalidade>(`/modalidades/${id}`, data)
-      .then(response => response.data)
+    const { data } = await api.put<Modalidade>(
+      `/modalidades/${id}`,
+      payload
+    )
+    return data
   },
 
   /**
-   * Remove modalidade (rota ADMIN – JWT)
-   * DELETE /modalidades/{id}
+   * DELETE /modalidades/{id} (ADMIN)
+   * Backend retorna 204
    */
-  remover(id: string): Promise<void> {
-    return api.delete(`/modalidades/${id}`)
-      .then(() => undefined)
-  }
+  async remover(id: string): Promise<void> {
+    await api.delete(`/modalidades/${id}`)
+  },
 }

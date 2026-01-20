@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { modalidadeService } from "../../services/modalidadeService"
-import { Modalidade } from "../../types/modalidade"
+import { modalidadeService } from "@/services/modalidadeService"
+import { Modalidade } from "@/types/modalidade"
 
 export default function AdminModalidades() {
   const navigate = useNavigate()
@@ -12,22 +12,22 @@ export default function AdminModalidades() {
   const [error, setError] = useState<string | null>(null)
 
   /* ==========================
-     CARREGAR MODALIDADES
+     CARREGAR (ADMIN)
      ========================== */
-  function carregarModalidades() {
-    setLoading(true)
-    setError(null)
+  async function carregarModalidades() {
+    try {
+      setLoading(true)
+      setError(null)
 
-    modalidadeService
-      .listar()
-      .then(setModalidades)
-      .catch((err) => {
-        console.error("Erro ao carregar modalidades:", err)
-        setError("Erro ao carregar modalidades.")
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+      // Admin vê todas
+      const data = await modalidadeService.listar()
+      setModalidades(data)
+    } catch (err) {
+      console.error("Erro ao carregar modalidades:", err)
+      setError("Erro ao carregar modalidades.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -56,13 +56,8 @@ export default function AdminModalidades() {
   /* ==========================
      RENDER
      ========================== */
-  if (loading) {
-    return <p>Carregando modalidades...</p>
-  }
-
-  if (error) {
-    return <p style={{ color: "red" }}>{error}</p>
-  }
+  if (loading) return <p>Carregando modalidades...</p>
+  if (error) return <p style={{ color: "red" }}>{error}</p>
 
   return (
     <section>
@@ -81,7 +76,8 @@ export default function AdminModalidades() {
           <thead>
             <tr>
               <th style={{ textAlign: "left" }}>Nome</th>
-              <th style={{ width: "200px" }}>Ações</th>
+              <th>Status</th>
+              <th style={{ width: "220px" }}>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -89,9 +85,14 @@ export default function AdminModalidades() {
               <tr key={modalidade.id}>
                 <td>{modalidade.nome}</td>
                 <td>
+                  {modalidade.ativa === false ? "Inativa" : "Ativa"}
+                </td>
+                <td>
                   <button
                     onClick={() =>
-                      navigate(`/admin/modalidades/editar/${modalidade.id}`)
+                      navigate(
+                        `/admin/modalidades/editar/${modalidade.id}`
+                      )
                     }
                   >
                     Editar

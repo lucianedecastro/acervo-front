@@ -4,22 +4,32 @@ import { useAuth } from "./AuthContext"
 
 interface ProtectedRouteProps {
   children: ReactNode
+  allowedRoles?: string[]
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { token } = useAuth()
+export function ProtectedRoute({
+  children,
+  allowedRoles,
+}: ProtectedRouteProps) {
+  const { isAuthenticated, role, logout } = useAuth()
   const location = useLocation()
 
   // 🔐 Não autenticado
-  if (!token) {
-    return (
-      <Navigate
-        to="/login"
-        replace
-        state={{ from: location }}
-      />
-    )
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location }} />
   }
 
+  // 🚫 Role não autorizada
+  if (allowedRoles && role && !allowedRoles.includes(role)) {
+    return <Navigate to="/" replace />
+  }
+
+  // ⚠️ Token inválido (logado sem role)
+  if (allowedRoles && !role) {
+    logout()
+    return <Navigate to="/login" replace />
+  }
+
+  // ✅ Autorizado
   return <>{children}</>
 }

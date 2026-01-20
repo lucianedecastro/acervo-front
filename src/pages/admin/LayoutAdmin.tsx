@@ -1,15 +1,15 @@
-import { ReactNode } from "react"
-import { useNavigate } from "react-router-dom"
-
+import { Outlet, useNavigate } from "react-router-dom"
 import { useAuth } from "@/auth/AuthContext"
 
-interface LayoutAdminProps {
-  children: ReactNode
-}
-
-export default function LayoutAdmin({ children }: LayoutAdminProps) {
+export default function LayoutAdmin() {
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, role } = useAuth()
+
+  // Segurança extra: admin-only
+  if (role !== "ROLE_ADMIN") {
+    navigate("/")
+    return null
+  }
 
   function handleLogout() {
     logout()
@@ -30,23 +30,23 @@ export default function LayoutAdmin({ children }: LayoutAdminProps) {
         }}
       >
         <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
-          <strong 
-            style={{ cursor: "pointer", fontSize: "1.2rem" }} 
+          <strong
+            style={{ cursor: "pointer", fontSize: "1.2rem" }}
             onClick={() => navigate("/admin/modalidades")}
           >
             Acervo Atleta
           </strong>
-          
-          {/* Menu de Navegação Admin */}
+
+          {/* Menu Admin */}
           <nav style={{ display: "flex", gap: "1rem" }}>
-            <span 
-              style={{ cursor: "pointer", opacity: 0.8 }} 
+            <span
+              style={{ cursor: "pointer", opacity: 0.8 }}
               onClick={() => navigate("/admin/modalidades")}
             >
               Modalidades
             </span>
-            <span 
-              style={{ cursor: "pointer", opacity: 0.8 }} 
+            <span
+              style={{ cursor: "pointer", opacity: 0.8 }}
               onClick={() => navigate("/admin/atletas")}
             >
               Atletas
@@ -75,10 +75,10 @@ export default function LayoutAdmin({ children }: LayoutAdminProps) {
           maxWidth: "1100px",
           margin: "0 auto",
           background: "#fff",
-          minHeight: "80vh"
+          minHeight: "80vh",
         }}
       >
-        {children}
+        <Outlet />
       </main>
     </div>
   )

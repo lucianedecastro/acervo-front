@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
-import { modalidadeService } from "../../services/modalidadeService"
-import { Modalidade } from "../../types/modalidade"
+import {
+  modalidadeService,
+  ModalidadeCreateDTO,
+  ModalidadeUpdateDTO,
+} from "@/services/modalidadeService"
+import { Modalidade } from "@/types/modalidade"
 
 export default function ModalidadeForm() {
   const { id } = useParams<{ id: string }>()
@@ -11,6 +15,7 @@ export default function ModalidadeForm() {
   const [nome, setNome] = useState("")
   const [historia, setHistoria] = useState("")
   const [pictogramaUrl, setPictogramaUrl] = useState("")
+  const [ativa, setAtiva] = useState(true)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -18,27 +23,31 @@ export default function ModalidadeForm() {
   const isEdit = Boolean(id)
 
   /* ==========================
-     CARREGAR MODALIDADE (EDIÇÃO)
+     CARREGAR (EDIÇÃO)
      ========================== */
   useEffect(() => {
     if (!id) return
 
-    setLoading(true)
+    async function carregar() {
+      try {
+        setLoading(true)
 
-    modalidadeService
-      .buscarPorId(id)
-      .then((data: Modalidade) => {
+        const data: Modalidade =
+          await modalidadeService.buscarPorId(id as string)
+
         setNome(data.nome)
         setHistoria(data.historia || "")
         setPictogramaUrl(data.pictogramaUrl || "")
-      })
-      .catch((err) => {
+        setAtiva(data.ativa !== false)
+      } catch (err) {
         console.error("Erro ao carregar modalidade:", err)
         setError("Erro ao carregar modalidade.")
-      })
-      .finally(() => {
+      } finally {
         setLoading(false)
-      })
+      }
+    }
+
+    carregar()
   }, [id])
 
   /* ==========================
@@ -49,16 +58,23 @@ export default function ModalidadeForm() {
     setError(null)
     setLoading(true)
 
-    const payload = {
-      nome,
-      historia,
-      pictogramaUrl
-    }
-
     try {
       if (isEdit && id) {
-        await modalidadeService.atualizar(id, payload)
+        const payload: ModalidadeUpdateDTO = {
+          nome,
+          historia,
+          pictogramaUrl,
+          ativa,
+        }
+
+        await modalidadeService.atualizar(id as string, payload)
       } else {
+        const payload: ModalidadeCreateDTO = {
+          nome,
+          historia,
+          pictogramaUrl,
+        }
+
         await modalidadeService.criar(payload)
       }
 
@@ -108,6 +124,19 @@ export default function ModalidadeForm() {
             rows={6}
           />
         </div>
+
+        {isEdit && (
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={ativa}
+                onChange={(e) => setAtiva(e.target.checked)}
+              />
+              Modalidade ativa
+            </label>
+          </div>
+        )}
 
         <button type="submit" disabled={loading}>
           {loading ? "Salvando..." : "Salvar"}

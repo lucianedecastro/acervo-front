@@ -1,14 +1,20 @@
 // src/services/api.ts
-import axios from 'axios'
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios"
 
 /**
  * Base URL da API
- * Vem do .env (VITE_API_URL)
+ * Prioridade:
+ * 1) VITE_API_URL
+ * 2) Swagger (fallback seguro)
  */
-const API_BASE_URL = import.meta.env.VITE_API_URL
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ?? "https://acervo-api.onrender.com"
 
-if (!API_BASE_URL) {
-  console.error('❌ VITE_API_URL não está definida no .env')
+if (!import.meta.env.VITE_API_URL) {
+  console.warn(
+    "⚠️ VITE_API_URL não definida. Usando fallback do Swagger:",
+    API_BASE_URL
+  )
 }
 
 /**
@@ -24,18 +30,16 @@ const api = axios.create({
  * Injeta automaticamente o JWT (se existir)
  */
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('authToken')
+  (config: InternalAxiosRequestConfig) => {
+    const token = localStorage.getItem("authToken")
 
-    if (token && config.headers) {
+    if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
 
     return config
   },
-  (error) => {
-    return Promise.reject(error)
-  }
+  (error: AxiosError) => Promise.reject(error)
 )
 
 /**
@@ -44,20 +48,14 @@ api.interceptors.request.use(
  */
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response) {
-      const status = error.response.status
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      console.warn("⚠️ 401 Unauthorized — token inválido ou expirado")
 
-      if (status === 401) {
-        console.warn('⚠️ 401 Unauthorized — token inválido ou expirado')
+      localStorage.removeItem("authToken")
 
-        // limpa sessão
-        localStorage.removeItem('authToken')
-
-        // evita loop se já estiver no login
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login'
-        }
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login"
       }
     }
 

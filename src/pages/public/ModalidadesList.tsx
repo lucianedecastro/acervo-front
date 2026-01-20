@@ -29,22 +29,28 @@ export default function ModalidadesList() {
   }
 
   return (
-    <section>
+    <main style={{ padding: "2rem", maxWidth: "960px", margin: "0 auto" }}>
       <h1>Modalidades</h1>
+      <p>
+        Explore as modalidades que compõem o acervo da mulher brasileira no esporte.
+      </p>
 
       {modalidades.length === 0 ? (
         <p>Nenhuma modalidade cadastrada.</p>
       ) : (
-        <ul>
+        <ul style={{ marginTop: "2rem" }}>
           {modalidades.map((modalidade) => (
-            <li key={modalidade.id}>
-              <Link to={`/modalidades/${modalidade.id}`}>
-                {modalidade.nome}
+            <li key={modalidade.id} style={{ marginBottom: "1rem" }}>
+              <Link
+                to={`/modalidades/${modalidade.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <strong>{modalidade.nome}</strong>
               </Link>
             </li>
           ))}
         </ul>
       )}
-    </section>
+    </main>
   )
 }
