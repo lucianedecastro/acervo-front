@@ -48,7 +48,7 @@ export default function Sobre() {
         <h2 style={subtitleStyle}>Pesquisa e Memória</h2>
         <p style={pStyle}>
           A plataforma foi concebida para atender pesquisadoras e pesquisadores,
-          jornistas, estudantes, produtoras culturais e instituições
+          jornalistas, estudantes, produtoras culturais e instituições
           acadêmicas, oferecendo um ambiente estruturado para consulta, análise
           e contextualização da memória esportiva feminina no Brasil.
         </p>
