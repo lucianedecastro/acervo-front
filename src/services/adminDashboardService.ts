@@ -5,7 +5,7 @@
 
 import api from "@/services/api";
 
-// Exportação explícita do Tipo para evitar erro de "no exported member"
+// Exportação explícita do Tipo conforme sua imagem
 export interface AdminDashboardStatsDTO {
   totalAtletas: number;
   totalItensAcervo: number;

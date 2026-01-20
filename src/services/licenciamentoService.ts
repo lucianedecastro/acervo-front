@@ -1,44 +1,44 @@
-import api from "@/services/api";
-import {
-  SimulacaoLicenciamentoDTO,
-  ResultadoSimulacaoDTO,
-  EfetivarLicenciamentoDTO,
-  TransacaoLicenciamento,
-  ExtratoLicenciamentoDTO,
-} from "@/types/licenciamento";
+/* =====================================================
+   SERVIÇO: LICENCIAMENTOS (VENDAS)
+   ===================================================== */
+
+import api from "./api";
+
+export interface LicenciamentoDTO {
+  id: string;
+  data: string;
+  atletaNome: string;
+  itemTitulo: string;
+  tipoLicenca: string;
+  valorBruto: number;
+  repasseAtleta: number;
+  status: string;
+}
 
 export const licenciamentoService = {
-  /* ==========================
-      SIMULAÇÃO (Imagem 7)
-     ========================== */
-  async simular(data: SimulacaoLicenciamentoDTO): Promise<ResultadoSimulacaoDTO> {
-    const response = await api.post<ResultadoSimulacaoDTO>("/licenciamento/simular", data);
+  /**
+   * Mantendo o nome que seus componentes existentes já usam
+   * GET /licenciamentos/atleta/{atletaId}
+   */
+  async buscarExtratoPorAtleta(atletaId: string): Promise<LicenciamentoDTO[]> {
+    const response = await api.get<LicenciamentoDTO[]>(`/licenciamentos/atleta/${atletaId}`);
     return response.data;
   },
 
-  /* ==========================
-      EFETIVAÇÃO (Imagem 10)
-     ========================== */
-  async efetivar(data: EfetivarLicenciamentoDTO): Promise<TransacaoLicenciamento> {
-    const response = await api.post<TransacaoLicenciamento>("/licenciamento/efetivar", data);
+  /**
+   * NOVO: Para a base global administrativa
+   * GET /licenciamentos
+   */
+  async listarTodos(): Promise<LicenciamentoDTO[]> {
+    const response = await api.get<LicenciamentoDTO[]>("/licenciamentos");
     return response.data;
   },
 
-  /* ==========================
-      EXTRATO HISTÓRICO - ATLETA (Imagem 9)
-      Retorna um array de transações puras
-     ========================== */
-  async extratoAtleta(atletaId: string): Promise<TransacaoLicenciamento[]> {
-    const response = await api.get<TransacaoLicenciamento[]>(`/licenciamento/extrato/atleta/${atletaId}`);
+  /**
+   * GET /licenciamentos/{id}
+   */
+  async buscarPorId(id: string): Promise<LicenciamentoDTO> {
+    const response = await api.get<LicenciamentoDTO>(`/licenciamentos/${id}`);
     return response.data;
-  },
-
-  /* ==========================
-      EXTRATO CONSOLIDADO - ADMIN (Imagem 5)
-      Retorna Objeto com Nome, Saldo e Transações
-     ========================== */
-  async extratoConsolidado(atletaId: string): Promise<ExtratoLicenciamentoDTO> {
-    const response = await api.get<ExtratoLicenciamentoDTO>(`/licenciamento/extrato/consolidado/${atletaId}`);
-    return response.data;
-  },
+  }
 };

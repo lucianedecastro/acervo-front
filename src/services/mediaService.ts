@@ -1,37 +1,31 @@
 /* =====================================================
-   SERVIÇO: MÍDIA (Upload Genérico)
-   Status: Corrigido - Tipagem e Parâmetros Sincronizados
+   SERVIÇO: MÍDIA E UPLOAD (CLOUDINARY)
+   Sincronizado com Swagger: POST /acervo/upload
    ===================================================== */
 
-import api from "@/services/api"
+import api from "./api";
 
-/**
- * Interface de resposta para upload de mídia unificado
- */
-export interface MediaResponse {
+// Interface baseada na resposta do Swagger
+export interface MediaUploadResponse {
   id: string;
-  url: string;
   publicId: string;
+  url: string;
+  filename: string;
+  ehDestaque: boolean;
 }
 
 export const mediaService = {
   /**
-   * Realiza o upload de um arquivo para o backend
-   * @param file Arquivo vindo do input type="file"
-   * @param endpoint Rota opcional (padrão: /media/upload)
+   * Upload de mídia bruta
+   * Resolve erro ts(2554) no AtletaForm
    */
-  async upload(
-    file: File,
-    endpoint: string = "/media/upload"
-  ): Promise<MediaResponse> {
-    const formData = new FormData()
-    formData.append("file", file)
+  async upload(file: File, endpoint: string = "/acervo/upload"): Promise<MediaUploadResponse> {
+    const formData = new FormData();
+    formData.append("file", file);
 
-    // O backend processa o multipart/form-data e retorna os dados da imagem no Cloudinary
-    const { data } = await api.post<MediaResponse>(endpoint, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-
-    return data
-  },
-}
+    const { data } = await api.post<MediaUploadResponse>(endpoint, formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    });
+    return data;
+  }
+};

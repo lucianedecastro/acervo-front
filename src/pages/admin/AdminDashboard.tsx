@@ -1,46 +1,70 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { atletaService } from "@/services/atletaService"
+import { itemAcervoService } from "@/services/itemAcervoService"
+import { licenciamentoService } from "@/services/licenciamentoService"
 
-import {
-  adminDashboardService,
-  AdminDashboardStatsDTO,
-} from "@/services/adminDashboardService"
+interface DashboardStats {
+  totalAtletas: number
+  totalItensAcervo: number
+  faturamentoTotalBruto: number
+}
 
 export default function AdminDashboard() {
-  const navigate = useNavigate()
+  const [stats, setStats] = useState<DashboardStats>({
+    totalAtletas: 0,
+    totalItensAcervo: 0,
+    faturamentoTotalBruto: 0,
+  })
 
-  const [data, setData] = useState<AdminDashboardStatsDTO | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    async function carregar() {
+    async function carregarDashboard() {
       try {
-        setLoading(true)
-        const resumo = await adminDashboardService.obterResumo()
-        setData(resumo)
+        const [atletas, itens] = await Promise.all([
+          atletaService.listarTodasAdmin(),       // ✔ existe
+          itemAcervoService.listarAdmin(),   // ✅ CORRETO
+        ])
+
+        let faturamento = 0
+        try {
+          const vendas = await licenciamentoService.listarTodos()
+          faturamento = vendas.reduce(
+            (acc, v) => acc + (v.valorBruto || 0),
+            0
+          )
+        } catch {
+          faturamento = 0
+        }
+
+        setStats({
+          totalAtletas: atletas.length,
+          totalItensAcervo: itens.length,
+          faturamentoTotalBruto: faturamento,
+        })
       } catch (err) {
         console.error("Erro ao carregar dashboard admin:", err)
-        setError("Não foi possível carregar o painel administrativo.")
+        setError("Não foi possível carregar os indicadores do sistema.")
       } finally {
         setLoading(false)
       }
     }
 
-    carregar()
+    carregarDashboard()
   }, [])
 
   if (loading) {
-    return <p>Carregando painel administrativo...</p>
+    return <div style={{ padding: "2rem" }}>Carregando indicadores globais…</div>
   }
 
-  if (error || !data) {
-    return <p style={{ color: "red" }}>{error}</p>
+  if (error) {
+    return <div style={{ padding: "2rem", color: "red" }}>{error}</div>
   }
 
   return (
-    <section>
-      <h1 style={{ marginBottom: "2rem" }}>Painel Administrativo</h1>
+    <div style={{ padding: "2rem" }}>
+      <h1 style={{ marginBottom: "2rem" }}>Dashboard Administrativo</h1>
 
       <div
         style={{
@@ -49,61 +73,43 @@ export default function AdminDashboard() {
           gap: "1.5rem",
         }}
       >
-        <Card titulo="Atletas" valor={data.totalAtletas} />
-        <Card titulo="Itens de Acervo" valor={data.totalItensAcervo} />
-        <Card titulo="Modalidades" valor={data.totalModalidades} />
+        <Card label="Total de Atletas" value={stats.totalAtletas} />
+        <Card label="Itens no Acervo" value={stats.totalItensAcervo} />
         <Card
-          titulo="Aguardando Publicação"
-          valor={data.itensAguardandoPublicacao}
-        />
-        <Card
-          titulo="Faturamento Bruto"
-          valor={data.faturamentoTotalBruto.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          })}
-        />
-        <Card
-          titulo="Comissão da Plataforma"
-          valor={data.totalComissoesPlataforma.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          })}
+          label="Faturamento Bruto"
+          value={`R$ ${stats.faturamentoTotalBruto.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+          })}`}
         />
       </div>
-
-      {/* ===== AÇÕES ===== */}
-      <div style={{ marginTop: "3rem", display: "flex", gap: "1rem" }}>
-        <button onClick={() => navigate("/admin/atletas")}>Gerenciar Atletas</button>
-        <button onClick={() => navigate("/admin/modalidades")}>
-          Gerenciar Modalidades
-        </button>
-        <button onClick={() => navigate("/admin/configuracao-fiscal")}>
-          Configuração Fiscal
-        </button>
-      </div>
-    </section>
+    </div>
   )
 }
 
-function Card({
-  titulo,
-  valor,
-}: {
-  titulo: string
-  valor: string | number
-}) {
+function Card({ label, value }: { label: string; value: number | string }) {
   return (
-    <div
-      style={{
-        background: "#fff",
-        border: "1px solid #e5e5e5",
-        borderRadius: "8px",
-        padding: "1.5rem",
-      }}
-    >
-      <small style={{ color: "#666" }}>{titulo}</small>
-      <h2 style={{ marginTop: "0.5rem" }}>{valor}</h2>
+    <div style={cardStyle}>
+      <span style={labelStyle}>{label}</span>
+      <strong style={numberStyle}>{value}</strong>
     </div>
   )
+}
+
+const cardStyle = {
+  padding: "1.5rem",
+  backgroundColor: "white",
+  borderRadius: "8px",
+  border: "1px solid #eee",
+}
+
+const labelStyle = {
+  display: "block",
+  color: "#666",
+  fontSize: "0.85rem",
+  textTransform: "uppercase" as const,
+}
+
+const numberStyle = {
+  fontSize: "2rem",
+  fontWeight: "bold",
 }

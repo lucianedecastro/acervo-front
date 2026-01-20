@@ -1,148 +1,37 @@
-import api from "@/services/api"
-import {
-  ItemAcervo,
-  ItemAcervoCreateDTO,
-  ItemAcervoResponseDTO,
-} from "@/types/itemAcervo"
-import { Foto } from "@/types/atleta"
+/* =====================================================
+   SERVIÇO: ITENS DE ACERVO
+   Alinhado com ItemAcervoController (Swagger)
+   ===================================================== */
 
-/**
- * Serviço de Itens de Acervo
- * Alinhado com ItemAcervoController (Swagger)
- */
+import api from "@/services/api";
+// Sincronizado com o seu arquivo de tipos
+import { ItemAcervoResponseDTO, ItemAcervoCreateDTO } from "@/types/itemAcervo";
+
 export const itemAcervoService = {
-  /* =====================================================
-     CONSULTA PÚBLICA
-     ===================================================== */
-
-  /**
-   * GET /acervo
-   */
+  // GET /acervo - Público
   async listarPublicados(): Promise<ItemAcervoResponseDTO[]> {
-    const { data } = await api.get<ItemAcervoResponseDTO[]>("/acervo")
-    return data
+    const response = await api.get<ItemAcervoResponseDTO[]>("/acervo");
+    return response.data;
   },
 
-  /**
-   * GET /acervo/{id}
-   */
-  async buscarPublicadoPorId(
-    id: string
-  ): Promise<ItemAcervoResponseDTO> {
-    const { data } = await api.get<ItemAcervoResponseDTO>(
-      `/acervo/${id}`
-    )
-    return data
+  // GET /acervo/admin - Gestor
+  async listarAdmin(): Promise<ItemAcervoResponseDTO[]> {
+    const response = await api.get<ItemAcervoResponseDTO[]>("/acervo/admin");
+    return response.data;
   },
 
-  /**
-   * GET /acervo/atleta/{atletaId}
-   */
-  async listarPorAtleta(
-    atletaId: string
-  ): Promise<ItemAcervoResponseDTO[]> {
-    const { data } = await api.get<ItemAcervoResponseDTO[]>(
-      `/acervo/atleta/${atletaId}`
-    )
-    return data
+  // NOVO: Necessário para o componente AtletaPerfil.tsx
+  async listarPorAtleta(atletaId: string): Promise<ItemAcervoResponseDTO[]> {
+    const response = await api.get<ItemAcervoResponseDTO[]>(`/acervo/atleta/${atletaId}`);
+    return response.data;
   },
 
-  /* =====================================================
-     ADMIN / CURADORIA
-     ===================================================== */
-
-  /**
-   * GET /acervo/admin
-   */
-  async listarTodosAdmin(): Promise<ItemAcervo[]> {
-    const { data } = await api.get<ItemAcervo[]>("/acervo/admin")
-    return data
+  async criar(payload: ItemAcervoCreateDTO): Promise<ItemAcervoResponseDTO> {
+    const response = await api.post<ItemAcervoResponseDTO>("/acervo", payload);
+    return response.data;
   },
 
-  /**
-   * GET /acervo/admin/{id}
-   */
-  async buscarPorIdAdmin(id: string): Promise<ItemAcervo> {
-    const { data } = await api.get<ItemAcervo>(
-      `/acervo/admin/${id}`
-    )
-    return data
-  },
-
-  /**
-   * POST /acervo
-   */
-  async criar(
-    payload: ItemAcervoCreateDTO
-  ): Promise<ItemAcervo> {
-    const { data } = await api.post<ItemAcervo>(
-      "/acervo",
-      payload
-    )
-    return data
-  },
-
-  /**
-   * PUT /acervo/{id}
-   */
-  async atualizar(
-    id: string,
-    payload: ItemAcervoCreateDTO
-  ): Promise<ItemAcervo> {
-    const { data } = await api.put<ItemAcervo>(
-      `/acervo/${id}`,
-      payload
-    )
-    return data
-  },
-
-  /**
-   * POST /acervo/{id}/publicar
-   */
-  async publicar(id: string): Promise<ItemAcervo> {
-    const { data } = await api.post<ItemAcervo>(
-      `/acervo/${id}/publicar`
-    )
-    return data
-  },
-
-  /**
-   * DELETE /acervo/{id}
-   */
   async remover(id: string): Promise<void> {
-    await api.delete(`/acervo/${id}`)
-  },
-
-  /* =====================================================
-     UPLOAD DE FOTO COM METADADOS
-     ===================================================== */
-
-  /**
-   * POST /acervo/{id}/fotos
-   */
-  async uploadFotoComMetadata(
-    itemId: string,
-    file: File,
-    metadata: Partial<Foto>
-  ): Promise<Foto> {
-    const formData = new FormData()
-    formData.append("file", file)
-
-    formData.append(
-      "metadata",
-      new Blob([JSON.stringify(metadata)], {
-        type: "application/json",
-      })
-    )
-
-    const { data } = await api.post<Foto>(
-      `/acervo/${itemId}/fotos`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    )
-
-    return data
-  },
-}
+    await api.delete(`/acervo/${id}`);
+  }
+};
