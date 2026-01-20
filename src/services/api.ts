@@ -1,39 +1,17 @@
 // src/services/api.ts
-import axios, {
-  AxiosError,
-  InternalAxiosRequestConfig,
-} from "axios"
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios"
 
-/**
- * Base URL da API
- * Prioridade:
- * 1) VITE_API_URL (Vercel / local)
- * 2) Fallback seguro (Render)
- */
 const API_BASE_URL =
   import.meta.env.VITE_API_URL ?? "https://acervo-api.onrender.com"
 
-if (!import.meta.env.VITE_API_URL) {
-  console.warn(
-    "⚠️ VITE_API_URL não definida. Usando fallback:",
-    API_BASE_URL
-  )
-}
-
-/**
- * Instância principal do Axios
- */
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
 })
 
-/**
- * ==========================
- * REQUEST INTERCEPTOR
- * Injeta JWT automaticamente
- * ==========================
- */
+/* ==========================
+   REQUEST
+   ========================== */
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem("authToken")
@@ -44,21 +22,22 @@ api.interceptors.request.use(
 
     return config
   },
-  (error: AxiosError) => Promise.reject(error)
+  (error) => Promise.reject(error)
 )
 
-/**
- * ==========================
- * RESPONSE INTERCEPTOR
- * Trata 401 SEM navegar
- * ==========================
- */
+/* ==========================
+   RESPONSE
+   ========================== */
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      console.warn("⚠️ 401 Unauthorized — token inválido ou expirado")
-      // 👉 apenas limpa o token
+      console.warn("⚠️ 401 Unauthorized")
+
+      // 🔴 NÃO REDIRECIONAR AQUI
+      // 🔴 NÃO window.location
+      // 🔴 NÃO forçar login global
+
       localStorage.removeItem("authToken")
     }
 
