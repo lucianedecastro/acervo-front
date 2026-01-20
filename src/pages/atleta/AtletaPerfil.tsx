@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom"
 import { atletaService } from "@/services/atletaService"
 import { itemAcervoService } from "@/services/itemAcervoService"
 
-import { Atleta, Foto } from "@/types/atleta"
 import { ItemAcervoResponseDTO } from "@/types/itemAcervo"
 
 export default function AtletaPerfil() {
   const navigate = useNavigate()
 
-  const [atleta, setAtleta] = useState<Atleta | null>(null)
+  // Usamos 'any' para o estado inicial para acomodar a riqueza de campos do Swagger sem quebras de tipo imediatas
+  const [atleta, setAtleta] = useState<any | null>(null)
   const [itensAcervo, setItensAcervo] = useState<ItemAcervoResponseDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -22,20 +22,19 @@ export default function AtletaPerfil() {
     async function carregarPerfil() {
       try {
         setLoading(true)
+        setError(null)
 
+        // Busca os dados da atleta logada (Endpoint /atletas/me do Swagger)
         const dadosAtleta = await atletaService.buscarMeuPerfil()
 
-        if (!dadosAtleta.id) {
-          throw new Error("ID da atleta não encontrado")
+        if (!dadosAtleta || !dadosAtleta.id) {
+          throw new Error("Identificação da atleta não encontrada.")
         }
 
+        // Busca itens do acervo vinculados a esta atleta
         const itens = await itemAcervoService.listarPorAtleta(dadosAtleta.id)
 
-        setAtleta({
-          ...dadosAtleta,
-          fotos: dadosAtleta.fotos ?? [],
-        })
-
+        setAtleta(dadosAtleta)
         setItensAcervo(itens)
       } catch (err) {
         console.error("Erro ao carregar perfil da atleta:", err)
@@ -54,7 +53,7 @@ export default function AtletaPerfil() {
   if (loading) {
     return (
       <div style={{ padding: "4rem", textAlign: "center", color: "#666" }}>
-        <p>Carregando seu perfil...</p>
+        <p>Sincronizando seus dados...</p>
       </div>
     )
   }
@@ -75,9 +74,6 @@ export default function AtletaPerfil() {
     )
   }
 
-  const fotos: Foto[] = atleta.fotos ?? []
-  const fotoDestaque = fotos.find((f) => f.isDestaque) || fotos[0] || null
-
   return (
     <div style={containerStyle}>
       <header style={{ marginBottom: "2.5rem" }}>
@@ -93,22 +89,30 @@ export default function AtletaPerfil() {
         {/* ===== HEADER DO PERFIL ===== */}
         <section style={headerGridStyle}>
           <div style={photoContainerStyle}>
-            {fotoDestaque && (
+            {/* Alinhado ao campo 'fotoDestaqueUrl' do Swagger */}
+            {atleta.fotoDestaqueUrl ? (
               <img
-                src={fotoDestaque.url}
+                src={atleta.fotoDestaqueUrl}
                 alt={atleta.nome}
                 style={photoStyle}
               />
+            ) : (
+              <div style={placeholderPhotoStyle}>
+                Sem Foto
+              </div>
             )}
           </div>
 
           <div style={infoContainerStyle}>
             <h1 style={nameStyle}>{atleta.nome}</h1>
-            {atleta.modalidades.length > 0 && (
-              <h3 style={modalidadeLabelStyle}>
-                {atleta.modalidades.join(" · ")}
-              </h3>
-            )}
+            <p style={{ color: "#666", marginBottom: "1rem" }}>{atleta.email}</p>
+            
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <span style={badgeStyle}>{atleta.categoria}</span>
+              <span style={{ ...badgeStyle, backgroundColor: atleta.statusVerificacao === 'VERIFICADO' ? '#e6fffa' : '#fffaf0', color: atleta.statusVerificacao === 'VERIFICADO' ? '#2c7a7b' : '#9c4221' }}>
+                {atleta.statusVerificacao}
+              </span>
+            </div>
           </div>
         </section>
 
@@ -116,7 +120,18 @@ export default function AtletaPerfil() {
         <section style={sectionStyle}>
           <h2 style={sectionTitleStyle}>Minha Biografia</h2>
           <div style={bioTextStyle}>
-            {atleta.biografia}
+            {atleta.biografia || "Nenhuma biografia cadastrada até o momento."}
+          </div>
+        </section>
+
+        {/* ===== DADOS DE PAGAMENTO (PRIVADO) ===== */}
+        <section style={sectionStyle}>
+          <h2 style={sectionTitleStyle}>Dados para Repasse Financeiro</h2>
+          <div style={infoBoxStyle}>
+            <p><strong>Banco:</strong> {atleta.banco || "Não informado"}</p>
+            <p><strong>Agência:</strong> {atleta.agencia || "-"} | <strong>Conta:</strong> {atleta.conta || "-"}</p>
+            <p><strong>Chave PIX ({atleta.tipoChavePix}):</strong> {atleta.chavePix || "Não informada"}</p>
+            <p><strong>Status do Contrato:</strong> {atleta.contratoAssinado ? "✅ Assinado" : "❌ Pendente"}</p>
           </div>
         </section>
 
@@ -125,7 +140,7 @@ export default function AtletaPerfil() {
           <section style={acervoContainerStyle}>
             <h2 style={sectionTitleStyle}>Meus Itens de Acervo</h2>
             <p style={{ color: "#666", marginBottom: "1.5rem" }}>
-              Estes são os itens vinculados à sua trajetória esportiva cadastrados no sistema.
+              Itens vinculados à sua trajetória e disponíveis para licenciamento.
             </p>
 
             <div style={itemsGridStyle}>
@@ -141,30 +156,6 @@ export default function AtletaPerfil() {
                   <h4 style={{ marginTop: "1rem", color: "#111" }}>{item.titulo}</h4>
                   <p style={itemDescriptionStyle}>{item.descricao}</p>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ===== GALERIA ===== */}
-        {fotos.length > 1 && (
-          <section style={sectionStyle}>
-            <h2 style={sectionTitleStyle}>Minha Galeria de Imagens</h2>
-            <div style={galleryGridStyle}>
-              {fotos.map((foto) => (
-                <a
-                  key={foto.id}
-                  href={foto.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ display: "block" }}
-                >
-                  <img
-                    src={foto.url}
-                    alt="Imagem do acervo pessoal"
-                    style={galleryImageStyle}
-                  />
-                </a>
               ))}
             </div>
           </section>
@@ -191,7 +182,6 @@ const backButtonStyle: React.CSSProperties = {
   borderRadius: "4px",
   fontSize: "0.9rem",
   color: "#555",
-  transition: "all 0.2s",
 }
 
 const headerGridStyle: React.CSSProperties = {
@@ -208,10 +198,22 @@ const photoContainerStyle: React.CSSProperties = {
 
 const photoStyle: React.CSSProperties = {
   width: "100%",
-  maxWidth: "320px",
+  maxWidth: "280px",
   borderRadius: "16px",
   boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
   objectFit: "cover",
+}
+
+const placeholderPhotoStyle: React.CSSProperties = {
+  width: "280px",
+  height: "280px",
+  backgroundColor: "#eee",
+  borderRadius: "16px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "#999",
+  margin: "0 auto"
 }
 
 const infoContainerStyle: React.CSSProperties = {
@@ -219,17 +221,19 @@ const infoContainerStyle: React.CSSProperties = {
 }
 
 const nameStyle: React.CSSProperties = {
-  fontSize: "clamp(2rem, 5vw, 2.8rem)",
+  fontSize: "2.5rem",
   marginBottom: "0.5rem",
   color: "#1a1a1a",
 }
 
-const modalidadeLabelStyle: React.CSSProperties = {
-  color: "#c5a059",
-  textTransform: "uppercase",
-  letterSpacing: "1.5px",
-  fontSize: "0.9rem",
-  fontWeight: "600",
+const badgeStyle: React.CSSProperties = {
+  backgroundColor: "#f0f0f0",
+  padding: "5px 12px",
+  borderRadius: "20px",
+  fontSize: "0.8rem",
+  fontWeight: "bold",
+  color: "#555",
+  textTransform: "uppercase"
 }
 
 const sectionStyle: React.CSSProperties = {
@@ -237,7 +241,7 @@ const sectionStyle: React.CSSProperties = {
 }
 
 const sectionTitleStyle: React.CSSProperties = {
-  fontSize: "1.5rem",
+  fontSize: "1.4rem",
   marginBottom: "1.5rem",
   borderBottom: "1px solid #eee",
   paddingBottom: "10px",
@@ -251,12 +255,21 @@ const bioTextStyle: React.CSSProperties = {
   fontSize: "1.05rem",
 }
 
+const infoBoxStyle: React.CSSProperties = {
+  backgroundColor: "#fff",
+  padding: "1.5rem",
+  borderRadius: "12px",
+  border: "1px solid #e2e8f0",
+  lineHeight: "2",
+  color: "#4a5568"
+}
+
 const acervoContainerStyle: React.CSSProperties = {
   marginBottom: "4rem",
   padding: "2rem",
-  background: "#f9f9f9",
+  background: "#f8fafc",
   borderRadius: "16px",
-  border: "1px solid #f0f0f0"
+  border: "1px solid #edf2f7"
 }
 
 const itemsGridStyle: React.CSSProperties = {
@@ -283,17 +296,4 @@ const itemDescriptionStyle: React.CSSProperties = {
   fontSize: "0.85rem",
   color: "#666",
   marginTop: "0.5rem",
-}
-
-const galleryGridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-  gap: "1rem",
-}
-
-const galleryImageStyle: React.CSSProperties = {
-  width: "100%",
-  height: "150px",
-  objectFit: "cover",
-  borderRadius: "8px",
 }
