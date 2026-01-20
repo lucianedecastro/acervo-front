@@ -12,6 +12,9 @@ export default function LayoutAdmin() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#f5f5f5" }}>
+      {/* ======================
+          Header Admin
+         ====================== */}
       <header
         style={{
           background: "#111",
@@ -23,6 +26,7 @@ export default function LayoutAdmin() {
         }}
       >
         <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
+          {/* Marca → Dashboard */}
           <strong
             style={{ cursor: "pointer", fontSize: "1.2rem" }}
             onClick={() => navigate("/admin")}
@@ -30,29 +34,42 @@ export default function LayoutAdmin() {
             Acervo da Atleta Brasileira
           </strong>
 
+          {/* Menu Admin */}
           <nav style={{ display: "flex", gap: "1.2rem", alignItems: "center" }}>
             <span onClick={() => navigate("/admin")}>Dashboard</span>
-            <span onClick={() => navigate("/admin/modalidades")}>Modalidades</span>
-            <span onClick={() => navigate("/admin/atletas")}>Atletas</span>
+            <span onClick={() => navigate("/admin/modalidades")}>
+              Modalidades
+            </span>
+            <span onClick={() => navigate("/admin/atletas")}>
+              Atletas
+            </span>
+
             <span onClick={() => navigate("/admin/licenciamentos")}>
               Licenciamentos
             </span>
+
             <span
               style={{ fontSize: "0.9rem", opacity: 0.7 }}
               onClick={() => navigate("/admin/licenciamentos/simulacao")}
             >
               ↳ Simulação
             </span>
+
             <span
               style={{ fontSize: "0.9rem", opacity: 0.7 }}
               onClick={() => navigate("/admin/licenciamentos/extratos")}
             >
               ↳ Extratos
             </span>
+
             <span onClick={() => navigate("/admin/configuracao-fiscal")}>
               Configuração Fiscal
             </span>
-            <span style={{ opacity: 0.7 }} onClick={() => navigate("/")}>
+
+            <span
+              style={{ opacity: 0.7 }}
+              onClick={() => navigate("/")}
+            >
               Site Público
             </span>
           </nav>
@@ -72,6 +89,9 @@ export default function LayoutAdmin() {
         </button>
       </header>
 
+      {/* ======================
+          Conteúdo
+         ====================== */}
       <main
         style={{
           padding: "2rem",

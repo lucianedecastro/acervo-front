@@ -98,7 +98,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         token,
         role,
-        isAuthenticated: Boolean(token), // 🔑 CORREÇÃO CRÍTICA
+        isAuthenticated: Boolean(token),
         isLoading,
         login,
         logout,
