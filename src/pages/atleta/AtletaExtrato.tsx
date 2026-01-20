@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-
 import { licenciamentoService } from "@/services/licenciamentoService"
 import { ExtratoLicenciamentoDTO } from "@/types/licenciamento"
 
@@ -9,7 +8,7 @@ export default function AtletaExtrato() {
   const [error, setError] = useState<string | null>(null)
 
   /* ==========================
-     CARREGAR EXTRATO
+      CARREGAR EXTRATO
      ========================== */
   useEffect(() => {
     async function carregar() {
@@ -17,12 +16,12 @@ export default function AtletaExtrato() {
         setLoading(true)
         setError(null)
 
-        // backend resolve atleta via token
+        // O backend identifica a atleta logada via Token JWT
         const data = await licenciamentoService.extratoAtleta("me")
         setExtrato(data)
       } catch (err) {
         console.error("Erro ao carregar extrato:", err)
-        setError("Não foi possível carregar seu extrato financeiro.")
+        setError("Não foi possível carregar seu extrato financeiro no momento.")
       } finally {
         setLoading(false)
       }
@@ -32,11 +31,11 @@ export default function AtletaExtrato() {
   }, [])
 
   /* ==========================
-     STATES
+      ESTADOS (LOADING / ERROR)
      ========================== */
   if (loading) {
     return (
-      <div style={{ padding: "2rem" }}>
+      <div style={{ padding: "3rem", textAlign: "center", color: "#666" }}>
         Carregando seu extrato financeiro...
       </div>
     )
@@ -44,33 +43,32 @@ export default function AtletaExtrato() {
 
   if (error || !extrato) {
     return (
-      <div style={{ padding: "2rem", color: "red" }}>
-        {error || "Extrato indisponível."}
+      <div style={{ padding: "3rem", textAlign: "center" }}>
+        <p style={{ color: "#d93025", fontWeight: "bold" }}>
+          {error || "Extrato indisponível."}
+        </p>
       </div>
     )
   }
 
   /* ==========================
-     RENDER
+      RENDERIZAÇÃO
      ========================== */
   return (
-    <main style={{ padding: "2rem" }}>
-      <header style={{ marginBottom: "2rem" }}>
-        <h1 style={{ color: "#2c3e50" }}>Meu Extrato Financeiro</h1>
-        <p>Acompanhe seus ganhos com licenciamento de acervo.</p>
+    <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <header style={{ marginBottom: "3rem" }}>
+        <h1 style={{ color: "#1a1a1a", fontSize: "2.2rem", marginBottom: "0.5rem" }}>
+          Meu Extrato Financeiro
+        </h1>
+        <p style={{ color: "#666", fontSize: "1.1rem" }}>
+          Acompanhe detalhadamente seus ganhos com o licenciamento de acervo.
+        </p>
       </header>
 
-      {/* ===== RESUMO ===== */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "20px",
-          marginBottom: "2.5rem",
-        }}
-      >
+      {/* ===== RESUMO (CARDS) ===== */}
+      <div style={gridStyle}>
         <div style={cardStyle("#27ae60")}>
-          <small>Total Recebido</small>
+          <small style={labelStyle}>Total Recebido (Líquido)</small>
           <h2 style={valueStyle}>
             {extrato.totalAtleta.toLocaleString("pt-BR", {
               style: "currency",
@@ -80,7 +78,7 @@ export default function AtletaExtrato() {
         </div>
 
         <div style={cardStyle("#2980b9")}>
-          <small>Total Bruto</small>
+          <small style={labelStyle}>Total Bruto</small>
           <h2 style={valueStyle}>
             {extrato.totalBruto.toLocaleString("pt-BR", {
               style: "currency",
@@ -90,7 +88,7 @@ export default function AtletaExtrato() {
         </div>
 
         <div style={cardStyle("#7f8c8d")}>
-          <small>Repasse Plataforma</small>
+          <small style={labelStyle}>Taxa da Plataforma</small>
           <h2 style={valueStyle}>
             {extrato.totalPlataforma.toLocaleString("pt-BR", {
               style: "currency",
@@ -100,80 +98,129 @@ export default function AtletaExtrato() {
         </div>
       </div>
 
-      {/* ===== TABELA ===== */}
-      {extrato.transacoes.length === 0 ? (
-        <p>Nenhuma transação registrada até o momento.</p>
-      ) : (
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            background: "#fff",
-          }}
-        >
-          <thead>
-            <tr style={{ borderBottom: "2px solid #eee" }}>
-              <th style={thStyle}>Data</th>
-              <th style={thStyle}>Item</th>
-              <th style={thStyle}>Tipo de Uso</th>
-              <th style={thStyle}>Valor Bruto</th>
-              <th style={thStyle}>Meu Repasse</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {extrato.transacoes.map((t) => (
-              <tr key={t.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={tdStyle}>
-                  {new Date(t.criadoEm).toLocaleDateString("pt-BR")}
-                </td>
-                <td style={tdStyle}>{t.itemAcervoId}</td>
-                <td style={tdStyle}>{t.tipoUso}</td>
-                <td style={tdStyle}>
-                  {t.valorBruto.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </td>
-                <td style={tdStyle}>
-                  {t.valorAtleta.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </main>
+      {/* ===== TABELA DE TRANSAÇÕES ===== */}
+      <section style={tableSectionStyle}>
+        <h3 style={{ marginBottom: "1.5rem", color: "#1a1a1a" }}>Histórico de Transações</h3>
+        
+        {extrato.transacoes.length === 0 ? (
+          <div style={{ padding: "2rem", textAlign: "center", background: "#f9f9f9", borderRadius: "8px" }}>
+            <p style={{ color: "#888" }}>Nenhuma transação registrada até o momento.</p>
+          </div>
+        ) : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={tableStyle}>
+              <thead>
+                <tr style={{ borderBottom: "2px solid #f0f0f0" }}>
+                  <th style={thStyle}>Data</th>
+                  <th style={thStyle}>Item do Acervo</th>
+                  <th style={thStyle}>Tipo de Uso</th>
+                  <th style={thStyle}>Valor Bruto</th>
+                  <th style={thStyle}>Meu Repasse</th>
+                </tr>
+              </thead>
+              <tbody>
+                {extrato.transacoes.map((t) => (
+                  <tr key={t.id} style={trStyle}>
+                    <td style={tdStyle}>
+                      {new Date(t.criadoEm).toLocaleDateString("pt-BR")}
+                    </td>
+                    <td style={tdStyle}><strong>{t.itemAcervoId}</strong></td>
+                    <td style={tdStyle}>
+                      <span style={badgeStyle}>{t.tipoUso}</span>
+                    </td>
+                    <td style={tdStyle}>
+                      {t.valorBruto.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                    <td style={{ ...tdStyle, color: "#27ae60", fontWeight: "bold" }}>
+                      {t.valorAtleta.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
   )
 }
 
 /* ==========================
-   STYLES
+    ESTILOS (CSS-IN-JS)
    ========================== */
-const cardStyle = (color: string) => ({
+const gridStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gap: "24px",
+  marginBottom: "3.5rem",
+}
+
+const cardStyle = (color: string): React.CSSProperties => ({
   backgroundColor: "#fff",
-  padding: "20px",
-  borderRadius: "12px",
-  boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
-  borderTop: `5px solid ${color}`,
+  padding: "24px",
+  borderRadius: "16px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+  borderLeft: `6px solid ${color}`, // Mudei para borda lateral para diferenciar do Dashboard
 })
 
-const valueStyle = {
-  margin: "10px 0 0 0",
+const labelStyle: React.CSSProperties = {
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  fontWeight: "600",
+  color: "#718096",
+  fontSize: "0.75rem",
+}
+
+const valueStyle: React.CSSProperties = {
+  margin: "8px 0 0 0",
   fontSize: "1.8rem",
-  color: "#333",
+  color: "#1a202c",
+  fontWeight: "700",
 }
 
-const thStyle = {
-  textAlign: "left" as const,
-  padding: "0.6rem",
-  fontSize: "0.9rem",
+const tableSectionStyle: React.CSSProperties = {
+  background: "#fff",
+  padding: "2rem",
+  borderRadius: "16px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+  border: "1px solid #f0f0f0"
 }
 
-const tdStyle = {
-  padding: "0.6rem",
-  fontSize: "0.9rem",
+const tableStyle: React.CSSProperties = {
+  width: "100%",
+  borderCollapse: "collapse",
+}
+
+const thStyle: React.CSSProperties = {
+  textAlign: "left",
+  padding: "1rem",
+  fontSize: "0.85rem",
+  color: "#718096",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em"
+}
+
+const trStyle: React.CSSProperties = {
+  borderBottom: "1px solid #f7f7f7",
+}
+
+const tdStyle: React.CSSProperties = {
+  padding: "1.2rem 1rem",
+  fontSize: "0.95rem",
+  color: "#4a5568",
+}
+
+const badgeStyle: React.CSSProperties = {
+  backgroundColor: "#edf2f7",
+  padding: "4px 8px",
+  borderRadius: "4px",
+  fontSize: "0.8rem",
+  color: "#4a5568",
+  fontWeight: "500"
 }

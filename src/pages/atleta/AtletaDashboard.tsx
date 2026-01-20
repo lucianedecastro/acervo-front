@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-
 import { atletaService } from "@/services/atletaService"
 import { DashboardAtletaDTO } from "@/types/atleta"
 
@@ -9,7 +8,7 @@ export default function AtletaDashboard() {
   const [error, setError] = useState<string | null>(null)
 
   /* ==========================
-     CARREGAR DASHBOARD
+      CARREGAR DASHBOARD
      ========================== */
   useEffect(() => {
     async function carregar() {
@@ -19,7 +18,7 @@ export default function AtletaDashboard() {
         setData(dashboard)
       } catch (err) {
         console.error("Erro ao carregar dashboard:", err)
-        setError("Não foi possível carregar seus dados financeiros.")
+        setError("Não foi possível carregar seus dados financeiros no momento.")
       } finally {
         setLoading(false)
       }
@@ -29,44 +28,44 @@ export default function AtletaDashboard() {
   }, [])
 
   /* ==========================
-     STATES
+      ESTADOS DE CARREGAMENTO / ERRO
      ========================== */
   if (loading) {
     return (
-      <div style={{ padding: "2rem" }}>
-        Sincronizando com o acervo...
+      <div style={{ padding: "3rem", textAlign: "center", color: "#666" }}>
+        <p>Sincronizando com o acervo...</p>
       </div>
     )
   }
 
   if (error || !data) {
     return (
-      <div style={{ padding: "2rem", color: "red" }}>
-        {error || "Erro ao carregar dashboard."}
+      <div style={{ padding: "3rem", textAlign: "center" }}>
+        <p style={{ color: "#d93025", fontWeight: "bold" }}>
+          {error || "Erro ao carregar dashboard."}
+        </p>
       </div>
     )
   }
 
   /* ==========================
-     RENDER
+      RENDERIZAÇÃO
      ========================== */
   return (
-    <main style={{ padding: "2rem" }}>
-      <header style={{ marginBottom: "2rem" }}>
-        <h1 style={{ color: "#2c3e50" }}>Meu Painel Financeiro</h1>
-        <p>Acompanhamento de vendas e acervo em tempo real.</p>
+    <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <header style={{ marginBottom: "3rem" }}>
+        <h1 style={{ color: "#1a1a1a", fontSize: "2.2rem", marginBottom: "0.5rem" }}>
+          Meu Painel Financeiro
+        </h1>
+        <p style={{ color: "#666", fontSize: "1.1rem" }}>
+          Acompanhamento de vendas e acervo em tempo real.
+        </p>
       </header>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {/* Saldo */}
+      <div style={gridStyle}>
+        {/* Card: Saldo */}
         <div style={cardStyle("#27ae60")}>
-          <small>Saldo Disponível</small>
+          <small style={labelStyle}>Saldo Disponível</small>
           <h2 style={valueStyle}>
             {data.saldoTotalAtleta.toLocaleString("pt-BR", {
               style: "currency",
@@ -75,43 +74,61 @@ export default function AtletaDashboard() {
           </h2>
         </div>
 
-        {/* Itens Publicados */}
+        {/* Card: Itens Publicados */}
         <div style={cardStyle("#2980b9")}>
-          <small>Itens Publicados</small>
+          <small style={labelStyle}>Itens Publicados</small>
           <h2 style={valueStyle}>{data.itensPublicados}</h2>
         </div>
 
-        {/* Licenciamentos */}
+        {/* Card: Licenciamentos */}
         <div style={cardStyle("#8e44ad")}>
-          <small>Licenciamentos Vendidos</small>
+          <small style={labelStyle}>Licenciamentos Vendidos</small>
           <h2 style={valueStyle}>
             {data.totalLicenciamentosVendidos}
           </h2>
         </div>
 
-        {/* Total Geral */}
+        {/* Card: Total Geral */}
         <div style={cardStyle("#7f8c8d")}>
-          <small>Total de Itens (Geral)</small>
+          <small style={labelStyle}>Total de Itens (Geral)</small>
           <h2 style={valueStyle}>{data.totalMeusItens}</h2>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
 
 /* ==========================
-   STYLES
+    ESTILOS (CSS-IN-JS)
    ========================== */
-const cardStyle = (color: string) => ({
+const gridStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gap: "24px",
+}
+
+const cardStyle = (color: string): React.CSSProperties => ({
   backgroundColor: "#fff",
-  padding: "20px",
-  borderRadius: "12px",
-  boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
-  borderTop: `5px solid ${color}`,
+  padding: "24px",
+  borderRadius: "16px",
+  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+  borderTop: `6px solid ${color}`,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center"
 })
 
-const valueStyle = {
-  margin: "10px 0 0 0",
-  fontSize: "1.8rem",
-  color: "#333",
+const labelStyle: React.CSSProperties = {
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  fontWeight: "600",
+  color: "#718096",
+  fontSize: "0.75rem",
+}
+
+const valueStyle: React.CSSProperties = {
+  margin: "12px 0 0 0",
+  fontSize: "2rem",
+  color: "#1a202c",
+  fontWeight: "700",
 }
