@@ -13,6 +13,7 @@ interface TokenPayload {
   role?: string
   roles?: string[]
   scope?: string
+  exp?: number
 }
 
 interface AuthContextData {
@@ -49,11 +50,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const decoded = jwtDecode<TokenPayload>(token)
+
+      // ⛔ TOKEN EXPIRADO
+      if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+        console.warn("⛔ Token expirado")
+        logout()
+        return
+      }
+
       const resolvedRole =
         decoded.role ||
         decoded.roles?.[0] ||
         decoded.scope?.split(" ")?.[0] ||
         null
+
+      if (!resolvedRole) {
+        logout()
+        return
+      }
 
       setRole(resolvedRole)
     } catch {
@@ -74,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         token,
         role,
-        isAuthenticated: Boolean(token),
+        isAuthenticated: Boolean(token && role),
         isLoading,
         login,
         logout,
@@ -87,6 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error("useAuth deve ser usado dentro de AuthProvider")
+  if (!ctx) throw new Error("useAuth fora do provider")
   return ctx
 }
