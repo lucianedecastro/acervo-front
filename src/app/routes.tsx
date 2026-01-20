@@ -17,6 +17,9 @@ import ModalidadesList from "@/pages/public/ModalidadesList"
 import ModalidadeDetail from "@/pages/public/ModalidadeDetail"
 import AtletasList from "@/pages/public/AtletasList"
 import AtletaDetail from "@/pages/public/AtletaDetail"
+// 🔹 ADICIONADOS:
+import Sobre from "@/pages/public/Sobre"
+import Arquitetura from "@/pages/public/Arquitetura"
 
 /* ======================
    Admin
@@ -47,6 +50,11 @@ export function AppRoutes() {
           ===================================================== */}
       <Route element={<LayoutPublic />}>
         <Route path="/" element={<Home />} />
+        
+        {/* 🔹 ROTAS INSTITUCIONAIS ADICIONADAS */}
+        <Route path="/sobre" element={<Sobre />} />
+        <Route path="/arquitetura" element={<Arquitetura />} />
+
         <Route path="/modalidades" element={<ModalidadesList />} />
         <Route path="/modalidades/:id" element={<ModalidadeDetail />} />
         <Route path="/atletas" element={<AtletasList />} />
@@ -56,7 +64,6 @@ export function AppRoutes() {
 
       {/* =====================================================
           ROTAS DA ATLETA (PROTEGIDAS)
-          Prefixadas com /dashboard para evitar conflitos
           ===================================================== */}
       <Route
         path="/dashboard"
@@ -66,7 +73,6 @@ export function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        {/* Redireciona /dashboard para /dashboard/atleta */}
         <Route index element={<Navigate to="/dashboard/atleta" replace />} />
         <Route path="atleta" element={<AtletaDashboard />} />
         <Route path="perfil" element={<AtletaPerfil />} />
@@ -75,7 +81,6 @@ export function AppRoutes() {
 
       {/* =====================================================
           ROTAS ADMIN (PROTEGIDAS)
-          Prefixadas explicitamente com /admin
           ===================================================== */}
       <Route
         path="/admin"
@@ -85,38 +90,17 @@ export function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        {/* 🔹 ADMIN DASHBOARD - Acessado via /admin */}
         <Route index element={<AdminDashboard />} />
-
-        {/* 🔹 ADMIN – LICENCIAMENTOS & FINANCEIRO */}
         <Route path="licenciamentos" element={<AdminLicenciamentos />} />
-        <Route
-          path="licenciamentos/simulacao"
-          element={<AdminSimulacaoLicenciamento />}
-        />
-        <Route
-          path="licenciamentos/extratos"
-          element={<AdminExtratoAtleta />}
-        />
-
-        {/* 🔹 ADMIN – MODALIDADES */}
+        <Route path="licenciamentos/simulacao" element={<AdminSimulacaoLicenciamento />} />
+        <Route path="licenciamentos/extratos" element={<AdminExtratoAtleta />} />
         <Route path="modalidades" element={<AdminModalidades />} />
         <Route path="modalidades/nova" element={<ModalidadeForm />} />
-        <Route
-          path="modalidades/editar/:id"
-          element={<ModalidadeForm />}
-        />
-
-        {/* 🔹 ADMIN – ATLETAS */}
+        <Route path="modalidades/editar/:id" element={<ModalidadeForm />} />
         <Route path="atletas" element={<AdminAtletas />} />
         <Route path="atletas/nova" element={<AtletaForm />} />
         <Route path="atletas/editar/:id" element={<AtletaForm />} />
-
-        {/* 🔹 ADMIN – CONFIGURAÇÃO FISCAL */}
-        <Route
-          path="configuracao-fiscal"
-          element={<AdminConfiguracaoFiscal />}
-        />
+        <Route path="configuracao-fiscal" element={<AdminConfiguracaoFiscal />} />
       </Route>
 
       {/* =====================================================
