@@ -45,9 +45,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       console.warn("⚠️ Sessão expirada ou acesso não autorizado.")
 
-      // Removemos o token inválido, mas deixamos o AuthContext lidar com o 
-      // redirecionamento para não interromper fluxos de salvamento
-      localStorage.removeItem("authToken")
+      // NÃO remove token aqui
+      // Deixe o AuthContext decidir o que fazer
     }
 
     // Tratamento genérico de erros para facilitar o debug no console
