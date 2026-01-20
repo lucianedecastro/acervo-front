@@ -21,7 +21,7 @@ export const adminDashboardService = {
    * GET /admin/dashboard/resumo
    */
   async obterResumo(): Promise<AdminDashboardStatsDTO> {
-    const response = await api.get<AdminDashboardStatsDTO>("/admin/dashboard/resumo");
+    const response = await api.get<AdminDashboardStatsDTO>("/dashboard/admin");
     return response.data;
   }
 };
