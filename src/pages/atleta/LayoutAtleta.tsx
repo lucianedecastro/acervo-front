@@ -11,16 +11,7 @@ export default function LayoutAtleta() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* ======================
-          Navbar da Atleta
-         ====================== */}
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <nav
         style={{
           backgroundColor: "#1a1a1a",
@@ -31,7 +22,6 @@ export default function LayoutAtleta() {
           alignItems: "center",
         }}
       >
-        {/* Marca / Home do Dashboard */}
         <div
           style={{ fontWeight: "bold", fontSize: "1.2rem", cursor: "pointer" }}
           onClick={() => navigate("/dashboard/atleta")}
@@ -39,33 +29,11 @@ export default function LayoutAtleta() {
           Acervo da Atleta Brasileira
         </div>
 
-        {/* Navegação da Atleta */}
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          <span
-            style={{ cursor: "pointer", opacity: 0.85 }}
-            onClick={() => navigate("/dashboard/atleta")}
-          >
-            Dashboard
-          </span>
-
-          <span
-            style={{ cursor: "pointer", opacity: 0.85 }}
-            onClick={() => navigate("/atleta/perfil")}
-          >
-            Meu Perfil
-          </span>
-
-          <span
-            style={{ cursor: "pointer", opacity: 0.85 }}
-            onClick={() => navigate("/atleta/extrato")}
-          >
-            Extrato
-          </span>
-
-          <span
-            style={{ cursor: "pointer", opacity: 0.7 }}
-            onClick={() => navigate("/")}
-          >
+          <span onClick={() => navigate("/dashboard/atleta")}>Dashboard</span>
+          <span onClick={() => navigate("/atleta/perfil")}>Meu Perfil</span>
+          <span onClick={() => navigate("/atleta/extrato")}>Extrato</span>
+          <span style={{ opacity: 0.7 }} onClick={() => navigate("/")}>
             Site Público
           </span>
 
@@ -85,22 +53,10 @@ export default function LayoutAtleta() {
         </div>
       </nav>
 
-      {/* ======================
-          Conteúdo
-         ====================== */}
-      <main
-        style={{
-          flex: 1,
-          backgroundColor: "#f4f7f6",
-          padding: "2rem",
-        }}
-      >
+      <main style={{ flex: 1, backgroundColor: "#f4f7f6", padding: "2rem" }}>
         <Outlet />
       </main>
 
-      {/* ======================
-          Rodapé
-         ====================== */}
       <footer
         style={{
           padding: "1rem",
