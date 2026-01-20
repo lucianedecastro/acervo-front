@@ -1,8 +1,3 @@
-/* =====================================================
-   DETALHE DA MODALIDADE (PÚBLICO)
-   Alinhado ao Swagger: GET /modalidades/slug/{slug}
-   ===================================================== */
-
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 
@@ -10,7 +5,11 @@ import { modalidadeService } from "@/services/modalidadeService"
 import { ModalidadePublicaDTO } from "@/types/modalidade"
 
 export default function ModalidadeDetail() {
-  // CORREÇÃO: Usamos 'slug' conforme definido no AppRoutes e Swagger
+  /* ==========================
+     CAPTURANDO O SLUG (URL AMIGÁVEL)
+     A URL no navegador é /modalidades/natacao
+     Capturamos 'natacao' como slug.
+     ========================== */
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   
@@ -19,13 +18,17 @@ export default function ModalidadeDetail() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // Validamos se o slug foi capturado corretamente para evitar erros de busca
     if (!slug) {
       setError("Identificador da modalidade não informado.")
       setLoading(false)
       return
     }
 
-    // CORREÇÃO: Chama buscarPorSlug para bater com o endpoint público
+    /* ==========================
+       BUSCA PÚBLICA PELO SLUG
+       Endpoint: GET /modalidades/slug/{slug}
+       ========================== */
     modalidadeService
       .buscarPorSlug(slug)
       .then((data) => {
@@ -40,26 +43,20 @@ export default function ModalidadeDetail() {
       })
   }, [slug])
 
-  if (loading) {
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>
-        <p>Carregando história e acervo...</p>
-      </div>
-    )
-  }
+  if (loading) return (
+    <div style={{ padding: "4rem", textAlign: "center" }}>
+      <p>Carregando história e acervo...</p>
+    </div>
+  )
 
-  if (error || !modalidade) {
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>
-        <p style={{ color: "#d93025", marginBottom: "1rem" }}>
-          {error || "Modalidade não encontrada."}
-        </p>
-        <button onClick={() => navigate("/modalidades")} style={backButtonStyle}>
-          Voltar para a lista
-        </button>
-      </div>
-    )
-  }
+  if (error || !modalidade) return (
+    <div style={{ padding: "4rem", textAlign: "center" }}>
+      <p style={{ color: "#d93025", marginBottom: "1rem" }}>{error}</p>
+      <button onClick={() => navigate("/modalidades")} style={backButtonStyle}>
+        Voltar para a lista
+      </button>
+    </div>
+  )
 
   return (
     <main style={containerStyle}>
@@ -71,11 +68,7 @@ export default function ModalidadeDetail() {
         <header style={headerStyle}>
           {modalidade.pictogramaUrl && (
             <div style={iconContainerStyle}>
-              <img
-                src={modalidade.pictogramaUrl}
-                alt={`Ícone de ${modalidade.nome}`}
-                style={iconStyle}
-              />
+              <img src={modalidade.pictogramaUrl} alt={modalidade.nome} style={iconStyle} />
             </div>
           )}
           <h1 style={titleStyle}>{modalidade.nome}</h1>
@@ -83,27 +76,19 @@ export default function ModalidadeDetail() {
 
         <section style={contentSectionStyle}>
           <h2 style={subtitleStyle}>História e Contexto</h2>
-          {modalidade.historia ? (
-            <p style={textStyle}>{modalidade.historia}</p>
-          ) : (
-            <p style={{ ...textStyle, fontStyle: "italic", color: "#999" }}>
-              Nenhuma descrição histórica disponível no momento.
-            </p>
-          )}
+          <p style={textStyle}>
+            {modalidade.historia || "Nenhuma descrição histórica disponível no momento."}
+          </p>
         </section>
 
-        {/* EXIBIÇÃO DA GALERIA (Conforme Schema FotoAcervo) */}
+        {/* GALERIA DE FOTOS (Alinhado ao Schema FotoAcervo) */}
         {modalidade.fotos && modalidade.fotos.length > 0 && (
           <section style={{ marginTop: "4rem" }}>
             <h2 style={subtitleStyle}>Acervo Fotográfico</h2>
             <div style={galleryGridStyle}>
               {modalidade.fotos.map((foto) => (
                 <div key={foto.publicId} style={galleryItemStyle}>
-                  <img 
-                    src={foto.urlVisualizacao} 
-                    alt={foto.legenda} 
-                    style={galleryImageStyle} 
-                  />
+                  <img src={foto.urlVisualizacao} alt={foto.legenda} style={galleryImageStyle} />
                   {foto.legenda && <p style={galleryCaptionStyle}>{foto.legenda}</p>}
                 </div>
               ))}
@@ -116,35 +101,12 @@ export default function ModalidadeDetail() {
 }
 
 /* =========================
-   ESTILOS ADICIONAIS
+   ESTILOS NECESSÁRIOS
    ========================= */
-
-const galleryGridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-  gap: "2rem",
-  marginTop: "1.5rem"
-}
-
-const galleryItemStyle: React.CSSProperties = {
-  borderRadius: "8px",
-  overflow: "hidden",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
-}
-
-const galleryImageStyle: React.CSSProperties = {
-  width: "100%",
-  height: "200px",
-  objectFit: "cover"
-}
-
-const galleryCaptionStyle: React.CSSProperties = {
-  padding: "1rem",
-  fontSize: "0.9rem",
-  color: "#666",
-  backgroundColor: "#fcfcfc"
-}
-
+const galleryGridStyle: React.CSSProperties = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "2rem", marginTop: "1.5rem" }
+const galleryItemStyle: React.CSSProperties = { borderRadius: "8px", overflow: "hidden", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }
+const galleryImageStyle: React.CSSProperties = { width: "100%", height: "200px", objectFit: "cover" }
+const galleryCaptionStyle: React.CSSProperties = { padding: "1rem", fontSize: "0.9rem", color: "#666", backgroundColor: "#fcfcfc" }
 const containerStyle: React.CSSProperties = { maxWidth: "960px", margin: "0 auto", padding: "3rem 2rem" }
 const backButtonStyle: React.CSSProperties = { marginBottom: "2rem", cursor: "pointer", backgroundColor: "transparent", border: "1px solid #ddd", padding: "0.5rem 1rem", borderRadius: "4px", fontSize: "0.9rem", color: "#555" }
 const articleStyle: React.CSSProperties = { backgroundColor: "#fff", borderRadius: "12px" }
