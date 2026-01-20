@@ -7,34 +7,21 @@ interface ProtectedRouteProps {
   allowedRoles?: string[]
 }
 
-export function ProtectedRoute({
-  children,
-  allowedRoles,
-}: ProtectedRouteProps) {
-  const { isAuthenticated, role, isLoading, logout } = useAuth()
+export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+  const { isAuthenticated, role, isLoading } = useAuth()
   const location = useLocation()
 
-  /* ⏳ Aguarda bootstrap do AuthContext */
   if (isLoading) {
     return null
   }
 
-  /* 🔐 Não autenticado */
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 
-  /* 🚫 Role não autorizada */
-  if (allowedRoles && role && !allowedRoles.includes(role)) {
+  if (allowedRoles && !allowedRoles.includes(role!)) {
     return <Navigate to="/" replace />
   }
 
-  /* ⚠️ Token sem role válida */
-  if (allowedRoles && !role) {
-    logout()
-    return <Navigate to="/login" replace />
-  }
-
-  /* ✅ Autorizado */
   return <>{children}</>
 }

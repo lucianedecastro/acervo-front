@@ -11,16 +11,7 @@ export default function LayoutAtleta() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* ======================
-          Navbar da Atleta
-         ====================== */}
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <nav
         style={{
           backgroundColor: "#1a1a1a",
@@ -28,79 +19,24 @@ export default function LayoutAtleta() {
           padding: "1rem 2rem",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
         }}
       >
-        {/* Marca */}
-        <div
-          style={{ fontWeight: "bold", fontSize: "1.2rem", cursor: "pointer" }}
-          onClick={() => navigate("/dashboard/atleta")}
-        >
+        <strong onClick={() => navigate("/dashboard/atleta")}>
           Acervo da Atleta Brasileira
-        </div>
+        </strong>
 
-        {/* Navegação */}
-        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          <span onClick={() => navigate("/dashboard/atleta")}>
-            Dashboard
-          </span>
-
-          <span onClick={() => navigate("/atleta/perfil")}>
-            Meu Perfil
-          </span>
-
-          <span onClick={() => navigate("/atleta/extrato")}>
-            Extrato
-          </span>
-
-          <span onClick={() => navigate("/")}>
-            Site Público
-          </span>
-
-          <button
-            onClick={handleLogout}
-            style={{
-              backgroundColor: "#e74c3c",
-              color: "white",
-              border: "none",
-              padding: "0.4rem 0.8rem",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Sair
-          </button>
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <span onClick={() => navigate("/dashboard/atleta")}>Dashboard</span>
+          <span onClick={() => navigate("/atleta/perfil")}>Meu Perfil</span>
+          <span onClick={() => navigate("/atleta/extrato")}>Extrato</span>
+          <span onClick={() => navigate("/")}>Site Público</span>
+          <button onClick={handleLogout}>Sair</button>
         </div>
       </nav>
 
-      {/* ======================
-          Conteúdo
-         ====================== */}
-      <main
-        style={{
-          flex: 1,
-          backgroundColor: "#f4f7f6",
-          padding: "2rem",
-        }}
-      >
+      <main style={{ flex: 1, padding: "2rem" }}>
         <Outlet />
       </main>
-
-      {/* ======================
-          Rodapé
-         ====================== */}
-      <footer
-        style={{
-          padding: "1rem",
-          textAlign: "center",
-          fontSize: "0.8rem",
-          color: "#666",
-          borderTop: "1px solid #e0e0e0",
-          backgroundColor: "#fafafa",
-        }}
-      >
-        © 2026 Acervo da Atleta Brasileira — Painel da Atleta
-      </footer>
     </div>
   )
 }
