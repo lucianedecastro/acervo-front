@@ -3,13 +3,7 @@ import { useAuth } from "@/auth/AuthContext"
 
 export default function LayoutAtleta() {
   const navigate = useNavigate()
-  const { logout, role, isAuthenticated } = useAuth()
-
-  // Proteção: apenas atleta
-  if (!isAuthenticated || role !== "ROLE_ATLETA") {
-    navigate("/")
-    return null
-  }
+  const { logout } = useAuth()
 
   function handleLogout() {
     logout()

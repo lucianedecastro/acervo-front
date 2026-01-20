@@ -11,12 +11,18 @@ export function ProtectedRoute({
   children,
   allowedRoles,
 }: ProtectedRouteProps) {
-  const { isAuthenticated, role, logout } = useAuth()
+  const { token, role, logout } = useAuth()
   const location = useLocation()
 
-  // 🔐 Não autenticado
-  if (!isAuthenticated) {
+  // 🔐 Não autenticado (SEM token)
+  if (!token) {
     return <Navigate to="/login" replace state={{ from: location }} />
+  }
+
+  // ⏳ Token existe, mas role ainda não foi resolvida
+  // → evita redirect prematuro
+  if (allowedRoles && !role) {
+    return null
   }
 
   // 🚫 Role não autorizada
@@ -24,12 +30,6 @@ export function ProtectedRoute({
     return <Navigate to="/" replace />
   }
 
-  // ⚠️ Token inválido (logado sem role)
-  if (allowedRoles && !role) {
-    logout()
-    return <Navigate to="/login" replace />
-  }
-
-  // ✅ Autorizado
+  // ✅ Autenticado e autorizado
   return <>{children}</>
 }

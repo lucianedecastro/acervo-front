@@ -8,6 +8,9 @@ import {
 } from "react"
 import { jwtDecode } from "jwt-decode"
 
+/* ==========================
+   JWT PAYLOAD
+   ========================== */
 interface TokenPayload {
   sub: string
   role?: string
@@ -15,10 +18,14 @@ interface TokenPayload {
   scope?: string
 }
 
+/* ==========================
+   CONTEXTO
+   ========================== */
 interface AuthContextData {
   token: string | null
   role: string | null
   isAuthenticated: boolean
+  isLoading: boolean
   login: (token: string) => void
   logout: () => void
 }
@@ -29,27 +36,33 @@ interface AuthProviderProps {
   children: ReactNode
 }
 
+/* ==========================
+   PROVIDER
+   ========================== */
 export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("authToken")
   )
   const [role, setRole] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   /* ==========================
-     LOGOUT (memoizado)
+     LOGOUT
      ========================== */
   const logout = useCallback(() => {
     localStorage.removeItem("authToken")
     setToken(null)
     setRole(null)
+    setIsLoading(false)
   }, [])
 
   /* ==========================
-     DECODE JWT
+     DECODIFICA TOKEN
      ========================== */
   useEffect(() => {
     if (!token) {
       setRole(null)
+      setIsLoading(false)
       return
     }
 
@@ -66,6 +79,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (err) {
       console.error("Token inválido ou corrompido:", err)
       logout()
+    } finally {
+      setIsLoading(false)
     }
   }, [token, logout])
 
@@ -75,6 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   function login(newToken: string) {
     localStorage.setItem("authToken", newToken)
     setToken(newToken)
+    setIsLoading(true)
   }
 
   return (
@@ -82,7 +98,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         token,
         role,
-        isAuthenticated: Boolean(token && role),
+        isAuthenticated: Boolean(token), // 🔑 CORREÇÃO CRÍTICA
+        isLoading,
         login,
         logout,
       }}
@@ -92,6 +109,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   )
 }
 
+/* ==========================
+   HOOK
+   ========================== */
 export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) {

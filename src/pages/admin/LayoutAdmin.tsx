@@ -3,13 +3,7 @@ import { useAuth } from "@/auth/AuthContext"
 
 export default function LayoutAdmin() {
   const navigate = useNavigate()
-  const { logout, role } = useAuth()
-
-  // Segurança extra: admin-only
-  if (role !== "ROLE_ADMIN") {
-    navigate("/")
-    return null
-  }
+  const { logout } = useAuth()
 
   function handleLogout() {
     logout()
