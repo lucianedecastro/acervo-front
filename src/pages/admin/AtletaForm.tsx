@@ -1,7 +1,7 @@
 /* =====================================================
    FORMULÁRIO DE GESTÃO DE ATLETA (ADMIN)
    Funcionalidade: Criação e Edição Completa de Atletas
-   Sincronizado com: AtletaFormDTO (Imagem ad3063)
+   Status: Corrigido - Upload e DTO Sincronizados
    ===================================================== */
 
 import { useState, useEffect } from "react"
@@ -12,35 +12,28 @@ import { modalidadeService } from "@/services/modalidadeService"
 import { mediaService } from "@/services/mediaService"
 
 import { Modalidade } from "@/types/modalidade"
-// Tipos estritos baseados no DTO da Imagem ad3063
-import { AtletaUpdateDTO, CategoriaAtleta, StatusVerificacao, StatusAtleta } from "@/types/atleta"
+import { AtletaUpdateDTO, CategoriaAtleta, StatusVerificacao, StatusAtleta, TipoChavePix } from "@/types/atleta"
 
 export default function AtletaForm() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const isEditing = Boolean(id)
 
-  /* ==========================
-      ESTADOS TIPADOS (DTO ad3063)
-     ========================== */
+  /* ESTADOS DO FORMULÁRIO */
   const [nome, setNome] = useState("")
   const [nomeSocial, setNomeSocial] = useState("")
   const [email, setEmail] = useState("")
   const [cpf, setCpf] = useState("")
-  const [senha, setSenha] = useState("") // Campo presente no DTO (ad3063)
+  const [senha, setSenha] = useState("") 
   const [biografia, setBiografia] = useState("")
-  
-  // Categorias atualizadas: HISTORICA, ATIVA ou ESPOLIO
   const [categoria, setCategoria] = useState<CategoriaAtleta>("HISTORICA")
   const [statusAtleta, setStatusAtleta] = useState<StatusAtleta>("ATIVO")
   const [statusVerificacao, setStatusVerificacao] = useState<StatusVerificacao>("PENDENTE")
   
-  // Representante Legal (ad3063)
   const [nomeRepresentante, setNomeRepresentante] = useState("")
   const [cpfRepresentante, setCpfRepresentante] = useState("")
   const [vinculoRepresentante, setVinculoRepresentante] = useState("")
 
-  // Financeiro e Repasse
   const [percentualRepasse, setPercentualRepasse] = useState(0)
   const [comissaoPlataformaDiferenciada, setComissaoPlataformaDiferenciada] = useState(0)
   const [banco, setBanco] = useState("")
@@ -48,10 +41,9 @@ export default function AtletaForm() {
   const [conta, setConta] = useState("")
   const [tipoConta, setTipoConta] = useState("")
   const [chavePix, setChavePix] = useState("")
-  const [tipoChavePix, setTipoChavePix] = useState("CPF")
+  const [tipoChavePix, setTipoChavePix] = useState<TipoChavePix>("CPF")
   const [contratoAssinado, setContratoAssinado] = useState(false)
 
-  // Modalidades e Mídia
   const [modalidadesSelecionadas, setModalidadesSelecionadas] = useState<string[]>([])
   const [modalidades, setModalidades] = useState<Modalidade[]>([])
   const [fotoDestaqueUrl, setFotoDestaqueUrl] = useState("")
@@ -60,13 +52,9 @@ export default function AtletaForm() {
   const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
-  /* ==========================
-      CARGA DE DADOS
-     ========================== */
+  /* CARGA DE DADOS INICIAIS */
   useEffect(() => {
-    modalidadeService.listarAdmin()
-      .then(setModalidades)
-      .catch(console.error)
+    modalidadeService.listarAdmin().then(setModalidades).catch(console.error)
 
     if (isEditing && id) {
       atletaService.buscarPorId(id).then((data) => {
@@ -75,9 +63,9 @@ export default function AtletaForm() {
         setEmail(data.email)
         setCpf(data.cpf)
         setBiografia(data.biografia)
-        setCategoria(data.categoria as CategoriaAtleta)
-        setStatusAtleta(data.statusAtleta as StatusAtleta)
-        setStatusVerificacao(data.statusVerificacao as StatusVerificacao)
+        setCategoria(data.categoria)
+        setStatusAtleta(data.statusAtleta)
+        setStatusVerificacao(data.statusVerificacao)
         setPercentualRepasse(data.percentualRepasse * 100)
         setComissaoPlataformaDiferenciada(data.comissaoPlataformaDiferenciada * 100)
         setBanco(data.banco || "")
@@ -85,7 +73,7 @@ export default function AtletaForm() {
         setConta(data.conta || "")
         setTipoConta(data.tipoConta || "")
         setChavePix(data.chavePix || "")
-        setTipoChavePix(data.tipoChavePix || "CPF")
+        setTipoChavePix(data.tipoChavePix)
         setContratoAssinado(data.contratoAssinado)
         setNomeRepresentante(data.nomeRepresentante || "")
         setCpfRepresentante(data.cpfRepresentante || "")
@@ -96,36 +84,53 @@ export default function AtletaForm() {
     }
   }, [id, isEditing])
 
-  /* ==========================
-      SUBMIT (CORRIGE ERRO ad2900)
-     ========================== */
+  /* LÓGICA DE UPLOAD */
+  async function handleUploadFoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      setIsUploading(true)
+      // CORREÇÃO: Chamada simplificada para o novo mediaService
+      const data = await mediaService.upload(file)
+      setFotoDestaqueId(data.id)
+      setFotoDestaqueUrl(data.url)
+    } catch (err) {
+      console.error("Erro no upload:", err)
+      alert("Erro no upload da foto de perfil.")
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  /* SALVAMENTO DOS DADOS */
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setIsSaving(true)
 
-    // Payload construído exatamente como o AtletaFormDTO da imagem ad3063
-    const payload: any = {
+    // CORREÇÃO: Uso de undefined para campos nulos para satisfazer o DTO
+    const payload: AtletaUpdateDTO = {
       nome,
-      nomeSocial,
+      nomeSocial: nomeSocial || undefined,
       email,
       cpf,
       senha: senha || undefined,
       biografia,
-      categoria, // Resolve erro de tipagem estrita
+      categoria,
       statusAtleta,
       statusVerificacao,
-      nomeRepresentante,
-      cpfRepresentante,
-      vinculoRepresentante,
+      nomeRepresentante: categoria === "ESPOLIO" ? nomeRepresentante : undefined,
+      cpfRepresentante: categoria === "ESPOLIO" ? cpfRepresentante : undefined,
+      vinculoRepresentante: categoria === "ESPOLIO" ? vinculoRepresentante : undefined,
       contratoAssinado,
-      percentualRepasse: percentualRepasse / 100,
-      comissaoPlataformaDiferenciada: comissaoPlataformaDiferenciada / 100,
+      percentualRepasse: Number(percentualRepasse) / 100,
+      comissaoPlataformaDiferenciada: Number(comissaoPlataformaDiferenciada) / 100,
       banco,
       agencia,
       conta,
       tipoConta,
       chavePix,
-      tipoChavePix,
+      tipoChavePix, // Resolve anotação ts(2322)
       modalidadesIds: modalidadesSelecionadas,
       fotoDestaqueId: fotoDestaqueId || undefined
     }
@@ -133,15 +138,15 @@ export default function AtletaForm() {
     try {
       if (isEditing && id) {
         await atletaService.atualizar(id, payload)
-        alert("Perfil atualizado com sucesso!")
+        alert("Atleta atualizada com sucesso!")
       } else {
         await atletaService.criar(payload)
-        alert("Cadastro realizado com sucesso!")
+        alert("Atleta criada com sucesso!")
       }
       navigate("/admin/atletas")
     } catch (err) {
       console.error("Erro ao salvar:", err)
-      alert("Erro ao processar a solicitação.")
+      alert("Erro ao salvar os dados. Verifique a conexão com o servidor.")
     } finally {
       setIsSaving(false)
     }
@@ -154,7 +159,23 @@ export default function AtletaForm() {
       </header>
 
       <form onSubmit={handleSubmit} style={formGridStyle}>
-        {/* IDENTIFICAÇÃO */}
+        {/* SEÇÃO DE FOTO */}
+        <fieldset style={fieldsetStyle}>
+          <legend style={legendStyle}>Foto de Destaque</legend>
+          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+            <div style={previewBoxStyle}>
+              {fotoDestaqueUrl ? (
+                <img src={fotoDestaqueUrl} alt="Preview" style={previewImgStyle} />
+              ) : (
+                <span style={{ color: "#999" }}>Sem Foto</span>
+              )}
+            </div>
+            <input type="file" accept="image/*" onChange={handleUploadFoto} disabled={isUploading} />
+            {isUploading && <p style={{ fontSize: "0.8rem", color: "#3182ce" }}>Enviando imagem...</p>}
+          </div>
+        </fieldset>
+
+        {/* DADOS IDENTITÁRIOS */}
         <fieldset style={fieldsetStyle}>
           <legend style={legendStyle}>Dados Identitários</legend>
           <div style={inputRowStyle}>
@@ -163,53 +184,37 @@ export default function AtletaForm() {
               <input value={nome} onChange={e => setNome(e.target.value)} required style={inputStyle} />
             </div>
             <div style={{ flex: 1 }}>
-              <label>Nome Social (Opcional)</label>
-              <input value={nomeSocial} onChange={e => setNomeSocial(e.target.value)} style={inputStyle} />
-            </div>
-          </div>
-          <div style={inputRowStyle}>
-            <div style={{ flex: 1 }}>
-              <label>Categoria (DTO ad3063)</label>
+              <label>Categoria</label>
               <select value={categoria} onChange={e => setCategoria(e.target.value as CategoriaAtleta)} style={inputStyle}>
                 <option value="HISTORICA">Histórica</option>
                 <option value="ATIVA">Ativa</option>
                 <option value="ESPOLIO">Espólio</option>
-              </select>
-            </div>
-            <div style={{ flex: 1 }}>
-              <label>Status Sistema</label>
-              <select value={statusAtleta} onChange={e => setStatusAtleta(e.target.value as StatusAtleta)} style={inputStyle}>
-                <option value="ATIVO">Ativo</option>
-                <option value="INATIVO">Inativo</option>
+                <option value="REVELACAO">Revelação</option>
               </select>
             </div>
           </div>
         </fieldset>
 
-        {/* FINANCEIRO (PIX Enum ad3063) */}
-        <fieldset style={{ ...fieldsetStyle, backgroundColor: "#f8fafc" }}>
-          <legend style={legendStyle}>Dados Bancários e Chave PIX</legend>
-          <div style={inputRowStyle}>
-            <div style={{ flex: 1 }}>
-              <label>Tipo Chave PIX</label>
-              <select value={tipoChavePix} onChange={e => setTipoChavePix(e.target.value)} style={inputStyle}>
-                <option value="CPF">CPF</option>
-                <option value="EMAIL">E-mail</option>
-                <option value="TELEFONE">Telefone</option>
-                <option value="ALEATORIA">Aleatória</option>
-                <option value="NENHUM">Nenhum</option>
-              </select>
+        {/* CAMPOS CONDICIONAIS DE ESPÓLIO */}
+        {categoria === "ESPOLIO" && (
+          <fieldset style={{ ...fieldsetStyle, backgroundColor: "#fffaf0" }}>
+            <legend style={legendStyle}>Representante Legal (Espólio)</legend>
+            <div style={inputRowStyle}>
+              <div style={{ flex: 1 }}>
+                <label>Nome do Representante</label>
+                <input value={nomeRepresentante} onChange={e => setNomeRepresentante(e.target.value)} style={inputStyle} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label>CPF do Representante</label>
+                <input value={cpfRepresentante} onChange={e => setCpfRepresentante(e.target.value)} style={inputStyle} />
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <label>Chave PIX</label>
-              <input value={chavePix} onChange={e => setChavePix(e.target.value)} style={inputStyle} />
-            </div>
-          </div>
-        </fieldset>
+          </fieldset>
+        )}
 
         <div style={actionRowStyle}>
-          <button type="submit" disabled={isSaving} style={saveButtonStyle}>
-            {isSaving ? "Gravando..." : "Salvar Cadastro"}
+          <button type="submit" disabled={isSaving || isUploading} style={saveButtonStyle}>
+            {isSaving ? "Processando..." : "Salvar Atleta"}
           </button>
           <button type="button" onClick={() => navigate("/admin/atletas")} style={cancelButtonStyle}>
             Cancelar
@@ -220,15 +225,15 @@ export default function AtletaForm() {
   )
 }
 
-/* ==========================
-    ESTILOS (MANTIDOS)
-   ========================== */
+/* ESTILOS */
 const containerStyle: React.CSSProperties = { maxWidth: "900px", margin: "0 auto", padding: "2rem" }
 const formGridStyle: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "1.5rem" }
 const fieldsetStyle: React.CSSProperties = { border: "1px solid #e2e8f0", borderRadius: "8px", padding: "1.5rem" }
 const legendStyle: React.CSSProperties = { fontWeight: "bold", padding: "0 10px", color: "#2d3748" }
 const inputRowStyle: React.CSSProperties = { display: "flex", gap: "1.5rem", marginBottom: "1rem" }
 const inputStyle: React.CSSProperties = { width: "100%", padding: "0.6rem", borderRadius: "4px", border: "1px solid #cbd5e0", marginTop: "0.4rem" }
-const actionRowStyle: React.CSSProperties = { display: "flex", gap: "1rem", marginTop: "1rem" }
+const actionRowStyle: React.CSSProperties = { display: "flex", gap: "1rem" }
 const saveButtonStyle: React.CSSProperties = { backgroundColor: "#1a1a1a", color: "white", padding: "1rem 2rem", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }
 const cancelButtonStyle: React.CSSProperties = { backgroundColor: "transparent", border: "1px solid #cbd5e0", padding: "1rem 2rem", borderRadius: "6px", cursor: "pointer" }
+const previewBoxStyle: React.CSSProperties = { width: "150px", height: "150px", border: "1px dashed #ccc", margin: "0 auto 1rem", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "#f9f9f9" }
+const previewImgStyle: React.CSSProperties = { width: "100%", height: "100%", objectFit: "cover" }

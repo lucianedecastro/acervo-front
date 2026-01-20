@@ -26,7 +26,6 @@ export default function AdminModalidades() {
       setError(null)
 
       // Admin utiliza a rota de listagem completa (ativas e inativas)
-      // Certifique-se de que este método existe no modalidadeService.ts
       const data = await modalidadeService.listarAdmin() 
       setModalidades(data)
     } catch (err) {
@@ -37,7 +36,6 @@ export default function AdminModalidades() {
     }
   }
 
-  // CORREÇÃO: Chamando a função correta de modalidades
   useEffect(() => {
     carregarModalidades()
   }, [])
@@ -47,19 +45,25 @@ export default function AdminModalidades() {
      ========================== */
   async function handleRemover(id: string) {
     const confirmar = window.confirm(
-      "Atenção: Remover uma modalidade pode afetar os itens de acervo vinculados a ela. Deseja continuar?"
+      "Atenção: Remover uma modalidade pode afetar os atletas vinculados. Deseja continuar?"
     )
 
     if (!confirmar) return
 
     try {
-      // Alinhado ao DELETE /modalidades/{id} (Imagem ac4748)
+      // Alinhado ao DELETE /modalidades/{id} (Imagem ad9203)
       await modalidadeService.remover(id) 
+      
+      // ESTRATÉGIA DE LIMPEZA DE ESTADO LOCAL:
+      // Removemos o item da lista visual IMEDIATAMENTE para evitar "fantasmas"
+      setModalidades(prev => prev.filter(m => m.id !== id))
+      
       alert("Modalidade removida com sucesso!")
-      carregarModalidades()
     } catch (err) {
       console.error("Erro ao remover modalidade:", err)
-      alert("Erro ao remover modalidade. Verifique se existem atletas ou itens vinculados.")
+      alert("Erro ao remover modalidade. Verifique se existem atletas vinculados ou se o item já foi removido.")
+      // Se deu erro, recarregamos a lista oficial do banco para sincronizar
+      carregarModalidades()
     }
   }
 
@@ -68,7 +72,7 @@ export default function AdminModalidades() {
      ========================== */
   if (loading) return (
     <div style={{ padding: "3rem", textAlign: "center" }}>
-      <p>Carregando base de modalidades...</p>
+      <p>Sincronizando base de modalidades...</p>
     </div>
   )
 
@@ -108,10 +112,10 @@ export default function AdminModalidades() {
           <table style={tableStyle}>
             <thead>
               <tr style={theadTrStyle}>
-                <th style={thStyle}>Pictograma</th>
-                <th style={thStyle}>Nome da Modalidade</th>
+                <th style={thStyle}>Ícone</th>
+                <th style={thStyle}>Modalidade / URL</th>
                 <th style={thStyle}>Status</th>
-                <th style={{ ...thStyle, textAlign: "center" }}>Ações</th>
+                <th style={{ ...thStyle, textAlign: "center" }}>Gestão</th>
               </tr>
             </thead>
             <tbody>
@@ -132,11 +136,10 @@ export default function AdminModalidades() {
                   <td style={tdStyle}>
                     <strong style={{ color: "#2d3748" }}>{modalidade.nome}</strong>
                     <br />
-                    <small style={{ color: "#718096" }}>Slug: {modalidade.slug}</small>
+                    <code style={{ fontSize: "0.75rem", color: "#718096" }}>/{modalidade.slug}</code>
                   </td>
 
                   <td style={tdStyle}>
-                    {/* CORREÇÃO: Garantindo o tipo booleano no badge */}
                     <span style={badgeStyle(!!modalidade.ativa)}>
                       {modalidade.ativa ? "Ativa" : "Inativa"}
                     </span>
@@ -168,18 +171,18 @@ export default function AdminModalidades() {
 }
 
 /* ==========================
-    ESTILOS (MANTIDOS)
+    ESTILOS
    ========================== */
-const addButtonStyle: React.CSSProperties = { backgroundColor: "#2f855a", color: "white", padding: "0.7rem 1.4rem", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }
+const addButtonStyle: React.CSSProperties = { backgroundColor: "#1a1a1a", color: "white", padding: "0.7rem 1.4rem", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", fontSize: "0.9rem" }
 const retryButtonStyle: React.CSSProperties = { marginTop: "1rem", padding: "0.5rem 1rem", cursor: "pointer", backgroundColor: "#f7fafc", border: "1px solid #cbd5e0", borderRadius: "4px" }
-const tableWrapperStyle: React.CSSProperties = { backgroundColor: "white", borderRadius: "10px", boxShadow: "0 4px 6px rgba(0,0,0,0.02)", overflow: "hidden", border: "1px solid #edf2f7" }
+const tableWrapperStyle: React.CSSProperties = { backgroundColor: "white", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.03)", overflow: "hidden", border: "1px solid #eee" }
 const tableStyle: React.CSSProperties = { width: "100%", borderCollapse: "collapse" }
-const theadTrStyle: React.CSSProperties = { backgroundColor: "#f7fafc", borderBottom: "2px solid #edf2f7" }
-const thStyle: React.CSSProperties = { textAlign: "left", padding: "1.2rem 1rem", fontSize: "0.85rem", color: "#4a5568", textTransform: "uppercase", letterSpacing: "0.05em" }
-const trStyle: React.CSSProperties = { borderBottom: "1px solid #edf2f7", transition: "background-color 0.2s" }
+const theadTrStyle: React.CSSProperties = { backgroundColor: "#fafafa", borderBottom: "1px solid #eee" }
+const thStyle: React.CSSProperties = { textAlign: "left", padding: "1rem", fontSize: "0.75rem", color: "#999", textTransform: "uppercase", letterSpacing: "1px" }
+const trStyle: React.CSSProperties = { borderBottom: "1px solid #f5f5f5" }
 const tdStyle: React.CSSProperties = { padding: "1rem", verticalAlign: "middle" }
-const pictoStyle: React.CSSProperties = { width: "40px", height: "40px", objectFit: "contain", backgroundColor: "#f7fafc", padding: "4px", borderRadius: "4px" }
-const pictoPlaceholderStyle: React.CSSProperties = { width: "40px", height: "40px", backgroundColor: "#edf2f7", borderRadius: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", color: "#a0aec0" }
-const badgeStyle = (ativa: boolean): React.CSSProperties => ({ backgroundColor: ativa ? "#c6f6d5" : "#fed7d7", color: ativa ? "#22543d" : "#822727", padding: "4px 10px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: "bold", textTransform: "uppercase" })
-const actionButtonStyle = (color: string): React.CSSProperties => ({ marginLeft: "0.5rem", backgroundColor: "white", border: `1px solid ${color}`, color: color, padding: "0.5rem 0.9rem", borderRadius: "4px", cursor: "pointer", fontSize: "0.85rem", fontWeight: "500", transition: "all 0.2s" })
-const emptyStateStyle: React.CSSProperties = { padding: "4rem", textAlign: "center", backgroundColor: "#f7fafc", borderRadius: "10px", border: "2px dashed #edf2f7", color: "#a0aec0" }
+const pictoStyle: React.CSSProperties = { width: "32px", height: "32px", objectFit: "contain", filter: "grayscale(100%)" }
+const pictoPlaceholderStyle: React.CSSProperties = { width: "32px", height: "32px", backgroundColor: "#f5f5f5", borderRadius: "4px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.6rem", color: "#ccc" }
+const badgeStyle = (ativa: boolean): React.CSSProperties => ({ backgroundColor: ativa ? "#e6fffa" : "#fff5f5", color: ativa ? "#2c7a7b" : "#c53030", padding: "4px 8px", borderRadius: "4px", fontSize: "0.7rem", fontWeight: "bold", textTransform: "uppercase" })
+const actionButtonStyle = (color: string): React.CSSProperties => ({ marginLeft: "0.5rem", backgroundColor: "transparent", border: `1px solid ${color}`, color: color, padding: "0.4rem 0.8rem", borderRadius: "4px", cursor: "pointer", fontSize: "0.8rem", transition: "all 0.2s" })
+const emptyStateStyle: React.CSSProperties = { padding: "5rem", textAlign: "center", backgroundColor: "#fafafa", borderRadius: "8px", border: "1px dashed #ddd", color: "#999" }
