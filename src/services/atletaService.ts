@@ -37,6 +37,7 @@ export const atletaService = {
 
   /* =====================================================
       2. REGISTRO (PRIMEIRA INTERAÇÃO)
+      - Atleta cria conta (nome, email, senha, cpf, categoria)
      ===================================================== */
 
   async registrar(payload: AtletaRegistroDTO): Promise<void> {
@@ -45,6 +46,7 @@ export const atletaService = {
 
   /* =====================================================
       3. VISÃO DA ATLETA LOGADA
+      - Completar cadastro após login
      ===================================================== */
 
   async buscarMeuPerfil(): Promise<Atleta> {
@@ -64,6 +66,8 @@ export const atletaService = {
 
   /* =====================================================
       4. VISÃO ADMINISTRATIVA
+      - Criação manual (Histórica / Espólio)
+      - Edição técnica completa
      ===================================================== */
 
   async listarTodasAdmin(): Promise<Atleta[]> {
@@ -73,6 +77,18 @@ export const atletaService = {
 
   async buscarPorId(id: string): Promise<Atleta> {
     const response = await api.get<Atleta>(`/atletas/${id}`)
+    return response.data
+  },
+
+  /**
+   * CRIAÇÃO ADMINISTRATIVA
+   * Usado para:
+   * - Atletas Históricas
+   * - Espólios
+   * - Inserções curatoriais (acervo 1900+)
+   */
+  async criar(payload: AtletaFormDTO): Promise<Atleta> {
+    const response = await api.post<Atleta>("/atletas", payload)
     return response.data
   },
 
