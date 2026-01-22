@@ -1,8 +1,8 @@
 /* =====================================================
    CONFIGURAÇÃO CENTRAL DE ROTAS
    - Público (slug)
-   - Atleta (dashboard)
-   - Admin (ID técnico)
+   - Atleta (registro, cadastro, dashboard)
+   - Admin (curadoria e criação histórica)
    ===================================================== */
 
 import { Routes, Route, Navigate } from "react-router-dom"
@@ -28,6 +28,19 @@ import AtletaDetail from "@/pages/public/AtletaDetail"
 import Login from "@/pages/admin/Login"
 
 /* ======================
+   Atleta – Acesso Livre
+   ====================== */
+import AtletaRegistroForm from "@/pages/atleta/AtletaRegistroForm"
+
+/* ======================
+   Atleta – Protegido
+   ====================== */
+import AtletaCadastroForm from "@/pages/atleta/AtletaCadastroForm"
+import AtletaDashboard from "@/pages/atleta/AtletaDashboard"
+import AtletaPerfil from "@/pages/atleta/AtletaPerfil"
+import AtletaExtrato from "@/pages/atleta/AtletaExtrato"
+
+/* ======================
    Admin
    ====================== */
 import AdminDashboard from "@/pages/admin/AdminDashboard"
@@ -39,13 +52,6 @@ import AdminConfiguracaoFiscal from "@/pages/admin/AdminConfiguracaoFiscal"
 import AdminLicenciamentos from "@/pages/admin/AdminLicenciamentos"
 import AdminSimulacaoLicenciamento from "@/pages/admin/AdminSimulacaoLicenciamento"
 import AdminExtratoAtleta from "@/pages/admin/AdminExtratoAtleta"
-
-/* ======================
-   Atleta
-   ====================== */
-import AtletaDashboard from "@/pages/atleta/AtletaDashboard"
-import AtletaPerfil from "@/pages/atleta/AtletaPerfil"
-import AtletaExtrato from "@/pages/atleta/AtletaExtrato"
 
 export function AppRoutes() {
   return (
@@ -64,6 +70,9 @@ export function AppRoutes() {
         <Route path="/atletas" element={<AtletasList />} />
         <Route path="/atleta/:slug" element={<AtletaDetail />} />
 
+        {/* Registro inicial da atleta */}
+        <Route path="/atleta/registro" element={<AtletaRegistroForm />} />
+
         <Route path="/login" element={<Login />} />
       </Route>
 
@@ -79,7 +88,14 @@ export function AppRoutes() {
         }
       >
         <Route index element={<Navigate to="/dashboard/atleta" replace />} />
+
+        {/* Dashboard */}
         <Route path="atleta" element={<AtletaDashboard />} />
+
+        {/* Completar cadastro após login */}
+        <Route path="cadastro" element={<AtletaCadastroForm />} />
+
+        {/* Perfil e financeiro */}
         <Route path="perfil" element={<AtletaPerfil />} />
         <Route path="extrato" element={<AtletaExtrato />} />
       </Route>
