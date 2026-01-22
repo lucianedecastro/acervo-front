@@ -1,50 +1,48 @@
 import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { atletaService } from "@/services/atletaService"
 import { modalidadeService } from "@/services/modalidadeService"
 import { mediaService } from "@/services/mediaService"
 import { Modalidade } from "@/types/modalidade"
 import {
   CategoriaAtleta,
-  StatusAtleta,
-  StatusVerificacao,
   TipoChavePix,
+  StatusAtleta,
 } from "@/types/atleta"
 
-export default function AtletaForm() {
-  const { id } = useParams<{ id: string }>()
+export default function AtletaCadastroForm() {
   const navigate = useNavigate()
 
   /* =======================
-     IDENTIDADE (OBRIGATÓRIA NO DTO)
+     IDENTIFICAÇÃO
      ======================= */
   const [nome, setNome] = useState("")
   const [nomeSocial, setNomeSocial] = useState("")
   const [email, setEmail] = useState("")
   const [cpf, setCpf] = useState("")
+  const [senha, setSenha] = useState("")
 
   /* =======================
-     PERFIL
+     PERFIL ESPORTIVO
      ======================= */
   const [biografia, setBiografia] = useState("")
-  const [categoria, setCategoria] = useState<CategoriaAtleta>("HISTORICA")
+  const [categoria, setCategoria] = useState<CategoriaAtleta>("ATIVA")
   const [modalidades, setModalidades] = useState<Modalidade[]>([])
   const [modalidadesSelecionadas, setModalidadesSelecionadas] = useState<string[]>([])
 
   /* =======================
-     CURADORIA
-     ======================= */
-  const [statusAtleta, setStatusAtleta] = useState<StatusAtleta>("ATIVO")
-  const [statusVerificacao, setStatusVerificacao] =
-    useState<StatusVerificacao>("PENDENTE")
-  const [observacoesAdmin, setObservacoesAdmin] = useState("")
-
-  /* =======================
-     REPRESENTAÇÃO
+     REPRESENTAÇÃO (ESPÓLIO)
      ======================= */
   const [nomeRepresentante, setNomeRepresentante] = useState("")
   const [cpfRepresentante, setCpfRepresentante] = useState("")
   const [vinculoRepresentante, setVinculoRepresentante] = useState("")
+
+  /* =======================
+     GOVERNANÇA / CONTATO
+     ======================= */
+  const [contratoAssinado, setContratoAssinado] = useState(false)
+  const [linkContratoDigital, setLinkContratoDigital] = useState("")
+  const [dadosContato, setDadosContato] = useState("")
 
   /* =======================
      FINANCEIRO
@@ -55,15 +53,8 @@ export default function AtletaForm() {
   const [agencia, setAgencia] = useState("")
   const [conta, setConta] = useState("")
   const [tipoConta, setTipoConta] = useState("")
-  const [percentualRepasse, setPercentualRepasse] = useState<number>(0)
   const [comissaoPlataformaDiferenciada, setComissaoPlataformaDiferenciada] =
     useState<number>(0)
-
-  /* =======================
-     CONTRATO
-     ======================= */
-  const [contratoAssinado, setContratoAssinado] = useState(false)
-  const [linkContratoDigital, setLinkContratoDigital] = useState("")
 
   /* =======================
      MÍDIA
@@ -78,47 +69,14 @@ export default function AtletaForm() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
 
+  /* =======================
+     LOAD MODALIDADES
+     ======================= */
   useEffect(() => {
-    modalidadeService.listarAdmin().then(setModalidades)
-
-    if (!id) return
-
-    atletaService.buscarPorId(id).then((data) => {
-      setNome(data.nome)
-      setNomeSocial(data.nomeSocial || "")
-      setEmail(data.email)
-      setCpf(data.cpf)
-
-      setBiografia(data.biografia)
-      setCategoria(data.categoria)
-      setModalidadesSelecionadas(data.modalidadesIds || [])
-
-      setStatusAtleta(data.statusAtleta)
-      setStatusVerificacao(data.statusVerificacao)
-      setObservacoesAdmin(data.observacoesAdmin || "")
-
-      setNomeRepresentante(data.nomeRepresentante || "")
-      setCpfRepresentante(data.cpfRepresentante || "")
-      setVinculoRepresentante(data.vinculoRepresentante || "")
-
-      setTipoChavePix(data.tipoChavePix)
-      setChavePix(data.chavePix || "")
-      setBanco(data.banco || "")
-      setAgencia(data.agencia || "")
-      setConta(data.conta || "")
-      setTipoConta(data.tipoConta || "")
-      setPercentualRepasse((data.percentualRepasse ?? 0) * 100)
-      setComissaoPlataformaDiferenciada(
-        (data.comissaoPlataformaDiferenciada ?? 0) * 100
-      )
-
-      setContratoAssinado(data.contratoAssinado)
-      setLinkContratoDigital(data.linkContratoDigital || "")
-
-      setFotoDestaqueUrl(data.fotoDestaqueUrl || "")
-      setLoading(false)
-    })
-  }, [id])
+    modalidadeService.listarAdmin()
+      .then(setModalidades)
+      .finally(() => setLoading(false))
+  }, [])
 
   async function handleUploadFoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -136,8 +94,6 @@ export default function AtletaForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!id) return
-
     setSaving(true)
 
     const payload = {
@@ -145,14 +101,11 @@ export default function AtletaForm() {
       nomeSocial: nomeSocial || undefined,
       cpf,
       email,
+      senha,
 
+      modalidades: modalidadesSelecionadas,
       biografia,
       categoria,
-      modalidades: modalidadesSelecionadas,
-
-      statusAtleta,
-      statusVerificacao,
-      observacoesAdmin: observacoesAdmin || undefined,
 
       nomeRepresentante:
         categoria === "ESPOLIO" ? nomeRepresentante : undefined,
@@ -161,6 +114,10 @@ export default function AtletaForm() {
       vinculoRepresentante:
         categoria === "ESPOLIO" ? vinculoRepresentante : undefined,
 
+      contratoAssinado,
+      linkContratoDigital: linkContratoDigital || undefined,
+      dadosContato: dadosContato || undefined,
+
       tipoChavePix,
       chavePix: tipoChavePix === "NENHUM" ? "N/A" : chavePix,
       banco,
@@ -168,44 +125,63 @@ export default function AtletaForm() {
       conta,
       tipoConta,
 
-      percentualRepasse: percentualRepasse / 100,
       comissaoPlataformaDiferenciada:
-        comissaoPlataformaDiferenciada / 100,
-
-      contratoAssinado,
-      linkContratoDigital: linkContratoDigital || undefined,
+        comissaoPlataformaDiferenciada > 0
+          ? comissaoPlataformaDiferenciada
+          : undefined,
 
       fotoDestaqueId: fotoDestaqueId || undefined,
+      statusAtleta: "ATIVO" as StatusAtleta,
     }
 
     try {
-      await atletaService.atualizar(id, payload)
-      alert("Atleta atualizada com sucesso.")
-      navigate("/admin/atletas")
+      await atletaService.completarCadastro(payload)
+      alert("Cadastro enviado para verificação.")
+      navigate("/atleta/dashboard")
     } catch {
-      alert("Erro ao salvar alterações.")
+      alert("Erro ao enviar cadastro.")
     } finally {
       setSaving(false)
     }
   }
 
-  if (loading) return <div style={{ padding: "2rem" }}>Carregando atleta…</div>
+  if (loading) return <div style={{ padding: "2rem" }}>Carregando…</div>
 
   return (
-    <section style={{ maxWidth: 1000, margin: "0 auto", padding: "2rem" }}>
-      <h1>Editar: {nome}</h1>
+    <section style={{ maxWidth: 900, margin: "0 auto", padding: "2rem" }}>
+      <h1>Cadastro da Atleta</h1>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        {/* IDENTIFICAÇÃO */}
         <fieldset>
           <legend>Identificação</legend>
-          <input value={nome} onChange={e => setNome(e.target.value)} />
-          <input value={nomeSocial} onChange={e => setNomeSocial(e.target.value)} />
-          <input value={email} disabled />
-          <input value={cpf} disabled />
+          <input value={nome} onChange={e => setNome(e.target.value)} placeholder="Nome completo" required />
+          <input value={nomeSocial} onChange={e => setNomeSocial(e.target.value)} placeholder="Nome social" />
+          <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
+          <input value={cpf} onChange={e => setCpf(e.target.value)} placeholder="CPF" required />
+          <input type="password" value={senha} onChange={e => setSenha(e.target.value)} placeholder="Senha" required />
+        </fieldset>
+
+        {/* PERFIL */}
+        <fieldset>
+          <legend>Perfil Esportivo</legend>
+          <textarea value={biografia} onChange={e => setBiografia(e.target.value)} />
+          <select value={categoria} onChange={e => setCategoria(e.target.value as CategoriaAtleta)}>
+            <option value="ATIVA">ATIVA</option>
+            <option value="HISTORICA">HISTÓRICA</option>
+            <option value="ESPOLIO">ESPÓLIO</option>
+          </select>
+        </fieldset>
+
+        {/* FOTO */}
+        <fieldset>
+          <legend>Foto de Destaque</legend>
+          {fotoDestaqueUrl && <img src={fotoDestaqueUrl} style={{ maxWidth: 200 }} />}
+          <input type="file" onChange={handleUploadFoto} disabled={uploading} />
         </fieldset>
 
         <button type="submit" disabled={saving || uploading}>
-          {saving ? "Salvando…" : "Salvar Alterações"}
+          {saving ? "Enviando…" : "Finalizar Cadastro"}
         </button>
       </form>
     </section>

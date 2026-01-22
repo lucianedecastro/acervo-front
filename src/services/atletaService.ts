@@ -4,10 +4,15 @@
    ===================================================== */
 
 import api from "@/services/api"
-import { Atleta, AtletaUpdateDTO, DashboardAtletaDTO } from "@/types/atleta"
+import {
+  Atleta,
+  AtletaFormDTO,
+  AtletaRegistroDTO,
+  DashboardAtletaDTO,
+} from "@/types/atleta"
 import { ItemAcervoResponseDTO } from "@/types/itemAcervo"
 
-// Interface para a rota de perfil completa (Swagger)
+// Interface para a rota de perfil público (Swagger)
 interface PerfilPublicoResponse {
   atleta: Atleta
   itens: ItemAcervoResponseDTO[]
@@ -18,20 +23,28 @@ export const atletaService = {
       1. ROTAS PÚBLICAS
      ===================================================== */
 
-  // Lista atletas para vitrine pública
   async listarPublico(): Promise<Atleta[]> {
     const response = await api.get<Atleta[]>("/atletas")
     return response.data
   },
 
-  // Perfil público por slug
   async buscarPerfilPublico(slug: string): Promise<PerfilPublicoResponse> {
-    const response = await api.get<PerfilPublicoResponse>(`/atletas/perfil/${slug}`)
+    const response = await api.get<PerfilPublicoResponse>(
+      `/atletas/perfil/${slug}`
+    )
     return response.data
   },
 
   /* =====================================================
-      2. VISÃO DA ATLETA LOGADA
+      2. REGISTRO (PRIMEIRA INTERAÇÃO)
+     ===================================================== */
+
+  async registrar(payload: AtletaRegistroDTO): Promise<void> {
+    await api.post("/atletas/registro", payload)
+  },
+
+  /* =====================================================
+      3. VISÃO DA ATLETA LOGADA
      ===================================================== */
 
   async buscarMeuPerfil(): Promise<Atleta> {
@@ -44,16 +57,15 @@ export const atletaService = {
     return response.data
   },
 
+  async completarCadastro(payload: AtletaFormDTO): Promise<Atleta> {
+    const response = await api.post<Atleta>("/atletas", payload)
+    return response.data
+  },
+
   /* =====================================================
-      3. VISÃO ADMINISTRATIVA
+      4. VISÃO ADMINISTRATIVA
      ===================================================== */
 
-  /**
-   * Lista todas as atletas (Admin)
-   * ⚠️ IMPORTANTE:
-   * O backend NÃO possui /atletas/admin
-   * A distinção admin ocorre por ROLE no token
-   */
   async listarTodasAdmin(): Promise<Atleta[]> {
     const response = await api.get<Atleta[]>("/atletas")
     return response.data
@@ -64,17 +76,13 @@ export const atletaService = {
     return response.data
   },
 
-  async criar(payload: AtletaUpdateDTO): Promise<void> {
-    await api.post("/atletas", payload)
-  },
-
-  async atualizar(id: string, data: AtletaUpdateDTO): Promise<Atleta> {
+  async atualizar(id: string, data: AtletaFormDTO): Promise<Atleta> {
     const response = await api.put<Atleta>(`/atletas/${id}`, data)
     return response.data
   },
 
   /* =====================================================
-      4. CURADORIA E VERIFICAÇÃO
+      5. CURADORIA E VERIFICAÇÃO
      ===================================================== */
 
   async verificarAtleta(
