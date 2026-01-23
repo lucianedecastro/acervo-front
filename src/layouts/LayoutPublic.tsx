@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Outlet, Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/auth/AuthContext"
-import Footer from "@/components/Footer"
+import { Menu, X } from "lucide-react"
 
 export default function LayoutPublic() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -17,153 +17,224 @@ export default function LayoutPublic() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* =========================
-          CABEÇALHO GLOBAL (NAVBAR)
-          ========================= */}
-      <nav style={navStyle}>
-        <div style={navContainerStyle}>
-          {/* Logo que retorna para a Home */}
-          <Link to="/" style={logoLinkStyle}>
-            <strong>Acervo Carmen Lydia</strong>
-          </Link>
-          
-          <div style={{ position: "relative" }}>
-            <button onClick={toggleMenu} style={menuButtonStyle}>
-              Menu {isMenuOpen ? "▲" : "▼"}
-            </button>
+    <div className="min-h-screen flex flex-col bg-white">
 
-            {/* Menu Suspenso (Dropdown) */}
-            {isMenuOpen && (
-              <div style={dropdownStyle}>
-                <Link to="/" style={menuItemStyle} onClick={() => setIsMenuOpen(false)}>Página Inicial</Link>
-                <Link to="/sobre" style={menuItemStyle} onClick={() => setIsMenuOpen(false)}>Sobre o Acervo</Link>
-                <Link to="/arquitetura" style={menuItemStyle} onClick={() => setIsMenuOpen(false)}>Arquitetura</Link>
-                <Link to="/modalidades" style={menuItemStyle} onClick={() => setIsMenuOpen(false)}>Modalidades</Link>
-                <Link to="/atletas" style={menuItemStyle} onClick={() => setIsMenuOpen(false)}>Atletas</Link>
-                
-                <hr style={hrStyle} />
-                
+      {/* =========================
+          NAVBAR - NEOBRUTALIST COM BORDAS ARREDONDADAS
+          ========================= */}
+      <nav className="sticky top-0 z-50 bg-white border-b-6 border-black shadow-[0_6px_0px_0px_rgba(0,0,0,1)]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-4">
+          <div className="flex justify-between items-center">
+
+            {/* Logo */}
+            <Link
+              to="/"
+              className="text-2xl md:text-3xl font-black uppercase hover:text-[#D4A244] transition-colors tracking-tight"
+            >
+              Acervo <span className="text-[#D4A244]">Carmen Lydia</span>
+            </Link>
+
+            {/* Menu Desktop */}
+            <div className="hidden md:flex items-center gap-6">
+              <Link
+                to="/modalidades"
+                className="px-4 py-2 font-black text-black hover:text-[#D4A244] transition-colors uppercase text-sm tracking-wide"
+              >
+                Modalidades
+              </Link>
+              <Link
+                to="/atletas"
+                className="px-4 py-2 font-black text-black hover:text-[#D4A244] transition-colors uppercase text-sm tracking-wide"
+              >
+                Atletas
+              </Link>
+              <Link
+                to="/sobre"
+                className="px-4 py-2 font-black text-black hover:text-[#D4A244] transition-colors uppercase text-sm tracking-wide"
+              >
+                Sobre
+              </Link>
+              <Link
+                to="/arquitetura"
+                className="px-4 py-2 font-black text-black hover:text-[#D4A244] transition-colors uppercase text-sm tracking-wide"
+              >
+                Arquitetura
+              </Link>
+
+              {/* Botão Login/Área - NEOBRUTALIST COM BORDAS ARREDONDADAS */}
+              {!isAuthenticated ? (
+                <Link
+                  to="/login"
+                  className="ml-4 px-8 py-3 bg-[#D4A244] text-black font-black uppercase border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all text-sm tracking-wide whitespace-nowrap"
+                >
+                  LOGIN
+                </Link>
+              ) : (
+                <div className="ml-4 flex items-center gap-3">
+                  <Link
+                    to={role === "ROLE_ADMIN" ? "/admin" : "/dashboard/atleta"}
+                    className="px-8 py-3 bg-[#D4A244] text-black font-black uppercase border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all text-sm tracking-wide whitespace-nowrap"
+                  >
+                    PAINEL
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="px-8 py-3 bg-black text-white font-black uppercase border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] hover:translate-x-1 hover:translate-y-1 transition-all text-sm tracking-wide whitespace-nowrap"
+                  >
+                    SAIR
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Menu Mobile (Hamburger) - NEOBRUTALIST COM BORDAS ARREDONDADAS */}
+            <button
+              onClick={toggleMenu}
+              className="md:hidden bg-[#D4A244] p-3 border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+              aria-label="Menu"
+            >
+              {isMenuOpen ? <X size={24} strokeWidth={3} /> : <Menu size={24} strokeWidth={3} />}
+            </button>
+          </div>
+
+          {/* Dropdown Mobile - NEOBRUTALIST COM BORDAS ARREDONDADAS */}
+          {isMenuOpen && (
+            <div className="md:hidden mt-6 border-6 border-black rounded-xl bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+              <div className="flex flex-col">
+                <Link
+                  to="/"
+                  className="px-6 py-4 font-black text-base border-b-4 border-black hover:bg-[#D4A244] transition-colors uppercase"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Página Inicial
+                </Link>
+                <Link
+                  to="/modalidades"
+                  className="px-6 py-4 font-black text-base border-b-4 border-black hover:bg-[#D4A244] transition-colors uppercase"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Modalidades
+                </Link>
+                <Link
+                  to="/atletas"
+                  className="px-6 py-4 font-black text-base border-b-4 border-black hover:bg-[#D4A244] transition-colors uppercase"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Atletas
+                </Link>
+                <Link
+                  to="/sobre"
+                  className="px-6 py-4 font-black text-base border-b-4 border-black hover:bg-[#D4A244] transition-colors uppercase"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sobre
+                </Link>
+                <Link
+                  to="/arquitetura"
+                  className="px-6 py-4 font-black text-base border-b-4 border-black hover:bg-[#D4A244] transition-colors uppercase"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Arquitetura
+                </Link>
+
+                {/* Área autenticada mobile */}
                 {!isAuthenticated ? (
-                  <Link to="/login" style={loginLinkStyle} onClick={() => setIsMenuOpen(false)}>
-                    Acessar (Login)
+                  <Link
+                    to="/login"
+                    className="px-6 py-4 font-black text-base bg-[#D4A244] text-black text-center hover:bg-black hover:text-[#D4A244] transition-colors uppercase"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    ACESSAR
                   </Link>
                 ) : (
                   <>
-                    <Link 
-                      to={role === "ROLE_ADMIN" ? "/admin" : "/dashboard/atleta"} 
-                      style={menuItemStyle} 
+                    <Link
+                      to={role === "ROLE_ADMIN" ? "/admin" : "/dashboard/atleta"}
+                      className="px-6 py-4 font-black text-base border-b-4 border-black bg-[#D4A244] hover:bg-black hover:text-[#D4A244] transition-colors uppercase"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Minha Área
+                      PAINEL
                     </Link>
-                    <button onClick={handleLogout} style={logoutButtonStyle}>
-                      Sair
+                    <button
+                      onClick={handleLogout}
+                      className="px-6 py-4 font-black text-base bg-black text-white hover:bg-[#D4A244] hover:text-black transition-colors text-left uppercase"
+                    >
+                      SAIR
                     </button>
                   </>
                 )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </nav>
 
       {/* =========================
           CONTEÚDO DINÂMICO
           ========================= */}
-      <main style={{ flex: 1 }}>
+      <main className="flex-1">
         <Outlet />
       </main>
 
       {/* =========================
-          RODAPÉ GLOBAL
+          FOOTER - NEOBRUTALIST
           ========================= */}
-      <Footer />
+      <footer className="bg-black text-white border-t-6 border-[#D4A244] py-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-10">
+
+            {/* Coluna 1: Sobre */}
+            <div>
+              <h3 className="text-2xl font-black mb-4 uppercase tracking-tight">
+                <span className="text-[#D4A244]">Acervo</span>{" "}
+                <span className="text-white">Carmen Lydia</span>
+              </h3>
+              <p className="text-gray-300 text-sm leading-relaxed font-medium">
+                Plataforma digital dedicada à preservação, pesquisa e valorização dos acervos
+                pessoais de atletas brasileiras, promovendo memória esportiva, sustentabilidade
+                cultural e justiça financeira por meio de licenciamento ético.
+              </p>
+            </div>
+
+            {/* Coluna 2: Navegação */}
+            <div>
+              <h4 className="text-lg font-black mb-4 text-[#D4A244] uppercase tracking-wide">Navegação</h4>
+              <div className="space-y-2">
+                <Link to="/modalidades" className="block text-gray-300 hover:text-[#D4A244] font-bold transition-colors text-sm uppercase">
+                  Modalidades
+                </Link>
+                <Link to="/atletas" className="block text-gray-300 hover:text-[#D4A244] font-bold transition-colors text-sm uppercase">
+                  Atletas
+                </Link>
+                <Link to="/sobre" className="block text-gray-300 hover:text-[#D4A244] font-bold transition-colors text-sm uppercase">
+                  Sobre o Acervo
+                </Link>
+                <Link to="/arquitetura" className="block text-gray-300 hover:text-[#D4A244] font-bold transition-colors text-sm uppercase">
+                  Arquitetura
+                </Link>
+              </div>
+            </div>
+
+            {/* Coluna 3: Informações + INPI */}
+            <div>
+              <h4 className="text-lg font-black mb-4 text-[#D4A244] uppercase tracking-wide">Informações</h4>
+              <p className="text-gray-300 text-sm leading-relaxed mb-3 font-medium">
+                Desenvolvido por <strong className="text-white font-black">Luciane de Castro</strong>
+              </p>
+              <p className="text-gray-300 text-sm font-medium">
+                Registro no INPI: <strong className="text-white font-black">BR512025005170-0</strong>
+              </p>
+            </div>
+          </div>
+
+          {/* Linha divisória dourada + Copyright */}
+          <div className="border-t-4 border-[#D4A244] pt-6 text-center">
+            <p className="text-gray-400 text-sm font-bold uppercase tracking-wide">
+              © {new Date().getFullYear()} Acervo Carmen Lydia. Todos os direitos reservados.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
-}
-
-/* =========================
-   ESTILOS DO LAYOUT
-   ========================= */
-
-const navStyle: React.CSSProperties = {
-  borderBottom: "1px solid #eee",
-  padding: "1rem 0",
-  position: "sticky",
-  top: 0,
-  backgroundColor: "rgba(255, 255, 255, 0.95)",
-  backdropFilter: "blur(5px)",
-  zIndex: 100,
-}
-
-const navContainerStyle: React.CSSProperties = {
-  maxWidth: "960px",
-  margin: "0 auto",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "0 2rem",
-}
-
-const logoLinkStyle: React.CSSProperties = {
-  textDecoration: "none",
-  color: "#111",
-  fontSize: "1.1rem",
-}
-
-const menuButtonStyle: React.CSSProperties = {
-  padding: "0.5rem 1rem",
-  backgroundColor: "#f4f4f4",
-  border: "1px solid #ddd",
-  borderRadius: "4px",
-  cursor: "pointer",
-  fontWeight: 500,
-}
-
-const dropdownStyle: React.CSSProperties = {
-  position: "absolute",
-  right: 0,
-  top: "120%",
-  backgroundColor: "#fff",
-  border: "1px solid #ddd",
-  borderRadius: "8px",
-  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-  width: "220px",
-  display: "flex",
-  flexDirection: "column",
-  overflow: "hidden",
-}
-
-const menuItemStyle: React.CSSProperties = {
-  padding: "0.8rem 1.2rem",
-  textDecoration: "none",
-  color: "#333",
-  fontSize: "0.95rem",
-  borderBottom: "1px solid #f9f9f9",
-}
-
-const loginLinkStyle: React.CSSProperties = {
-  ...menuItemStyle,
-  backgroundColor: "#111",
-  color: "#fff",
-  textAlign: "center",
-  fontWeight: "bold",
-}
-
-const logoutButtonStyle: React.CSSProperties = {
-  padding: "0.8rem 1.2rem",
-  border: "none",
-  backgroundColor: "transparent",
-  color: "#d93025",
-  textAlign: "left",
-  cursor: "pointer",
-  fontSize: "0.95rem",
-  width: "100%",
-}
-
-const hrStyle: React.CSSProperties = {
-  margin: 0,
-  border: 0,
-  borderTop: "1px solid #eee",
 }

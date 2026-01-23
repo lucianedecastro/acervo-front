@@ -1,15 +1,7 @@
-/* =====================================================
-   GESTÃO DE CONFIGURAÇÃO FISCAL (ADMIN)
-   Funcionalidade: Controle de Taxas de Repasse e Comissão
-   Alinhado ao Swagger: GET/PUT /configuracoes/fiscal
-   ===================================================== */
-
 import { useEffect, useState } from "react"
 import { configuracaoFiscalService } from "@/services/configuracaoFiscalService"
-import {
-  ConfiguracaoFiscal,
-  ConfiguracaoFiscalDTO,
-} from "@/types/configuracaoFiscal"
+import { ConfiguracaoFiscal, ConfiguracaoFiscalDTO } from "@/types/configuracaoFiscal"
+import { Settings, Save } from "lucide-react"
 
 export default function AdminConfiguracaoFiscal() {
   const [config, setConfig] = useState<ConfiguracaoFiscal | null>(null)
@@ -17,24 +9,17 @@ export default function AdminConfiguracaoFiscal() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Estados do formulário
   const [repasseAtleta, setRepasseAtleta] = useState(0)
   const [comissaoPlataforma, setComissaoPlataforma] = useState(0)
   const [observacaoLegal, setObservacaoLegal] = useState("")
 
-  /* ==========================
-      CARREGAR CONFIGURAÇÕES
-     ========================== */
   useEffect(() => {
     async function carregar() {
       try {
         setLoading(true)
         setError(null)
-        // Busca via serviço alinhado ao endpoint /configuracoes/fiscal
         const data = await configuracaoFiscalService.buscar()
-
         setConfig(data)
-        // No banco os valores podem ser decimais (0.85), multiplicamos por 100 para o input humano
         setRepasseAtleta(data.percentualRepasseAtleta * 100)
         setComissaoPlataforma(data.percentualComissaoPlataforma * 100)
         setObservacaoLegal(data.observacaoLegal || "")
@@ -45,17 +30,12 @@ export default function AdminConfiguracaoFiscal() {
         setLoading(false)
       }
     }
-
     carregar()
   }, [])
 
-  /* ==========================
-      SALVAR ALTERAÇÕES
-     ========================== */
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    
-    // Validação simples: a soma das taxas deve ser 100%
+
     if (repasseAtleta + comissaoPlataforma !== 100) {
       alert("A soma do repasse e da comissão deve ser exatamente 100%.")
       return
@@ -64,7 +44,6 @@ export default function AdminConfiguracaoFiscal() {
     setSaving(true)
 
     const payload: ConfiguracaoFiscalDTO = {
-      // Convertemos de volta para decimal antes de enviar ao backend
       percentualRepasseAtleta: repasseAtleta / 100,
       percentualComissaoPlataforma: comissaoPlataforma / 100,
       observacaoLegal,
@@ -83,129 +62,95 @@ export default function AdminConfiguracaoFiscal() {
   }
 
   if (loading) return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>Carregando regras fiscais...</div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
+        <p className="text-sm sm:text-lg font-black uppercase tracking-wide">Carregando regras fiscais...</p>
+      </div>
+    </div>
   )
-  
+
   if (error) return (
-    <div style={{ padding: "2rem", textAlign: "center", color: "#d93025" }}>{error}</div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6">
+      <p className="text-lg sm:text-xl font-black text-red-600 uppercase text-center">{error}</p>
+    </div>
   )
 
   return (
-    <section style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
-      <header style={{ marginBottom: "2rem" }}>
-        <h1 style={{ fontSize: "1.8rem", color: "#1a1a1a" }}>Configuração Fiscal do Acervo</h1>
-        <p style={{ color: "#666" }}>
+    <div className="space-y-6 sm:space-y-8 max-w-3xl mx-auto">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight mb-2 text-black flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+          <Settings size={36} strokeWidth={3} className="sm:w-12 sm:h-12" />
+          <span className="leading-tight">Configuração Fiscal do Acervo</span>
+        </h1>
+        <p className="text-gray-600 font-bold text-sm sm:text-base lg:text-lg mt-3">
           Defina as taxas padrão para todos os licenciamentos da plataforma.
         </p>
-      </header>
+        <div className="w-24 sm:w-32 h-2 bg-[#D4A244] border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-3"></div>
+      </div>
 
-      <form onSubmit={handleSubmit} style={formStyle}>
-        <div style={inputGroupStyle}>
-          <label style={labelStyle}>% Repasse para Atleta</label>
+      <form onSubmit={handleSubmit} className="bg-white border-4 sm:border-6 border-black rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] space-y-6">
+
+        <div>
+          <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+            % Repasse para Atleta
+          </label>
           <input
             type="number"
             step="0.01"
-            style={inputStyle}
             value={repasseAtleta}
             onChange={(e) => setRepasseAtleta(Number(e.target.value))}
             required
+            className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-base sm:text-lg focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
           />
         </div>
 
-        <div style={inputGroupStyle}>
-          <label style={labelStyle}>% Comissão da Plataforma</label>
+        <div>
+          <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+            % Comissão da Plataforma
+          </label>
           <input
             type="number"
             step="0.01"
-            style={inputStyle}
             value={comissaoPlataforma}
             onChange={(e) => setComissaoPlataforma(Number(e.target.value))}
             required
+            className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-base sm:text-lg focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
           />
         </div>
 
-        <div style={inputGroupStyle}>
-          <label style={labelStyle}>Observação Legal (Exibida em contratos/faturas)</label>
+        <div>
+          <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+            Observação Legal (Exibida em contratos/faturas)
+          </label>
           <textarea
             rows={4}
-            style={{ ...inputStyle, fontFamily: "inherit" }}
             value={observacaoLegal}
             onChange={(e) => setObservacaoLegal(e.target.value)}
+            className="w-full px-4 py-3 border-4 border-black rounded-lg font-medium text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244] resize-none"
           />
         </div>
 
-        <div style={infoBoxStyle}>
-          <small>
-            <strong>Última atualização:</strong> {config?.atualizadoEm ? new Date(config.atualizadoEm).toLocaleString("pt-BR") : "N/A"}<br />
+        <div className="bg-gray-50 border-4 border-gray-300 rounded-lg p-4">
+          <p className="text-xs font-bold uppercase text-gray-600 mb-2">Informações do Sistema</p>
+          <p className="text-xs sm:text-sm text-gray-700">
+            <strong>Última atualização:</strong> {config?.atualizadoEm ? new Date(config.atualizadoEm).toLocaleString("pt-BR") : "N/A"}
+          </p>
+          <p className="text-xs sm:text-sm text-gray-700">
             <strong>Por:</strong> {config?.atualizadoPor || "Sistema"}
-          </small>
+          </p>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={saving}
-          style={{
-            ...buttonStyle,
-            backgroundColor: saving ? "#ccc" : "#1a1a1a"
-          }}
+          className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-black text-white font-black uppercase text-xs sm:text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
+          <Save size={20} strokeWidth={3} className="sm:w-6 sm:h-6" />
           {saving ? "Processando..." : "Salvar Configuração"}
         </button>
       </form>
-    </section>
+    </div>
   )
-}
-
-/* ==========================
-    ESTILOS (CSS-IN-JS)
-   ========================== */
-
-const formStyle: React.CSSProperties = {
-  backgroundColor: "white",
-  padding: "2rem",
-  borderRadius: "12px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-  border: "1px solid #eee"
-}
-
-const inputGroupStyle: React.CSSProperties = {
-  marginBottom: "1.5rem"
-}
-
-const labelStyle: React.CSSProperties = {
-  display: "block",
-  marginBottom: "0.5rem",
-  fontWeight: "600",
-  fontSize: "0.9rem",
-  color: "#4a5568"
-}
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "0.75rem",
-  borderRadius: "6px",
-  border: "1px solid #cbd5e0",
-  fontSize: "1rem"
-}
-
-const buttonStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "1rem",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontWeight: "bold",
-  fontSize: "1rem",
-  marginTop: "1rem"
-}
-
-const infoBoxStyle: React.CSSProperties = {
-  backgroundColor: "#f8fafc",
-  padding: "1rem",
-  borderRadius: "6px",
-  marginBottom: "1.5rem",
-  color: "#718096",
-  fontSize: "0.85rem",
-  border: "1px solid #edf2f7"
 }

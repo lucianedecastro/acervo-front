@@ -1,160 +1,176 @@
 import { Link } from "react-router-dom"
+import { Trophy, BookOpen, Scale, Users } from 'lucide-react'
+import { useEffect } from 'react'
+import AOS from 'aos'
 
 export default function Home() {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 80,
+      easing: 'ease-out-cubic'
+    })
+  }, [])
+
   return (
-    <main style={mainContainerStyle}>
-      {/* =========================
-          HERO / APRESENTAÇÃO
-          ========================= */}
-      <header style={{ marginBottom: "4rem", textAlign: "center" }}>
-        <h1 style={titleStyle}>
-          Acervo “Carmen Lydia” da Mulher Brasileira no Esporte
-        </h1>
-
-        <p style={descriptionStyle}>
-          Plataforma digital dedicada à preservação, pesquisa e valorização dos
-          acervos pessoais de atletas brasileiras, reconhecendo sua
-          titularidade sobre a memória produzida a partir de suas trajetórias
-          esportivas.
-        </p>
-      </header>
+    <main className="w-full bg-white">
 
       {/* =========================
-          O QUE É O ACERVO
+          HERO SECTION - NEOBRUTALIST
           ========================= */}
-      <section style={sectionStyle}>
-        <h2 style={sectionTitleStyle}>O que é este acervo?</h2>
-        <p style={pStyle}>
-          O Acervo “Carmen Lydia” é um espaço institucional onde atletas podem
-          reunir, organizar e preservar seus próprios registros históricos —
-          imagens, documentos, objetos e narrativas — de forma estruturada,
-          segura e sob sua própria governança.
-        </p>
-        <p style={pStyle}>
-          A memória esportiva é tratada aqui como patrimônio cultural vivo,
-          carregado de valor simbólico, histórico e social, produzido pelas
-          próprias atletas ao longo de suas trajetórias.
-        </p>
+      <section className="min-h-[85vh] bg-black flex items-center justify-center px-6 md:px-12 py-24 border-b-6 border-[#D4A244]">
+        <div className="max-w-5xl mx-auto text-center" data-aos="fade-up">
+
+          {/* Badge superior - NEOBRUTALIST COM BORDAS ARREDONDADAS */}
+          <div className="inline-block mb-8 px-8 py-3 border-4 border-[#D4A244] rounded-md text-[#D4A244] font-black text-sm tracking-[0.3em] uppercase shadow-[4px_4px_0px_0px_rgba(212,162,68,1)]">
+            Memória Viva do Esporte
+          </div>
+
+          {/* Título principal */}
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-8 leading-[1.1] text-white uppercase tracking-tight">
+            Acervo{" "}
+            <span className="text-[#D4A244]">"Carmen Lydia"</span>
+            <br />
+            da Mulher Brasileira
+            <br />
+            no Esporte
+          </h1>
+
+          {/* Subtítulo */}
+          <p className="text-sm md:text-base text-gray-200 max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
+            Plataforma digital dedicada à preservação, pesquisa e valorização dos acervos pessoais
+            de atletas brasileiras, reconhecendo sua titularidade sobre a memória produzida a partir
+            de suas trajetórias esportivas.
+          </p>
+
+          {/* CTA Buttons - NEOBRUTALIST COM BORDAS ARREDONDADAS */}
+          <div className="flex flex-col md:flex-row gap-5 justify-center items-center">
+            <Link
+              to="/atletas"
+              className="bg-[#D4A244] text-black font-black text-base px-12 py-4 border-6 border-black rounded-lg shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-200 uppercase tracking-wide"
+            >
+              Conheça as Atletas
+            </Link>
+            <Link
+              to="/sobre"
+              className="bg-white text-black font-black text-base px-12 py-4 border-6 border-black rounded-lg shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-200 uppercase tracking-wide"
+            >
+              Sobre o Projeto
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* =========================
-          PRESERVAÇÃO E JUSTIÇA
+          CARDS DE NAVEGAÇÃO - NEOBRUTALIST COM BORDAS ARREDONDADAS
           ========================= */}
-      <section style={sectionStyle}>
-        <h2 style={sectionTitleStyle}>Preservação e justiça histórica</h2>
-        <p style={pStyle}>
-          Historicamente, imagens e registros de atletas mulheres circularam
-          amplamente sem reconhecimento ou controle. Este projeto propõe que 
-          as atletas sejam as titulares legítimas de seus acervos, decidindo as 
-          condições de uso de seus materiais.
-        </p>
+      <section className="py-24 px-6 md:px-12 bg-white">
+        <div className="max-w-7xl mx-auto">
+
+          <h2 className="text-4xl md:text-5xl font-black text-center mb-4 text-black uppercase tracking-tight" data-aos="fade-up">
+            Explore o Acervo
+          </h2>
+
+          {/* Linha dourada GROSSA COM BORDAS ARREDONDADAS */}
+          <div className="w-32 h-2 bg-[#D4A244] mx-auto mb-16 border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" data-aos="fade-up" data-aos-delay="100"></div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            {/* Card 1: Atletas - PRETO COM SOMBRA DOURADA E BORDAS ARREDONDADAS */}
+            <Link
+              to="/atletas"
+              className="group bg-black border-6 border-black rounded-xl p-8 shadow-[10px_10px_0px_0px_rgba(212,162,68,1)] hover:shadow-[5px_5px_0px_0px_rgba(212,162,68,1)] hover:translate-x-1.5 hover:translate-y-1.5 transition-all duration-200"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <Users size={48} strokeWidth={3} className="mb-5 text-[#D4A244]" />
+              <h3 className="text-3xl font-black mb-3 text-white uppercase tracking-tight">Atletas</h3>
+              <p className="text-gray-300 text-sm leading-relaxed font-medium">
+                Conheça as trajetórias e os acervos que compõem a memória do esporte brasileiro.
+              </p>
+            </Link>
+
+            {/* Card 2: Modalidades - BRANCO COM SOMBRA PRETA E BORDAS ARREDONDADAS */}
+            <Link
+              to="/modalidades"
+              className="group bg-white border-6 border-black rounded-xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1.5 hover:translate-y-1.5 transition-all duration-200"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <Trophy size={48} strokeWidth={3} className="mb-5 text-black group-hover:text-[#D4A244] transition-colors" />
+              <h3 className="text-3xl font-black mb-3 text-black uppercase tracking-tight">Modalidades</h3>
+              <p className="text-gray-700 text-sm leading-relaxed font-medium">
+                Explore as modalidades esportivas e seus contextos históricos.
+              </p>
+            </Link>
+
+            {/* Card 3: Sobre o Acervo - DOURADO COM SOMBRA PRETA E BORDAS ARREDONDADAS */}
+            <Link
+              to="/sobre"
+              className="group bg-[#D4A244] border-6 border-black rounded-xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1.5 hover:translate-y-1.5 transition-all duration-200"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
+              <BookOpen size={48} strokeWidth={3} className="mb-5 text-black" />
+              <h3 className="text-3xl font-black mb-3 text-black uppercase tracking-tight">Sobre o Acervo</h3>
+              <p className="text-black text-sm leading-relaxed font-medium">
+                Conheça o propósito e os princípios éticos do projeto.
+              </p>
+            </Link>
+
+            {/* Card 4: Arquitetura - BRANCO COM SOMBRA PRETA E BORDAS ARREDONDADAS */}
+            <Link
+              to="/arquitetura"
+              className="group bg-white border-6 border-black rounded-xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1.5 hover:translate-y-1.5 transition-all duration-200"
+              data-aos="fade-up"
+              data-aos-delay="400"
+            >
+              <Scale size={48} strokeWidth={3} className="mb-5 text-black group-hover:text-[#D4A244] transition-colors" />
+              <h3 className="text-3xl font-black mb-3 text-black uppercase tracking-tight">Arquitetura</h3>
+              <p className="text-gray-700 text-sm leading-relaxed font-medium">
+                Entenda a estrutura técnica e institucional da plataforma.
+              </p>
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* =========================
-          GRID DE NAVEGAÇÃO
+          MISSÃO - NEOBRUTALIST
           ========================= */}
-      <section style={gridStyle}>
-        <Link to="/atletas" style={cardStyle}>
-          <h3 style={cardTitleStyle}>Atletas</h3>
-          <p style={cardTextStyle}>
-            Conheça as trajetórias e os acervos que compõem a memória do esporte.
+      <section className="bg-black text-white py-24 px-6 md:px-12 border-t-6 border-b-6 border-[#D4A244]">
+        <div className="max-w-4xl mx-auto text-center" data-aos="zoom-in">
+          <h2 className="text-4xl md:text-6xl font-black mb-8 text-[#D4A244] uppercase tracking-tight">
+            Nossa Missão
+          </h2>
+          <p className="text-lg md:text-2xl font-bold leading-relaxed text-white">
+            "O esporte feminino brasileiro não começou ontem.{" "}
+            <span className="text-[#D4A244]">Ele tem rosto, nome e história.</span>"
           </p>
-        </Link>
-
-        <Link to="/modalidades" style={cardStyle}>
-          <h3 style={cardTitleStyle}>Modalidades</h3>
-          <p style={cardTextStyle}>
-            Explore as modalidades esportivas e seus contextos históricos.
-          </p>
-        </Link>
-
-        <Link to="/sobre" style={cardStyle}>
-          <h3 style={cardTitleStyle}>Sobre o Acervo</h3>
-          <p style={cardTextStyle}>
-            Conheça o propósito e os princípios éticos do projeto.
-          </p>
-        </Link>
-
-        <Link to="/arquitetura" style={cardStyle}>
-          <h3 style={cardTitleStyle}>Arquitetura</h3>
-          <p style={cardTextStyle}>
-            Entenda a estrutura técnica e institucional da plataforma.
-          </p>
-        </Link>
+        </div>
       </section>
+
+      {/* =========================
+          SEÇÃO CTA FINAL - NEOBRUTALIST COM BORDAS ARREDONDADAS
+          ========================= */}
+      <section className="bg-white py-24 px-6 md:px-12">
+        <div className="max-w-4xl mx-auto text-center" data-aos="fade-up">
+          <h2 className="text-3xl md:text-5xl font-black mb-6 text-black uppercase tracking-tight">
+            Faça Parte Dessa História
+          </h2>
+          <p className="text-base md:text-lg text-gray-700 mb-10 leading-relaxed font-semibold">
+            Explore o acervo, contribua com a memória do esporte feminino brasileiro.
+          </p>
+          <Link
+            to="/atletas"
+            className="inline-block bg-[#D4A244] text-black font-black text-lg px-14 py-5 border-6 border-black rounded-lg shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1.5 hover:translate-y-1.5 transition-all duration-200 uppercase tracking-wider"
+          >
+            COMEÇAR EXPLORAÇÃO
+          </Link>
+        </div>
+      </section>
+
     </main>
   )
-}
-
-/* =========================
-   ESTILOS (CSS-IN-JS)
-   ========================= */
-
-const mainContainerStyle: React.CSSProperties = {
-  padding: "3rem 1.5rem",
-  maxWidth: "960px",
-  margin: "0 auto",
-}
-
-const titleStyle: React.CSSProperties = {
-  fontSize: "clamp(1.8rem, 5vw, 2.8rem)",
-  marginBottom: "1.5rem",
-  lineHeight: "1.2",
-  color: "#111",
-}
-
-const descriptionStyle: React.CSSProperties = {
-  fontSize: "1.15rem",
-  lineHeight: "1.6",
-  color: "#555",
-  maxWidth: "800px",
-  margin: "0 auto",
-}
-
-const sectionStyle: React.CSSProperties = {
-  marginBottom: "4rem",
-}
-
-const sectionTitleStyle: React.CSSProperties = {
-  fontSize: "1.5rem",
-  marginBottom: "1rem",
-  borderBottom: "2px solid #111",
-  display: "inline-block",
-  paddingBottom: "4px",
-}
-
-const pStyle: React.CSSProperties = {
-  lineHeight: "1.7",
-  marginTop: "1rem",
-  color: "#333",
-}
-
-const gridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-  gap: "1.5rem",
-  marginTop: "2rem",
-}
-
-const cardStyle: React.CSSProperties = {
-  padding: "1.5rem",
-  border: "1px solid #eee",
-  borderRadius: "12px",
-  textDecoration: "none",
-  color: "inherit",
-  transition: "all 0.2s ease-in-out",
-  backgroundColor: "#fff",
-  boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
-}
-
-const cardTitleStyle: React.CSSProperties = {
-  fontSize: "1.2rem",
-  marginBottom: "0.5rem",
-  color: "#111",
-}
-
-const cardTextStyle: React.CSSProperties = {
-  fontSize: "0.9rem",
-  color: "#666",
-  lineHeight: "1.4",
 }

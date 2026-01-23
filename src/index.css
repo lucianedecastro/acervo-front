@@ -1,68 +1,251 @@
+/* =========================
+   IMPORTS
+   ========================= */
+@import 'aos/dist/aos.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Importar Google Fonts - Serif clássica */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;600;700;900&display=swap');
+
+
+/* =========================
+   VARIÁVEIS CSS CUSTOMIZADAS
+   ========================= */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  /* Cores Neobrutalist */
+  --color-brutal-yellow: #FFD700;
+  --color-brutal-pink: #FF006E;
+  --color-brutal-lime: #CCFF00;
+  --color-brutal-black: #000000;
+  --color-brutal-white: #FFFFFF;
+
+  /* Sombras Neobrutalist */
+  --shadow-brutal-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-brutal-md: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-brutal-lg: 12px 12px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-brutal-xl: 16px 16px 0px 0px rgba(0, 0, 0, 1);
+
+  /* Tipografia */
+  font-family: system-ui, -apple-system, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  /* Otimizações de renderização */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Esquema de cores - forçar light mode */
+  color-scheme: light;
+  color: #1a1a1a;
+  background-color: #ffffff;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* =========================
+   RESET E BASE
+   ========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-a:hover {
-  color: #535bf2;
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  overflow-x: hidden;
+}
+
+/* =========================
+   TIPOGRAFIA BASE
+   ========================= */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 900;
+  line-height: 1.2;
+  color: #000000;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: clamp(2.5rem, 6vw, 5rem);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
 }
 
-@media (prefers-color-scheme: light) {
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+p {
+  line-height: 1.7;
+}
+
+/* =========================
+   LINKS
+   ========================= */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* =========================
+   CLASSES UTILITÁRIAS CUSTOMIZADAS
+   ========================= */
+@layer utilities {
+  .shadow-neo-sm {
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .shadow-neo {
+    box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .shadow-neo-md {
+    box-shadow: 12px 12px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .shadow-neo-lg {
+    box-shadow: 16px 16px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .shadow-neo-hover {
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .border-neo {
+    border: 4px solid #000000;
+  }
+
+  .border-neo-thick {
+    border: 8px solid #000000;
+  }
+}
+
+/* =========================
+   COMPONENTES CUSTOMIZADOS
+   ========================= */
+@layer components {
+  .btn-brutal {
+    @apply font-black px-8 py-4 border-4 border-black uppercase tracking-wide;
+    @apply shadow-[8px_8px_0px_0px_rgba(0, 0, 0, 1)];
+    @apply hover:shadow-[4px_4px_0px_0px_rgba(0, 0, 0, 1)];
+    @apply hover:translate-x-1 hover:translate-y-1;
+    @apply transition-all duration-200;
+    cursor: pointer;
+  }
+
+  .btn-brutal-yellow {
+    @apply btn-brutal bg-yellow-400 text-black;
+  }
+
+  .btn-brutal-pink {
+    @apply btn-brutal bg-pink-500 text-white;
+  }
+
+  .btn-brutal-lime {
+    @apply btn-brutal bg-lime-400 text-black;
+  }
+
+  .card-brutal {
+    @apply bg-white border-4 border-black p-6;
+    @apply shadow-[12px_12px_0px_0px_rgba(0, 0, 0, 1)];
+    @apply hover:shadow-[6px_6px_0px_0px_rgba(0, 0, 0, 1)];
+    @apply hover:translate-x-1.5 hover:translate-y-1.5;
+    @apply transition-all duration-300;
+  }
+}
+
+/* =========================
+   ANIMAÇÕES CUSTOMIZADAS
+   ========================= */
+@keyframes bounce-subtle {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+/* =========================
+   SCROLLBAR CUSTOMIZADA
+   ========================= */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-left: 2px solid #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #000;
+  border: 2px solid #fff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brutal-pink);
+}
+
+/* =========================
+   ACESSIBILIDADE
+   ========================= */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+*:focus-visible {
+  outline: 4px solid var(--color-brutal-yellow);
+  outline-offset: 2px;
+}
+
+/* =========================
+   RESPONSIVIDADE
+   ========================= */
+@media (max-width: 768px) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    font-size: 14px;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+
+  .shadow-neo-lg {
+    box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
   }
 }

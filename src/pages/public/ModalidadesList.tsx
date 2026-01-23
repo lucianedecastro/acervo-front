@@ -1,12 +1,5 @@
-/* =====================================================
-   LISTAGEM DE MODALIDADES (PÚBLICO)
-   Funcionalidade: Vitrine de categorias esportivas
-   Alinhado ao Swagger: Consumo de modalidades ativas
-   ===================================================== */
-
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-
 import { modalidadeService } from "@/services/modalidadeService"
 import { Modalidade } from "@/types/modalidade"
 
@@ -17,13 +10,9 @@ export default function ModalidadesList() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // CORREÇÃO: Utilizando o fluxo de listagem configurado no service
     modalidadeService
-      .listarAdmin() // Pode ser substituído por listarPublico() se houver filtro de 'ativas' no backend
-      .then((data) => {
-        // Filtramos apenas as modalidades ativas para a vitrine pública
-        setModalidades(data.filter(m => m.ativa))
-      })
+      .listarAdmin()
+      .then((data) => setModalidades(data.filter(m => m.ativa)))
       .catch((err) => {
         console.error("Erro ao carregar modalidades:", err)
         setError("Não foi possível carregar as modalidades no momento.")
@@ -31,172 +20,92 @@ export default function ModalidadesList() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) {
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>
-        <p style={{ color: "#666" }}>Carregando modalidades...</p>
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
+        <p className="text-lg font-black uppercase tracking-wide">Carregando modalidades...</p>
       </div>
-    )
-  }
+    </div>
+  )
 
-  if (error) {
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>
-        <p style={{ color: "#d93025" }}>{error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
-          style={{ marginTop: '1rem', cursor: 'pointer' }}
+  if (error) return (
+    <div className="min-h-screen flex items-center justify-center bg-white px-6">
+      <div className="text-center">
+        <p className="text-xl font-black text-red-600 mb-6 uppercase">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-8 py-3 bg-black text-white font-black uppercase border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all"
         >
-          Tentar novamente
+          Tentar Novamente
         </button>
       </div>
-    )
-  }
+    </div>
+  )
 
   return (
-    <main style={containerStyle}>
-      <header style={{ marginBottom: "3rem" }}>
-        <h1 style={titleStyle}>Modalidades</h1>
-        <p style={subtitleStyle}>
-          Explore as modalidades esportivas que compõem o acervo e entenda os 
-          contextos históricos da presença feminina em cada uma delas.
-        </p>
-      </header>
+    <main className="bg-white min-h-screen">
 
-      {modalidades.length === 0 ? (
-        <p style={{ textAlign: "center", color: "#666", padding: "2rem" }}>
-          Nenhuma modalidade disponível para visualização no momento.
-        </p>
-      ) : (
-        <div style={gridStyle}>
-          {modalidades.map((modalidade) => (
-            <article
-              key={modalidade.id}
-              // CORREÇÃO: Navegação agora utiliza o SLUG para SEO (Imagem ad927c)
-              onClick={() => navigate(`/modalidades/${modalidade.slug}`)}
-              style={cardStyle}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-5px)"
-                e.currentTarget.style.borderColor = "#c5a059"
-                e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.05)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)"
-                e.currentTarget.style.borderColor = "#eee"
-                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)"
-              }}
-            >
-              <div style={iconWrapperStyle}>
-                {modalidade.pictogramaUrl ? (
-                  <img
-                    src={modalidade.pictogramaUrl}
-                    alt={`Ícone de ${modalidade.nome}`}
-                    style={iconStyle}
-                  />
-                ) : (
-                  <div style={placeholderStyle}>Símbolo</div>
-                )}
-              </div>
-
-              <div style={cardContentStyle}>
-                <strong style={nameStyle}>{modalidade.nome}</strong>
-                <span style={viewMoreStyle}>Explorar História →</span>
-              </div>
-            </article>
-          ))}
+      {/* Hero Section */}
+      <section className="bg-black text-white py-16 px-6 border-b-6 border-[#D4A244]">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="inline-block mb-6 px-6 py-2 border-4 border-[#D4A244] rounded-md text-[#D4A244] font-black text-xs tracking-[0.3em] uppercase shadow-[4px_4px_0px_0px_rgba(212,162,68,1)]">
+            Categorias Esportivas
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight mb-6 text-white">
+            Modalidades
+          </h1>
+          <p className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto font-medium">
+            Explore as modalidades esportivas que compõem o acervo e entenda os contextos
+            históricos da presença feminina em cada uma delas.
+          </p>
         </div>
-      )}
+      </section>
+
+      {/* Grid de Modalidades - CARDS COM BORDAS ARREDONDADAS */}
+      <section className="py-16 px-6 bg-gray-100">
+        <div className="max-w-6xl mx-auto">
+          {modalidades.length === 0 ? (
+            <p className="text-center text-gray-600 text-lg font-bold uppercase tracking-wide">
+              Nenhuma modalidade disponível para visualização no momento.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {modalidades.map((modalidade) => (
+                <article
+                  key={modalidade.id}
+                  onClick={() => navigate(`/modalidades/${modalidade.slug}`)}
+                  className="bg-white border-6 border-black rounded-xl cursor-pointer shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-200 overflow-hidden"
+                >
+                  {/* Topo Dourado com Pictograma */}
+                  <div className="w-full h-40 bg-[#D4A244] border-b-6 border-black flex items-center justify-center p-6">
+                    {modalidade.pictogramaUrl ? (
+                      <img
+                        src={modalidade.pictogramaUrl}
+                        alt={`Ícone de ${modalidade.nome}`}
+                        className="w-24 h-24 object-contain"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-black rounded-lg"></div>
+                    )}
+                  </div>
+
+                  {/* Conteúdo */}
+                  <div className="p-6 text-center">
+                    <h2 className="text-xl font-black uppercase mb-3 tracking-tight">
+                      {modalidade.nome}
+                    </h2>
+                    <span className="text-xs font-black text-[#D4A244] uppercase tracking-wide">
+                      Explorar História →
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
     </main>
   )
-}
-
-/* =========================
-    ESTILOS (CSS-IN-JS)
-   ========================= */
-
-const containerStyle: React.CSSProperties = {
-  padding: "4rem 1.5rem",
-  maxWidth: "1100px",
-  margin: "0 auto",
-}
-
-const titleStyle: React.CSSProperties = {
-  fontSize: "3rem",
-  marginBottom: "1rem",
-  color: "#1a1a1a",
-  fontWeight: "800",
-}
-
-const subtitleStyle: React.CSSProperties = {
-  fontSize: "1.2rem",
-  color: "#666",
-  lineHeight: "1.6",
-  maxWidth: "700px",
-}
-
-const gridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-  gap: "2rem",
-  marginTop: "2rem",
-}
-
-const cardStyle: React.CSSProperties = {
-  backgroundColor: "#fff",
-  border: "1px solid #eee",
-  borderRadius: "8px",
-  padding: "2rem",
-  cursor: "pointer",
-  transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)",
-  textAlign: "center",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
-}
-
-const iconWrapperStyle: React.CSSProperties = {
-  width: "100px",
-  height: "100px",
-  backgroundColor: "#fcfcfc",
-  borderRadius: "50%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  marginBottom: "1.5rem",
-  padding: "20px",
-  border: "1px solid #f5f5f5"
-}
-
-const iconStyle: React.CSSProperties = {
-  maxWidth: "100%",
-  maxHeight: "100%",
-  objectFit: "contain",
-}
-
-const placeholderStyle: React.CSSProperties = {
-  fontSize: "0.75rem",
-  color: "#bbb",
-  textTransform: "uppercase",
-  letterSpacing: "1px"
-}
-
-const cardContentStyle: React.CSSProperties = {
-  marginTop: "0.5rem",
-}
-
-const nameStyle: React.CSSProperties = {
-  display: "block",
-  fontSize: "1.25rem",
-  color: "#111",
-  marginBottom: "0.75rem",
-  fontWeight: "700"
-}
-
-const viewMoreStyle: React.CSSProperties = {
-  fontSize: "0.85rem",
-  color: "#c5a059",
-  fontWeight: "700",
-  textTransform: "uppercase",
-  letterSpacing: "0.5px"
 }

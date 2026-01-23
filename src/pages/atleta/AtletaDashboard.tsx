@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react"
 import { atletaService } from "@/services/atletaService"
 import { DashboardAtletaDTO } from "@/types/atleta"
+import { Wallet, ShoppingBag, Image, FileText, Clock, Edit } from "lucide-react"
 
 export default function AtletaDashboard() {
   const [data, setData] = useState<DashboardAtletaDTO | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  /* ==========================
-      CARREGAR DASHBOARD
-     ========================== */
   useEffect(() => {
     async function carregar() {
       try {
@@ -29,122 +27,128 @@ export default function AtletaDashboard() {
 
   if (loading) {
     return (
-      <div style={{ padding: "3rem", textAlign: "center", color: "#666" }}>
-        <p>Sincronizando com o acervo...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
+          <p className="text-sm sm:text-lg font-black uppercase tracking-wide">Sincronizando com o acervo...</p>
+        </div>
       </div>
     )
   }
 
   if (error || !data) {
     return (
-      <div style={{ padding: "3rem", textAlign: "center" }}>
-        <p style={{ color: "#d93025", fontWeight: "bold" }}>
-          {error || "Erro ao carregar dashboard."}
-        </p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <p className="text-lg font-black text-red-600 mb-4 uppercase">{error || "Erro ao carregar dashboard."}</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-      <header style={{ marginBottom: "3rem" }}>
-        <h1 style={{ color: "#1a1a1a", fontSize: "2.2rem", marginBottom: "0.5rem" }}>
+    <div className="space-y-6 sm:space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight mb-2 text-black">
           Meu Painel Financeiro
         </h1>
-        <p style={{ color: "#666", fontSize: "1.1rem" }}>
-          Acompanhamento de vendas e acervo em tempo real.
+        <p className="text-gray-600 font-bold text-sm sm:text-base mb-3">
+          Acompanhamento de vendas e acervo em tempo real
         </p>
-      </header>
+        <div className="w-24 sm:w-32 h-2 bg-[#D4A244] border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"></div>
+      </div>
 
-      {/* Grid Principal: Dados Financeiros e Totais */}
-      <div style={gridStyle}>
-        <div style={cardStyle("#27ae60")}>
-          <small style={labelStyle}>Saldo Total Disponível</small>
-          <h2 style={valueStyle}>
+      {/* Grid Principal - Cards Financeiros */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {/* Card 1 - Saldo Total */}
+        <div className="bg-black border-4 sm:border-6 border-black rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(212,162,68,1)] sm:shadow-[8px_8px_0px_0px_rgba(212,162,68,1)] hover:shadow-[4px_4px_0px_0px_rgba(212,162,68,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+          <div className="flex items-center gap-3 mb-3">
+            <Wallet size={28} strokeWidth={3} className="text-[#D4A244]" />
+          </div>
+          <p className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
+            Saldo Total Disponível
+          </p>
+          <p className="text-2xl sm:text-3xl font-black text-[#D4A244] break-words">
             {data.saldoTotalAtleta.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })}
-          </h2>
+          </p>
         </div>
 
-        <div style={cardStyle("#8e44ad")}>
-          <small style={labelStyle}>Licenciamentos Vendidos</small>
-          <h2 style={valueStyle}>{data.totalLicenciamentosVendidos}</h2>
+        {/* Card 2 - Licenciamentos */}
+        <div className="bg-white border-4 sm:border-6 border-black rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+          <div className="flex items-center gap-3 mb-3">
+            <ShoppingBag size={28} strokeWidth={3} className="text-gray-700" />
+          </div>
+          <p className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+            Licenciamentos Vendidos
+          </p>
+          <p className="text-4xl sm:text-5xl font-black text-black">
+            {data.totalLicenciamentosVendidos}
+          </p>
         </div>
 
-        <div style={cardStyle("#2980b9")}>
-          <small style={labelStyle}>Itens Publicados</small>
-          <h2 style={valueStyle}>{data.itensPublicados}</h2>
+        {/* Card 3 - Itens Publicados */}
+        <div className="bg-white border-4 sm:border-6 border-black rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+          <div className="flex items-center gap-3 mb-3">
+            <Image size={28} strokeWidth={3} className="text-gray-700" />
+          </div>
+          <p className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+            Itens Publicados
+          </p>
+          <p className="text-4xl sm:text-5xl font-black text-black">
+            {data.itensPublicados}
+          </p>
         </div>
 
-        <div style={cardStyle("#7f8c8d")}>
-          <small style={labelStyle}>Total Geral no Acervo</small>
-          <h2 style={valueStyle}>{data.totalMeusItens}</h2>
+        {/* Card 4 - Total no Acervo */}
+        <div className="bg-white border-4 sm:border-6 border-black rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+          <div className="flex items-center gap-3 mb-3">
+            <FileText size={28} strokeWidth={3} className="text-gray-700" />
+          </div>
+          <p className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+            Total no Acervo
+          </p>
+          <p className="text-4xl sm:text-5xl font-black text-black">
+            {data.totalMeusItens}
+          </p>
         </div>
       </div>
 
-      {/* Grid Secundário: Detalhamento do Acervo */}
-      <div style={{ ...gridStyle, marginTop: "24px", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
-        <div style={miniCardStyle}>
-          <small style={labelStyle}>Em Memorial</small>
-          <p style={miniValueStyle}>{data.itensNoMemorial}</p>
+      {/* Grid Secundário - Detalhamento */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Card Memorial */}
+        <div className="bg-[#D4A244] border-4 border-black rounded-xl p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide text-gray-800 mb-2">
+                Em Memorial
+              </p>
+              <p className="text-3xl font-black text-black">
+                {data.itensNoMemorial}
+              </p>
+            </div>
+            <Clock size={32} strokeWidth={3} className="text-black" />
+          </div>
         </div>
-        <div style={miniCardStyle}>
-          <small style={labelStyle}>Em Rascunho</small>
-          <p style={miniValueStyle}>{data.itensEmRascunho}</p>
+
+        {/* Card Rascunho */}
+        <div className="bg-white border-4 border-black rounded-xl p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                Em Rascunho
+              </p>
+              <p className="text-3xl font-black text-black">
+                {data.itensEmRascunho}
+              </p>
+            </div>
+            <Edit size={32} strokeWidth={3} className="text-gray-700" />
+          </div>
         </div>
       </div>
     </div>
   )
-}
-
-/* ==========================
-    ESTILOS (CSS-IN-JS)
-   ========================== */
-const gridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-  gap: "24px",
-}
-
-const cardStyle = (color: string): React.CSSProperties => ({
-  backgroundColor: "#fff",
-  padding: "24px",
-  borderRadius: "16px",
-  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
-  borderTop: `6px solid ${color}`,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center"
-})
-
-const miniCardStyle: React.CSSProperties = {
-  backgroundColor: "#f8fafc",
-  padding: "16px",
-  borderRadius: "12px",
-  border: "1px solid #e2e8f0",
-  textAlign: "center"
-}
-
-const labelStyle: React.CSSProperties = {
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  fontWeight: "600",
-  color: "#718096",
-  fontSize: "0.75rem",
-}
-
-const valueStyle: React.CSSProperties = {
-  margin: "12px 0 0 0",
-  fontSize: "2rem",
-  color: "#1a202c",
-  fontWeight: "700",
-}
-
-const miniValueStyle: React.CSSProperties = {
-  margin: "8px 0 0 0",
-  fontSize: "1.2rem",
-  color: "#4a5568",
-  fontWeight: "600",
 }

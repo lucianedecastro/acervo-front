@@ -1,23 +1,14 @@
-/* =====================================================
-   FORMULÁRIO DE GESTÃO DE MODALIDADE (ADMIN)
-   Funcionalidade: Criação e Edição de Categorias Esportivas
-   Alinhado ao Swagger: POST /modalidades e PUT /modalidades/{id}
-   ===================================================== */
-
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-
 import { modalidadeService } from "@/services/modalidadeService"
 import { Modalidade, ModalidadeDTO } from "@/types/modalidade"
+import { Trophy, Save, X } from "lucide-react"
 
 export default function ModalidadeForm() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const isEdit = Boolean(id)
 
-  /* ==========================
-      ESTADOS DO FORMULÁRIO (Schema ad3fa4)
-     ========================== */
   const [nome, setNome] = useState("")
   const [historia, setHistoria] = useState("")
   const [pictogramaUrl, setPictogramaUrl] = useState("")
@@ -27,9 +18,6 @@ export default function ModalidadeForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  /* ==========================
-      CARREGAR DADOS (EDIÇÃO)
-     ========================== */
   useEffect(() => {
     if (!id) return
 
@@ -37,10 +25,7 @@ export default function ModalidadeForm() {
       try {
         setLoading(true)
         setError(null)
-
-        // Busca dados detalhados da modalidade (Alinhado ao GET /modalidades/{id})
         const data: Modalidade = await modalidadeService.buscarPorId(id as string)
-
         setNome(data.nome)
         setHistoria(data.historia || "")
         setPictogramaUrl(data.pictogramaUrl || "")
@@ -57,35 +42,28 @@ export default function ModalidadeForm() {
     carregar()
   }, [id])
 
-  /* ==========================
-      SUBMIT (POST ou PUT)
-     ========================== */
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
-    // Payload construído exatamente como o ModalidadeDTO da imagem ad3fa4
     const payload: ModalidadeDTO = {
       nome,
       historia,
       pictogramaUrl,
       fotoDestaquePublicId,
       ativa,
-      fotos: [] // Inicialmente vazio, preenchido via upload se necessário
+      fotos: [],
     }
 
     try {
       if (isEdit && id) {
-        // Alinhado ao PUT /modalidades/{id} (Imagem ad91df)
         await modalidadeService.atualizar(id as string, payload)
         alert("Modalidade atualizada com sucesso!")
       } else {
-        // Alinhado ao POST /modalidades (Imagem ad9241)
         await modalidadeService.criar(payload)
         alert("Nova modalidade criada com sucesso!")
       }
-
       navigate("/admin/modalidades")
     } catch (err) {
       console.error("Erro ao salvar modalidade:", err)
@@ -95,115 +73,130 @@ export default function ModalidadeForm() {
     }
   }
 
-  if (loading && isEdit) return <p style={{ padding: "2rem", textAlign: "center" }}>Carregando dados...</p>
+  if (loading && isEdit)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
+          <p className="text-sm sm:text-lg font-black uppercase tracking-wide">Carregando dados...</p>
+        </div>
+      </div>
+    )
 
   return (
-    <section style={containerStyle}>
-      <header style={{ marginBottom: "2rem" }}>
-        <h1 style={{ fontSize: "1.8rem", color: "#1a1a1a" }}>
-          {isEdit ? `Editar Modalidade: ${nome}` : "Cadastrar Nova Modalidade"}
+    <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight mb-2 text-black flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+          <Trophy size={36} strokeWidth={3} className="sm:w-12 sm:h-12 flex-shrink-0" />
+          <span className="leading-tight break-words">
+            {isEdit ? `Editar: ${nome}` : "Cadastrar Nova Modalidade"}
+          </span>
         </h1>
-      </header>
+        <div className="w-24 sm:w-32 h-2 bg-[#D4A244] border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-3"></div>
+      </div>
 
       {error && (
-        <div style={{ padding: "1rem", backgroundColor: "#fff5f5", color: "#c53030", borderRadius: "6px", marginBottom: "2rem" }}>
-          {error}
+        <div className="bg-red-500 border-4 sm:border-6 border-black rounded-xl p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <p className="text-white font-black text-sm sm:text-base lg:text-lg uppercase">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={formStyle}>
-        <div style={inputGroupStyle}>
-          <label style={labelStyle}>Nome da Modalidade</label>
+      <form onSubmit={handleSubmit} className="bg-white border-4 sm:border-6 border-black rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] space-y-6 sm:space-y-8">
+
+        {/* Nome */}
+        <div>
+          <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+            Nome da Modalidade
+          </label>
           <input
             type="text"
-            style={inputStyle}
             value={nome}
             onChange={(e) => setNome(e.target.value)}
             placeholder="Ex: Natação, Atletismo..."
             required
+            className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
           />
         </div>
 
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <div style={{ ...inputGroupStyle, flex: 1 }}>
-            <label style={labelStyle}>URL do Pictograma (Ícone)</label>
+        {/* URLs - Grid Responsivo */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <div>
+            <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+              URL do Pictograma
+            </label>
             <input
               type="text"
-              style={inputStyle}
               value={pictogramaUrl}
               onChange={(e) => setPictogramaUrl(e.target.value)}
               placeholder="https://res.cloudinary.com/..."
+              className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
             />
           </div>
-          <div style={{ ...inputGroupStyle, flex: 1 }}>
-            <label style={labelStyle}>Foto de Destaque (Public ID)</label>
+
+          <div>
+            <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+              Foto de Destaque (Public ID)
+            </label>
             <input
               type="text"
-              style={inputStyle}
               value={fotoDestaquePublicId}
               onChange={(e) => setFotoDestaquePublicId(e.target.value)}
               placeholder="modalidades/foto_capa"
+              className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
             />
           </div>
         </div>
 
-        <div style={inputGroupStyle}>
-          <label style={labelStyle}>História da Modalidade no Brasil</label>
+        {/* História */}
+        <div>
+          <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+            História da Modalidade
+          </label>
           <textarea
-            style={{ ...inputStyle, fontFamily: "inherit" }}
             value={historia}
             onChange={(e) => setHistoria(e.target.value)}
-            rows={8}
+            rows={6}
             placeholder="Descreva a trajetória desta modalidade..."
+            className="w-full px-4 py-3 border-4 border-black rounded-lg font-medium text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244] resize-none"
           />
         </div>
 
-        <div style={{ ...inputGroupStyle, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        {/* Checkbox Ativa */}
+        <div className="flex items-start sm:items-center gap-3">
           <input
             type="checkbox"
             id="ativa"
             checked={ativa}
             onChange={(e) => setAtiva(e.target.checked)}
-            style={{ width: "18px", height: "18px" }}
+            className="w-6 h-6 border-4 border-black rounded focus:ring-4 focus:ring-[#D4A244] flex-shrink-0 mt-0.5 sm:mt-0"
           />
-          <label htmlFor="ativa" style={{ fontWeight: "600", color: "#4a5568", cursor: "pointer" }}>
-            Modalidade disponível para novos cadastros de atletas
+          <label htmlFor="ativa" className="text-xs sm:text-sm font-black uppercase text-gray-700 cursor-pointer">
+            Modalidade disponível para novos cadastros
           </label>
         </div>
 
-        <div style={actionRowStyle}>
-          <button 
-            type="submit" 
+        {/* Botões de Ação */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
+          <button
+            type="submit"
             disabled={loading}
-            style={{
-              ...saveButtonStyle,
-              backgroundColor: loading ? "#ccc" : "#1a1a1a"
-            }}
+            className="flex-1 px-6 sm:px-8 py-3 sm:py-4 bg-black text-white font-black uppercase text-xs sm:text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
+            <Save size={20} strokeWidth={3} className="sm:w-6 sm:h-6" />
             {loading ? "Gravando..." : "Salvar Modalidade"}
           </button>
-          
-          <button 
-            type="button" 
+
+          <button
+            type="button"
             onClick={() => navigate("/admin/modalidades")}
-            style={cancelButtonStyle}
+            className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-black font-black uppercase text-xs sm:text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 sm:gap-3"
           >
+            <X size={20} strokeWidth={3} className="sm:w-6 sm:h-6" />
             Cancelar
           </button>
         </div>
       </form>
-    </section>
+    </div>
   )
 }
-
-/* ==========================
-    ESTILOS (MANTIDOS)
-   ========================== */
-const containerStyle: React.CSSProperties = { maxWidth: "800px", margin: "0 auto", padding: "1rem" }
-const formStyle: React.CSSProperties = { backgroundColor: "white", padding: "2rem", borderRadius: "12px", border: "1px solid #e2e8f0", boxShadow: "0 4px 6px rgba(0,0,0,0.02)" }
-const inputGroupStyle: React.CSSProperties = { marginBottom: "1.5rem" }
-const labelStyle: React.CSSProperties = { display: "block", marginBottom: "0.5rem", fontWeight: "600", fontSize: "0.85rem", color: "#4a5568" }
-const inputStyle: React.CSSProperties = { width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid #cbd5e0", fontSize: "1rem" }
-const actionRowStyle: React.CSSProperties = { display: "flex", gap: "1rem", marginTop: "2rem" }
-const saveButtonStyle: React.CSSProperties = { flex: 2, padding: "1rem", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", fontSize: "1rem" }
-const cancelButtonStyle: React.CSSProperties = { flex: 1, padding: "1rem", backgroundColor: "white", border: "1px solid #cbd5e0", borderRadius: "6px", cursor: "pointer", fontWeight: "500" }

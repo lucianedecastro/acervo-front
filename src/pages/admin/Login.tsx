@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-
 import api from "@/services/api"
 import { useAuth } from "@/auth/AuthContext"
+import { Lock, Mail } from "lucide-react"
 
 interface LoginResponse {
   token: string
@@ -17,9 +17,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  /* ==========================
-      REDIRECT APÓS LOGIN
-     ========================== */
   useEffect(() => {
     if (isLoading) return
 
@@ -34,9 +31,6 @@ export default function Login() {
     }
   }, [isAuthenticated, role, navigate, isLoading])
 
-  /* ==========================
-      SUBMIT
-     ========================== */
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -67,131 +61,102 @@ export default function Login() {
 
   if (isLoading && !isAuthenticated) {
     return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>
-        <p>Carregando...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
+          <p className="text-sm sm:text-lg font-black uppercase tracking-wide">Carregando...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <main style={containerStyle}>
-      <div style={cardStyle}>
-        <header style={{ marginBottom: "2rem", textAlign: "center" }}>
-          <h1 style={{ fontSize: "1.8rem", color: "#111", marginBottom: "0.5rem" }}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8 sm:py-12 px-4 sm:px-6">
+      <div className="w-full max-w-md bg-white border-4 sm:border-6 border-black rounded-xl p-6 sm:p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+
+        {/* Header */}
+        <div className="mb-6 sm:mb-8 text-center">
+          <h1 className="text-3xl sm:text-4xl font-black uppercase mb-2 sm:mb-3 tracking-tight">
             Acesso ao Acervo
           </h1>
-          <p style={{ color: "#666", fontSize: "0.9rem" }}>
+          <p className="text-gray-600 font-bold text-sm sm:text-base">
             Entre com suas credenciais para gerenciar seu acervo.
           </p>
-        </header>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={inputGroupStyle}>
-            <label style={labelStyle}>Email</label>
-            <input
-              type="email"
-              style={inputStyle}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              required
-            />
+        {/* Formulário */}
+        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+
+          {/* Email */}
+          <div>
+            <label className="block text-xs sm:text-sm font-black uppercase mb-2 sm:mb-3 text-gray-700">
+              Email
+            </label>
+            <div className="relative">
+              <Mail
+                className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-500"
+                size={18}
+                strokeWidth={2.5}
+              />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+                className="w-full pl-10 sm:pl-12 pr-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+              />
+            </div>
           </div>
 
-          <div style={inputGroupStyle}>
-            <label style={labelStyle}>Senha</label>
-            <input
-              type="password"
-              style={inputStyle}
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
+          {/* Senha */}
+          <div>
+            <label className="block text-xs sm:text-sm font-black uppercase mb-2 sm:mb-3 text-gray-700">
+              Senha
+            </label>
+            <div className="relative">
+              <Lock
+                className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-500"
+                size={18}
+                strokeWidth={2.5}
+              />
+              <input
+                type="password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full pl-10 sm:pl-12 pr-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+              />
+            </div>
           </div>
 
-          {error && <p style={errorStyle}>{error}</p>}
+          {/* Mensagem de Erro */}
+          {error && (
+            <div className="bg-red-500 border-4 border-black rounded-lg p-3 sm:p-4">
+              <p className="text-white font-black uppercase text-xs sm:text-sm text-center">
+                {error}
+              </p>
+            </div>
+          )}
 
-          <button 
-            type="submit" 
+          {/* Botão Submit */}
+          <button
+            type="submit"
             disabled={loading}
-            style={loading ? { ...buttonStyle, opacity: 0.7, cursor: 'not-allowed' } : buttonStyle}
+            className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-[#D4A244] text-black font-black uppercase text-sm sm:text-base border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Verificando..." : "Entrar"}
           </button>
         </form>
 
-        <footer style={{ marginTop: "1.5rem", textAlign: "center" }}>
-          <p style={{ fontSize: "0.8rem", color: "#888", lineHeight: "1.4" }}>
+        {/* Footer */}
+        <footer className="mt-5 sm:mt-6 text-center">
+          <p className="text-xs text-gray-600 font-semibold">
             * Acesso restrito a atletas e administradores cadastrados.
           </p>
         </footer>
       </div>
-    </main>
+    </div>
   )
-}
-
-/* =========================
-   ESTILOS (CSS-IN-JS)
-   ========================= */
-
-const containerStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "4rem 1.5rem",
-  minHeight: "70vh", // Garante que fique centralizado verticalmente na área útil
-}
-
-const cardStyle: React.CSSProperties = {
-  width: "100%",
-  maxWidth: "400px",
-  backgroundColor: "#fff",
-  padding: "2.5rem",
-  borderRadius: "12px",
-  boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
-  border: "1px solid #eee",
-}
-
-const inputGroupStyle: React.CSSProperties = {
-  marginBottom: "1.2rem",
-}
-
-const labelStyle: React.CSSProperties = {
-  display: "block",
-  marginBottom: "0.5rem",
-  fontSize: "0.9rem",
-  fontWeight: "500",
-  color: "#444",
-}
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "0.8rem",
-  borderRadius: "6px",
-  border: "1px solid #ddd",
-  fontSize: "1rem",
-  outline: "none",
-  transition: "border-color 0.2s",
-}
-
-const errorStyle: React.CSSProperties = {
-  color: "#d93025",
-  fontSize: "0.85rem",
-  marginBottom: "1rem",
-  textAlign: "center",
-}
-
-const buttonStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "0.9rem",
-  backgroundColor: "#111",
-  color: "#fff",
-  border: "none",
-  borderRadius: "6px",
-  fontSize: "1rem",
-  fontWeight: "600",
-  cursor: "pointer",
-  transition: "background-color 0.2s",
-  marginTop: "0.5rem",
 }

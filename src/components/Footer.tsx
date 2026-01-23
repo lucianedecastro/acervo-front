@@ -17,6 +17,7 @@ export default function Footer() {
         licenciamento ético.
       </p>
 
+
       <p>
         Desenvolvido por <strong>Luciane de Castro</strong>
         <br />
