@@ -51,6 +51,15 @@ export default function ModalidadeDetail() {
     </div>
   )
 
+  /**
+   * NOVO
+   * - Foto de destaque (hero da modalidade)
+   * - Fallback para pictograma se não existir
+   */
+  const fotoDestaqueUrl = modalidade.fotoDestaquePublicId
+    ? `https://res.cloudinary.com/dcet9fpu0/image/upload/${modalidade.fotoDestaquePublicId}`
+    : modalidade.pictogramaUrl
+
   return (
     <main className="bg-white min-h-screen">
 
@@ -64,12 +73,27 @@ export default function ModalidadeDetail() {
         </button>
       </div>
 
+      {/* FOTO DE DESTAQUE */}
+      {fotoDestaqueUrl && (
+        <section className="relative h-[420px] w-full overflow-hidden border-b-6 border-black mt-8">
+          <img
+            src={fotoDestaqueUrl}
+            alt={`Foto de destaque da modalidade ${modalidade.nome}`}
+            className="w-full h-full object-cover"
+          />
+        </section>
+      )}
+
       {/* Header com Pictograma */}
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto text-center">
           {modalidade.pictogramaUrl && (
             <div className="w-32 h-32 mx-auto mb-8 bg-white border-6 border-black rounded-full flex items-center justify-center p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-              <img src={modalidade.pictogramaUrl} alt={modalidade.nome} className="w-full h-full object-contain" />
+              <img
+                src={modalidade.pictogramaUrl}
+                alt={modalidade.nome}
+                className="w-full h-full object-contain"
+              />
             </div>
           )}
           <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight">
