@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { modalidadeService } from "@/services/modalidadeService"
 import { Modalidade, ModalidadeDTO } from "@/types/modalidade"
-import { Trophy, Save, X } from "lucide-react"
+import { Trophy, Save, X, Upload } from "lucide-react"
 
 export default function ModalidadeForm() {
   const { id } = useParams<{ id: string }>()
@@ -13,8 +13,12 @@ export default function ModalidadeForm() {
   const [historia, setHistoria] = useState("")
   const [pictogramaUrl, setPictogramaUrl] = useState("")
   const [fotoDestaquePublicId, setFotoDestaquePublicId] = useState("")
-  const [ativa, setAtiva] = useState(true)
 
+  // NOVO — arquivos para upload
+  const [pictogramaFile, setPictogramaFile] = useState<File | null>(null)
+  const [fotoDestaqueFile, setFotoDestaqueFile] = useState<File | null>(null)
+
+  const [ativa, setAtiva] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -26,6 +30,7 @@ export default function ModalidadeForm() {
         setLoading(true)
         setError(null)
         const data: Modalidade = await modalidadeService.buscarPorId(id as string)
+
         setNome(data.nome)
         setHistoria(data.historia || "")
         setPictogramaUrl(data.pictogramaUrl || "")
@@ -47,6 +52,11 @@ export default function ModalidadeForm() {
     setError(null)
     setLoading(true)
 
+    /**
+     * IMPORTANTE
+     * - O PUT continua apenas editorial
+     * - Uploads ocorrem depois, em endpoints próprios
+     */
     const payload: ModalidadeDTO = {
       nome,
       historia,
@@ -59,11 +69,23 @@ export default function ModalidadeForm() {
     try {
       if (isEdit && id) {
         await modalidadeService.atualizar(id as string, payload)
+
+        // Upload opcional do pictograma
+        if (pictogramaFile) {
+          await modalidadeService.uploadPictograma(id as string, pictogramaFile)
+        }
+
+        // Upload opcional da foto de destaque
+        if (fotoDestaqueFile) {
+          await modalidadeService.uploadFotoDestaque(id as string, fotoDestaqueFile)
+        }
+
         alert("Modalidade atualizada com sucesso!")
       } else {
         await modalidadeService.criar(payload)
         alert("Nova modalidade criada com sucesso!")
       }
+
       navigate("/admin/modalidades")
     } catch (err) {
       console.error("Erro ao salvar modalidade:", err)
@@ -78,7 +100,9 @@ export default function ModalidadeForm() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
-          <p className="text-sm sm:text-lg font-black uppercase tracking-wide">Carregando dados...</p>
+          <p className="text-sm sm:text-lg font-black uppercase tracking-wide">
+            Carregando dados...
+          </p>
         </div>
       </div>
     )
@@ -97,102 +121,106 @@ export default function ModalidadeForm() {
       </div>
 
       {error && (
-        <div className="bg-red-500 border-4 sm:border-6 border-black rounded-xl p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <p className="text-white font-black text-sm sm:text-base lg:text-lg uppercase">{error}</p>
+        <div className="bg-red-500 border-4 border-black rounded-xl p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <p className="text-white font-black uppercase">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white border-4 sm:border-6 border-black rounded-xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] space-y-6 sm:space-y-8">
-
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white border-4 border-black rounded-xl p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] space-y-6"
+      >
         {/* Nome */}
         <div>
-          <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+          <label className="block text-xs font-black uppercase mb-2 text-gray-700">
             Nome da Modalidade
           </label>
           <input
             type="text"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
-            placeholder="Ex: Natação, Atletismo..."
             required
-            className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+            className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold"
           />
         </div>
 
-        {/* URLs - Grid Responsivo */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* URLs + Uploads */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
-              URL do Pictograma
+            <label className="block text-xs font-black uppercase mb-2">
+              Pictograma (URL ou Upload)
             </label>
             <input
               type="text"
               value={pictogramaUrl}
               onChange={(e) => setPictogramaUrl(e.target.value)}
               placeholder="https://res.cloudinary.com/..."
-              className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+              className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold mb-3"
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPictogramaFile(e.target.files?.[0] || null)}
+              className="w-full"
             />
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
-              Foto de Destaque (Public ID)
+            <label className="block text-xs font-black uppercase mb-2">
+              Foto de Destaque (Upload)
             </label>
             <input
-              type="text"
-              value={fotoDestaquePublicId}
-              onChange={(e) => setFotoDestaquePublicId(e.target.value)}
-              placeholder="modalidades/foto_capa"
-              className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFotoDestaqueFile(e.target.files?.[0] || null)}
+              className="w-full"
             />
           </div>
         </div>
 
         {/* História */}
         <div>
-          <label className="block text-xs sm:text-sm font-black uppercase mb-3 text-gray-700">
+          <label className="block text-xs font-black uppercase mb-2">
             História da Modalidade
           </label>
           <textarea
             value={historia}
             onChange={(e) => setHistoria(e.target.value)}
             rows={6}
-            placeholder="Descreva a trajetória desta modalidade..."
-            className="w-full px-4 py-3 border-4 border-black rounded-lg font-medium text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244] resize-none"
+            className="w-full px-4 py-3 border-4 border-black rounded-lg"
           />
         </div>
 
-        {/* Checkbox Ativa */}
-        <div className="flex items-start sm:items-center gap-3">
+        {/* Ativa */}
+        <div className="flex items-center gap-3">
           <input
             type="checkbox"
-            id="ativa"
             checked={ativa}
             onChange={(e) => setAtiva(e.target.checked)}
-            className="w-6 h-6 border-4 border-black rounded focus:ring-4 focus:ring-[#D4A244] flex-shrink-0 mt-0.5 sm:mt-0"
+            className="w-6 h-6 border-4 border-black"
           />
-          <label htmlFor="ativa" className="text-xs sm:text-sm font-black uppercase text-gray-700 cursor-pointer">
+          <span className="font-black uppercase text-sm">
             Modalidade disponível para novos cadastros
-          </label>
+          </span>
         </div>
 
-        {/* Botões de Ação */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
+        {/* Botões */}
+        <div className="flex gap-4">
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 sm:px-8 py-3 sm:py-4 bg-black text-white font-black uppercase text-xs sm:text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-black text-white font-black uppercase py-3 border-4 border-black rounded-lg flex items-center justify-center gap-2"
           >
-            <Save size={20} strokeWidth={3} className="sm:w-6 sm:h-6" />
-            {loading ? "Gravando..." : "Salvar Modalidade"}
+            <Save size={20} strokeWidth={3} />
+            {loading ? "Gravando..." : "Salvar"}
           </button>
 
           <button
             type="button"
             onClick={() => navigate("/admin/modalidades")}
-            className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-black font-black uppercase text-xs sm:text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2 sm:gap-3"
+            className="px-6 py-3 bg-white text-black font-black uppercase border-4 border-black rounded-lg flex items-center gap-2"
           >
-            <X size={20} strokeWidth={3} className="sm:w-6 sm:h-6" />
+            <X size={20} strokeWidth={3} />
             Cancelar
           </button>
         </div>

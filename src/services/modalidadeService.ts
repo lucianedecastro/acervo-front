@@ -55,9 +55,59 @@ export const modalidadeService = {
   /**
    * PUT /modalidades/{id}
    * Atualiza modalidade existente
+   *
+   * IMPORTANTE:
+   * - Este endpoint é apenas editorial
+   * - Uploads de imagens ocorrem em endpoints próprios
    */
   async atualizar(id: string, payload: ModalidadeDTO): Promise<Modalidade> {
     const response = await api.put<Modalidade>(`/modalidades/${id}`, payload);
+    return response.data;
+  },
+
+  /**
+   * POST /modalidades/{id}/foto-destaque/upload
+   * Upload da foto de destaque da modalidade
+   */
+  async uploadFotoDestaque(id: string, file: File): Promise<Modalidade> {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await api.post<Modalidade>(
+      `/modalidades/${id}/foto-destaque/upload`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data;
+  },
+
+  /**
+   * POST /modalidades/{id}/pictograma/upload
+   * Upload do pictograma da modalidade
+   *
+   * OBS:
+   * - Endpoint espelha o fluxo da foto de destaque
+   * - Backend decide publicId e persistência
+   */
+  async uploadPictograma(id: string, file: File): Promise<Modalidade> {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await api.post<Modalidade>(
+      `/modalidades/${id}/pictograma/upload`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
     return response.data;
   },
 
