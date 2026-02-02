@@ -61,7 +61,7 @@ export default function AtletasList() {
         </div>
       </section>
 
-      {/* Grid de Atletas - CARDS COM BORDAS ARREDONDADAS */}
+      {/* Grid de Atletas */}
       <section className="py-16 px-6 bg-gray-100">
         <div className="max-w-7xl mx-auto">
           {atletas.length === 0 ? (
@@ -70,38 +70,51 @@ export default function AtletasList() {
             </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {atletas.map((atleta) => (
-                <article
-                  key={atleta.id}
-                  onClick={() => navigate(`/atleta/${atleta.slug}`)}
-                  className="bg-white border-6 border-black rounded-xl cursor-pointer shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1.5 hover:translate-y-1.5 transition-all duration-200 overflow-hidden"
-                >
-                  {/* Imagem */}
-                  <div className="w-full h-80 bg-gray-200 border-b-6 border-black overflow-hidden">
-                    {atleta.fotoDestaqueUrl ? (
-                      <img
-                        src={atleta.fotoDestaqueUrl}
-                        alt={atleta.nome}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-500 font-black text-xs uppercase tracking-wide">
-                        Imagem em Pesquisa
-                      </div>
-                    )}
-                  </div>
+              {atletas.map((atleta) => {
+                /**
+                 * REGRA DE IMAGEM (HOME)
+                 * 1. Foto de destaque (hero)
+                 * 2. Foto de perfil (fallback)
+                 * 3. Placeholder
+                 */
+                const imagemUrl =
+                  atleta.fotoDestaqueUrl ||
+                  atleta.fotoPerfil?.url ||
+                  null
 
-                  {/* Conteúdo */}
-                  <div className="p-6">
-                    <span className="inline-block mb-2 px-3 py-1 bg-[#D4A244] border-2 border-black rounded-md font-black text-xs uppercase tracking-wide shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      {atleta.categoria}
-                    </span>
-                    <h2 className="text-2xl font-black uppercase tracking-tight">
-                      {atleta.nome}
-                    </h2>
-                  </div>
-                </article>
-              ))}
+                return (
+                  <article
+                    key={atleta.id}
+                    onClick={() => navigate(`/atleta/${atleta.slug}`)}
+                    className="bg-white border-6 border-black rounded-xl cursor-pointer shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1.5 hover:translate-y-1.5 transition-all duration-200 overflow-hidden"
+                  >
+                    {/* Imagem */}
+                    <div className="w-full h-80 bg-gray-200 border-b-6 border-black overflow-hidden">
+                      {imagemUrl ? (
+                        <img
+                          src={imagemUrl}
+                          alt={atleta.nome}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-500 font-black text-xs uppercase tracking-wide">
+                          Imagem em Pesquisa
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Conteúdo */}
+                    <div className="p-6">
+                      <span className="inline-block mb-2 px-3 py-1 bg-[#D4A244] border-2 border-black rounded-md font-black text-xs uppercase tracking-wide shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                        {atleta.categoria}
+                      </span>
+                      <h2 className="text-2xl font-black uppercase tracking-tight">
+                        {atleta.nome}
+                      </h2>
+                    </div>
+                  </article>
+                )
+              })}
             </div>
           )}
         </div>

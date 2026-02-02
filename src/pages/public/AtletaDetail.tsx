@@ -57,6 +57,17 @@ export default function AtletaDetail() {
     </div>
   )
 
+  /**
+   * REGRA DE IMAGEM (PERFIL PÚBLICO)
+   * 1. Foto de destaque (hero)
+   * 2. Foto de perfil (fallback visual)
+   * 3. Placeholder
+   */
+  const imagemPrincipal =
+    atleta.fotoDestaqueUrl ||
+    atleta.fotoPerfil?.url ||
+    null
+
   return (
     <main className="bg-white min-h-screen">
 
@@ -70,22 +81,24 @@ export default function AtletaDetail() {
         </button>
       </div>
 
-      {/* Header com Foto e Nome - Neobrutalist */}
+      {/* Header com Foto e Nome */}
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
             {/* Foto */}
             <div className="order-2 md:order-1">
-              {atleta.fotoDestaqueUrl ? (
+              {imagemPrincipal ? (
                 <img
-                  src={atleta.fotoDestaqueUrl}
+                  src={imagemPrincipal}
                   alt={atleta.nome}
                   className="w-full border-8 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)]"
                 />
               ) : (
                 <div className="w-full h-96 bg-gray-200 border-8 border-black flex items-center justify-center shadow-[16px_16px_0px_0px_rgba(0,0,0,1)]">
-                  <span className="text-gray-600 font-black uppercase text-sm">Imagem em Pesquisa</span>
+                  <span className="text-gray-600 font-black uppercase text-sm">
+                    Imagem em Pesquisa
+                  </span>
                 </div>
               )}
             </div>
@@ -103,7 +116,7 @@ export default function AtletaDetail() {
         </div>
       </section>
 
-      {/* Biografia - Neobrutalist */}
+      {/* Biografia */}
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-black uppercase mb-4 tracking-tight">
@@ -117,7 +130,7 @@ export default function AtletaDetail() {
         </div>
       </section>
 
-      {/* Itens do Acervo - Neobrutalist */}
+      {/* Itens do Acervo */}
       {itensAcervo.length > 0 && (
         <section className="py-16 px-6 bg-black text-white border-t-6 border-[#D4A244]">
           <div className="max-w-6xl mx-auto">

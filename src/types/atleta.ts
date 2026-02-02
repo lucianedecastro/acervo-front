@@ -21,6 +21,15 @@ export type TipoChavePix =
   | "NENHUM"
 
 /* =====================
+   DTO – FOTO DE PERFIL (PÚBLICA)
+   ===================== */
+
+export interface FotoPerfilPublicaDTO {
+  publicId: string
+  url: string
+}
+
+/* =====================
    MODELO PRINCIPAL
    ===================== */
 
@@ -60,8 +69,18 @@ export interface Atleta {
   percentualRepasse: number
   comissaoPlataformaDiferenciada: number
 
+  /**
+   * LEGADO — mantido por compatibilidade
+   * Pode apontar para hero antigo ou fallback
+   */
   fotoDestaqueUrl?: string
   fotoDestaqueId?: string
+
+  /**
+   * NOVO — foto de perfil pública (avatar)
+   * Usada como fallback visual no frontend
+   */
+  fotoPerfil?: FotoPerfilPublicaDTO | null
 
   statusAtleta: StatusAtleta
   criadoEm: string
@@ -115,7 +134,11 @@ export interface AtletaFormDTO {
 
   comissaoPlataformaDiferenciada?: number
 
+  /**
+   * LEGADO — não usado no novo fluxo de imagens
+   */
   fotoDestaqueId?: string
+
   statusAtleta?: StatusAtleta
 }
 
