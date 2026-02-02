@@ -9,7 +9,11 @@
 
 export type CategoriaAtleta = "HISTORICA" | "ATIVA" | "ESPOLIO"
 
-export type StatusVerificacao = "PENDENTE" | "VERIFICADO" | "REJEITADO"
+export type StatusVerificacao =
+  | "PENDENTE"
+  | "VERIFICADO"
+  | "REJEITADO"
+  | "MEMORIAL_PUBLICO"
 
 export type StatusAtleta = "ATIVO" | "INATIVO" | "SUSPENSO"
 
