@@ -75,13 +75,15 @@ export default function AtletaForm() {
   const [fotoPerfilFile, setFotoPerfilFile] = useState<File | null>(null)
   const [fotoDestaqueFile, setFotoDestaqueFile] = useState<File | null>(null)
 
+  const [fotoPerfilPreview, setFotoPerfilPreview] = useState<string | null>(null)
+  const [fotoDestaquePreview, setFotoDestaquePreview] = useState<string | null>(null)
+
   /* =====================
      UI
      ===================== */
 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [uploading, setUploading] = useState(false)
 
   /* =====================
      INIT
@@ -205,11 +207,22 @@ export default function AtletaForm() {
   if (loading) return null
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
-      {/* HEADER */}
-      <h1 className="text-4xl font-black uppercase">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto">
+      <h1 className="text-4xl font-black uppercase flex items-center gap-3">
+        <UserPlus />
         {isEditing ? `Editar: ${nome}` : "Nova Inserção Curatorial"}
       </h1>
+
+      {/* BIOGRAFIA */}
+      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-3">
+        <h2 className="text-xl font-black uppercase">Biografia</h2>
+        <textarea
+          value={biografia}
+          onChange={(e) => setBiografia(e.target.value)}
+          rows={6}
+          className="w-full border-4 border-black p-3"
+        />
+      </section>
 
       {/* MÍDIA */}
       <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
@@ -221,9 +234,17 @@ export default function AtletaForm() {
             type="file"
             accept="image/*"
             className="sr-only"
-            onChange={(e) => setFotoPerfilFile(e.target.files?.[0] || null)}
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null
+              setFotoPerfilFile(file)
+              if (file) setFotoPerfilPreview(URL.createObjectURL(file))
+            }}
           />
         </label>
+
+        {fotoPerfilPreview && (
+          <img src={fotoPerfilPreview} className="w-32 border-4 border-black" />
+        )}
 
         <label className="flex items-center gap-3 font-black cursor-pointer">
           <Upload /> Foto de Destaque
@@ -231,29 +252,36 @@ export default function AtletaForm() {
             type="file"
             accept="image/*"
             className="sr-only"
-            onChange={(e) => setFotoDestaqueFile(e.target.files?.[0] || null)}
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null
+              setFotoDestaqueFile(file)
+              if (file) setFotoDestaquePreview(URL.createObjectURL(file))
+            }}
           />
         </label>
+
+        {fotoDestaquePreview && (
+          <img src={fotoDestaquePreview} className="w-full max-w-md border-4 border-black" />
+        )}
       </section>
 
       {/* BOTÕES */}
       <div className="flex gap-4">
         <button
           type="submit"
-          onClick={handleSubmit}
           disabled={saving}
-          className="bg-black text-white px-8 py-4 font-black uppercase"
+          className="bg-black text-white px-8 py-4 font-black uppercase flex items-center gap-2"
         >
           <Save /> Salvar
         </button>
         <button
           type="button"
           onClick={() => navigate("/admin/atletas")}
-          className="border-4 border-black px-8 py-4 font-black uppercase"
+          className="border-4 border-black px-8 py-4 font-black uppercase flex items-center gap-2"
         >
           <X /> Cancelar
         </button>
       </div>
-    </div>
+    </form>
   )
 }
