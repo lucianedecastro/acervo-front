@@ -90,10 +90,41 @@ export default function Sobre() {
           <div className="w-24 h-2 bg-white mb-8 border-4 border-white rounded-full shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]"></div>
 
           <p className="text-lg text-gray-300 leading-relaxed font-medium">
-            O Acervo "Carmen Lydia" é orientado por princípios de justiça histórica,
-            sustentabilidade cultural, transparência e respeito à autonomia das
-            atletas, rejeitando modelos predatórios de exploração da memória esportiva.
+            O Acervo Carmen Lydia da Mulher Brasileira no Esporte está alinhado aos Objetivos de Desenvolvimento Sustentável (ODS) da Agenda 2030, ao atuar diretamente na promoção da igualdade de gênero, na valorização do trabalho e da trajetória de mulheres historicamente invisibilizadas, no fortalecimento da educação, da cultura e no uso ético da tecnologia como instrumento de justiça social.
           </p>
+
+          <p className="text-lg text-gray-300 leading-relaxed font-medium">
+            A plataforma compreende a memória esportiva como um patrimônio cultural vivo e entende que a preservação, a circulação responsável e a eventual remuneração pelo uso de acervos pessoais são estratégias fundamentais para a construção de uma sociedade mais justa, inclusiva e sustentável.
+          </p>
+
+          {/* ODS – Agenda 2030 */}
+          <div className="mt-10">
+            <h3 className="text-xl md:text-2xl font-black uppercase mb-6 tracking-tight text-white">
+              Alinhamento com a Agenda 2030
+            </h3>
+
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300 font-medium">
+              <li>
+                <strong className="text-white">ODS 4</strong> – Educação de Qualidade
+              </li>
+              <li>
+                <strong className="text-white">ODS 5</strong> – Igualdade de Gênero
+              </li>
+              <li>
+                <strong className="text-white">ODS 8</strong> – Trabalho Decente e Crescimento Econômico
+              </li>
+              <li>
+                <strong className="text-white">ODS 9</strong> – Indústria, Inovação e Infraestrutura
+              </li>
+              <li>
+                <strong className="text-white">ODS 10</strong> – Redução das Desigualdades
+              </li>
+              <li>
+                <strong className="text-white">ODS 11</strong> – Cidades e Comunidades Sustentáveis
+              </li>
+            </ul>
+          </div>
+
         </div>
       </section>
 
