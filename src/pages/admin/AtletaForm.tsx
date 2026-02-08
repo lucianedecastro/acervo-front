@@ -36,7 +36,7 @@ export default function AtletaForm() {
   const [modalidadesSelecionadas, setModalidadesSelecionadas] = useState<string[]>([])
 
   /* =====================
-     CURADORIA
+     CURADORIA (ADMIN)
      ===================== */
 
   const [statusAtleta, setStatusAtleta] = useState<StatusAtleta>("ATIVO")
@@ -69,7 +69,7 @@ export default function AtletaForm() {
   const [dadosContato, setDadosContato] = useState("")
 
   /* =====================
-     MÍDIA (NOVO FLUXO)
+     MÍDIA
      ===================== */
 
   const [fotoPerfilFile, setFotoPerfilFile] = useState<File | null>(null)
@@ -110,21 +110,6 @@ export default function AtletaForm() {
           setStatusAtleta(data.statusAtleta || "ATIVO")
           setStatusVerificacao(data.statusVerificacao || "PENDENTE")
           setObservacoesAdmin(data.observacoesAdmin || "")
-          setNomeRepresentante(data.nomeRepresentante || "")
-          setCpfRepresentante(data.cpfRepresentante || "")
-          setVinculoRepresentante(data.vinculoRepresentante || "")
-          setTipoChavePix(data.tipoChavePix || "CPF")
-          setChavePix(data.chavePix || "")
-          setBanco(data.banco || "")
-          setAgencia(data.agencia || "")
-          setConta(data.conta || "")
-          setTipoConta(data.tipoConta || "")
-          setComissaoPlataformaDiferenciada(
-            (data.comissaoPlataformaDiferenciada ?? 0) * 100
-          )
-          setContratoAssinado(data.contratoAssinado || false)
-          setLinkContratoDigital(data.linkContratoDigital || "")
-          setDadosContato(data.dadosContato || "")
         }
       } finally {
         setLoading(false)
@@ -151,21 +136,8 @@ export default function AtletaForm() {
       modalidades: modalidadesSelecionadas,
       biografia,
       categoria,
-      nomeRepresentante: categoria === "ESPOLIO" ? nomeRepresentante : "",
-      cpfRepresentante: categoria === "ESPOLIO" ? cpfRepresentante : "",
-      vinculoRepresentante: categoria === "ESPOLIO" ? vinculoRepresentante : "",
-      contratoAssinado,
-      linkContratoDigital,
-      dadosContato,
-      tipoChavePix,
-      chavePix,
-      banco,
-      agencia,
-      conta,
-      tipoConta,
-      comissaoPlataformaDiferenciada:
-        Number(comissaoPlataformaDiferenciada) / 100,
       statusAtleta,
+      statusVerificacao,
     }
 
     try {
@@ -178,14 +150,10 @@ export default function AtletaForm() {
         atletaId = nova.id
       }
 
-      /**
-       * UPLOADS — APÓS SALVAR
-       */
       if (atletaId) {
         if (fotoPerfilFile) {
           await atletaService.uploadFotoPerfil(atletaId, fotoPerfilFile)
         }
-
         if (fotoDestaqueFile) {
           await atletaService.uploadFotoDestaque(atletaId, fotoDestaqueFile)
         }
@@ -200,10 +168,6 @@ export default function AtletaForm() {
     }
   }
 
-  /* =====================
-     UI
-     ===================== */
-
   if (loading) return null
 
   return (
@@ -212,6 +176,50 @@ export default function AtletaForm() {
         <UserPlus />
         {isEditing ? `Editar: ${nome}` : "Nova Inserção Curatorial"}
       </h1>
+
+      {/* DADOS PRINCIPAIS */}
+      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
+        <h2 className="text-xl font-black uppercase">Dados da Atleta</h2>
+
+        <input
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          placeholder="Nome da atleta"
+          className="w-full border-4 border-black p-3"
+          required
+        />
+
+        <select
+          value={categoria}
+          onChange={(e) => setCategoria(e.target.value as CategoriaAtleta)}
+          className="w-full border-4 border-black p-3"
+        >
+          <option value="ATIVA">ATIVA</option>
+          <option value="HISTORICA">HISTÓRICA</option>
+          <option value="ESPOLIO">ESPÓLIO</option>
+        </select>
+
+        <select
+          value={statusVerificacao}
+          onChange={(e) => setStatusVerificacao(e.target.value as StatusVerificacao)}
+          className="w-full border-4 border-black p-3"
+        >
+          <option value="PENDENTE">PENDENTE</option>
+          <option value="VERIFICADO">VERIFICADO</option>
+          <option value="REJEITADO">REJEITADO</option>
+          <option value="MEMORIAL_PUBLICO">MEMORIAL PÚBLICO</option>
+        </select>
+
+        <select
+          value={statusAtleta}
+          onChange={(e) => setStatusAtleta(e.target.value as StatusAtleta)}
+          className="w-full border-4 border-black p-3"
+        >
+          <option value="ATIVO">ATIVO</option>
+          <option value="INATIVO">INATIVO</option>
+          <option value="SUSPENSO">SUSPENSO</option>
+        </select>
+      </section>
 
       {/* BIOGRAFIA */}
       <section className="bg-white border-4 border-black rounded-xl p-6 space-y-3">
@@ -224,7 +232,7 @@ export default function AtletaForm() {
         />
       </section>
 
-      {/* MÍDIA */}
+      {/* IMAGENS */}
       <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
         <h2 className="text-xl font-black uppercase">Imagens</h2>
 
@@ -261,7 +269,10 @@ export default function AtletaForm() {
         </label>
 
         {fotoDestaquePreview && (
-          <img src={fotoDestaquePreview} className="w-full max-w-md border-4 border-black" />
+          <img
+            src={fotoDestaquePreview}
+            className="w-full max-w-md border-4 border-black"
+          />
         )}
       </section>
 
