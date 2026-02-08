@@ -115,15 +115,17 @@ export default function ModalidadeForm() {
           className="w-full border-4 border-black p-3 font-bold"
         />
 
-        {/* Upload Pictograma */}
+        {/* Pictograma (URL Cloudinary) */}
         <div>
           <label className="font-black uppercase text-sm flex items-center gap-2">
-            <Upload size={16} /> Upload do Pictograma
+            <Upload size={16} /> Pictograma (URL do Cloudinary)
           </label>
           <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setPictogramaFile(e.target.files?.[0] || null)}
+            type="url"
+            value={pictogramaUrl}
+            onChange={(e) => setPictogramaUrl(e.target.value)}
+            placeholder="https://res.cloudinary.com/..."
+            className="w-full border-4 border-black p-3 font-bold"
           />
         </div>
 
@@ -156,7 +158,11 @@ export default function ModalidadeForm() {
           <button className="flex-1 bg-black text-white font-black uppercase p-3 flex items-center justify-center gap-2">
             <Save size={20} /> Salvar
           </button>
-          <button type="button" onClick={() => navigate("/admin/modalidades")} className="border-4 border-black p-3 font-black uppercase">
+          <button
+            type="button"
+            onClick={() => navigate("/admin/modalidades")}
+            className="border-4 border-black p-3 font-black uppercase"
+          >
             <X size={20} /> Cancelar
           </button>
         </div>
