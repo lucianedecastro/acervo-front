@@ -137,7 +137,6 @@ export default function AtletaForm() {
       biografia,
       categoria,
       statusAtleta,
-      statusVerificacao,
     }
 
     try {
@@ -151,9 +150,18 @@ export default function AtletaForm() {
       }
 
       if (atletaId) {
+        if (statusVerificacao) {
+          await atletaService.verificarAtleta(
+            atletaId,
+            statusVerificacao,
+            observacoesAdmin || undefined
+          )
+        }
+
         if (fotoPerfilFile) {
           await atletaService.uploadFotoPerfil(atletaId, fotoPerfilFile)
         }
+
         if (fotoDestaqueFile) {
           await atletaService.uploadFotoDestaque(atletaId, fotoDestaqueFile)
         }
