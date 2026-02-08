@@ -229,6 +229,40 @@ export default function AtletaForm() {
         </select>
       </section>
 
+      {/* MODALIDADES */}
+      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
+        <h2 className="text-xl font-black uppercase">Modalidades</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {modalidades.map((modalidade) => (
+        <label
+        key={modalidade.id}
+        className="flex items-center gap-3 border-4 border-black p-3 cursor-pointer font-bold"
+      >
+        <input
+          type="checkbox"
+          checked={modalidadesSelecionadas.includes(modalidade.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setModalidadesSelecionadas((prev) => [
+                ...prev,
+                modalidade.id,
+              ])
+            } else {
+              setModalidadesSelecionadas((prev) =>
+                prev.filter((id) => id !== modalidade.id)
+              )
+            }
+          }}
+          className="w-5 h-5"
+        />
+        {modalidade.nome}
+        </label>
+    ))}
+    </div>
+    </section>
+
+
       {/* BIOGRAFIA */}
       <section className="bg-white border-4 border-black rounded-xl p-6 space-y-3">
         <h2 className="text-xl font-black uppercase">Biografia</h2>
