@@ -31,14 +31,22 @@ export default function AdminItemAcervoImagens() {
       setLoading(true)
       setError(null)
 
-      // 1️⃣ Upload para Cloudinary (backend aplica watermark)
-      const uploadResponse = await itemAcervoService.uploadImagem(file)
-
-      // 2️⃣ Associar imagem ao item
-      await itemAcervoService.associarImagem(itemId, {
-        publicId: uploadResponse.publicId,
-        urlVisualizacao: uploadResponse.urlVisualizacao,
-      })
+      /**
+       * 1️⃣ Upload da imagem do item
+       * - Frontend envia o arquivo original
+       * - Backend aplica watermark automaticamente
+       * - Imagem já é persistida vinculada ao item
+       */
+      await itemAcervoService.adicionarFoto(
+        itemId,
+        file,
+        {
+          legenda: "Imagem do acervo",
+          ehDestaque: true,
+          autorNomePublico: "Acervo Carmen Lydia",
+          licenciamentoPermitido: true,
+        }
+      )
 
       alert("Imagem enviada com sucesso (versão protegida).")
       navigate(-1)

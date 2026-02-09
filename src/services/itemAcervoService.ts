@@ -69,5 +69,44 @@ export const itemAcervoService = {
     }
   ): Promise<void> {
     await api.post(`/acervo/${itemId}/fotos`, payload);
+  },
+
+  /* =====================================================
+     NOVO FLUXO (RECOMENDADO)
+     Upload + associação em uma única chamada
+     ===================================================== */
+
+  // POST /acervo/{itemId}/fotos
+  // Envia a imagem original + metadados
+  // Backend:
+  // - aplica watermark
+  // - reduz resolução
+  // - persiste
+  // - vincula ao item
+  async adicionarFoto(
+    itemId: string,
+    file: File,
+    metadata: {
+      legenda?: string;
+      ehDestaque?: boolean;
+      autorNomePublico?: string;
+      licenciamentoPermitido?: boolean;
+    }
+  ) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("metadata", JSON.stringify(metadata));
+
+    const response = await api.post(
+      `/acervo/${itemId}/fotos`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data;
   }
 };

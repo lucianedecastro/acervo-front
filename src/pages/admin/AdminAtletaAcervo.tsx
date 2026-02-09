@@ -19,8 +19,18 @@ export default function AdminAtletaAcervo() {
       setLoading(true)
       setError(null)
 
-      const data = await itemAcervoService.listarPorAtleta(id)
-      setItens(data)
+      /**
+       * ADMIN:
+       * - Lista todos os itens (inclui rascunhos)
+       * - Filtra pelo vínculo com a atleta
+       */
+      const data = await itemAcervoService.listarAdmin()
+
+      const filtrados = data.filter((item: any) =>
+        Array.isArray(item.atletasIds) && item.atletasIds.includes(id)
+      )
+
+      setItens(filtrados)
     } catch {
       setError("Erro ao carregar itens de acervo desta atleta.")
     } finally {

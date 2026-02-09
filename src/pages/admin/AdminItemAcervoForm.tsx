@@ -60,10 +60,16 @@ export default function AdminItemAcervoForm() {
       setLoading(true)
       setError(null)
 
-      await itemAcervoService.criar(payload)
+      const criado = await itemAcervoService.criar(payload)
 
       alert("Item de acervo salvo com sucesso.")
-      navigate(-1)
+
+      /**
+       * Fluxo editorial:
+       * Após criar o item, o próximo passo é a gestão de imagens
+       * (upload com watermark e controle de visibilidade)
+       */
+      navigate(`/admin/acervo/editar/${criado.id}`)
     } catch {
       setError("Erro ao salvar o item de acervo.")
     } finally {
@@ -102,6 +108,13 @@ export default function AdminItemAcervoForm() {
         onSubmit={handleSubmit}
         className="space-y-6 border-4 border-black p-6 rounded-xl bg-white"
       >
+        {/* Aviso Editorial */}
+        <div className="border-4 border-black bg-gray-100 p-4 text-sm font-bold">
+          As imagens vinculadas a este item serão exibidas em baixa resolução,
+          com marca d’água do Acervo Carmen Lydia.  
+          O uso comercial depende de autorização expressa e licenciamento.
+        </div>
+
         {/* Título */}
         <div>
           <label className="block font-black uppercase text-sm mb-2">
