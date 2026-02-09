@@ -4,7 +4,7 @@ import { itemAcervoService } from "@/services/itemAcervoService"
 import { modalidadeService } from "@/services/modalidadeService"
 import { Modalidade } from "@/types/modalidade"
 import { ItemAcervoCreateDTO } from "@/types/itemAcervo"
-import { Save, ArrowLeft } from "lucide-react"
+import { Save, ArrowLeft, ImagePlus } from "lucide-react"
 
 export default function AdminItemAcervoForm() {
   const navigate = useNavigate()
@@ -17,6 +17,8 @@ export default function AdminItemAcervoForm() {
   const [modalidades, setModalidades] = useState<Modalidade[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [salvoComSucesso, setSalvoComSucesso] = useState(false)
+  const [novoItemId, setNovoItemId] = useState<string | null>(null)
 
   const [titulo, setTitulo] = useState("")
   const [descricao, setDescricao] = useState("")
@@ -77,6 +79,7 @@ export default function AdminItemAcervoForm() {
 
   /* ======================
      Mídia
+      Enviando array vazio para satisfazer a API na criação
      ====================== */
   fotos: [],
 
@@ -91,13 +94,14 @@ export default function AdminItemAcervoForm() {
       setError(null)
 
       const criado = await itemAcervoService.criar(payload)
+      setSalvoComSucesso(true)
+      setNovoItemId(criado.id)
 
-      alert("Item de acervo salvo com sucesso.")
+      alert("Dados salvos! Agora clique no botão abaixo para gerenciar as imagens.")
 
       /**
        * Fluxo editorial:
-       * Após criar o item, o próximo passo é a gestão de imagens
-       * (upload com watermark e controle de visibilidade)
+       * Redireciona para a tela de imagens após a criação do registro pai
        */
       navigate(`/admin/acervo/imagens/${criado.id}`)
     } catch {
@@ -171,7 +175,7 @@ export default function AdminItemAcervoForm() {
             placeholder="Contexto histórico, local, evento, pessoas envolvidas…"
             className="w-full border-4 border-black p-3"
           />
-          </div>
+        </div>
 
         {/* Modalidade */}
         <div>
@@ -228,15 +232,26 @@ export default function AdminItemAcervoForm() {
         </div>
 
         {/* Ações */}
-        <div className="flex gap-4 pt-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 bg-black text-white font-black uppercase p-3 flex items-center justify-center gap-2"
-          >
-            <Save size={20} />
-            Salvar Item
-          </button>
+        <div className="flex flex-col gap-4 pt-4">
+          {!salvoComSucesso ? (
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-black text-white font-black uppercase p-3 flex items-center justify-center gap-2 transition-all hover:bg-gray-800"
+            >
+              <Save size={20} />
+              Salvar e Continuar para Imagens
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate(`/admin/acervo/imagens/${novoItemId}`)}
+              className="w-full bg-yellow-500 text-black border-4 border-black font-black uppercase p-3 flex items-center justify-center gap-2 animate-bounce"
+            >
+              <ImagePlus size={20} />
+              Agora sim: Fazer Upload da Imagem
+            </button>
+          )}
         </div>
       </form>
     </div>
