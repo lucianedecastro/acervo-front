@@ -30,14 +30,14 @@ export const itemAcervoService = {
     return response.data
   },
 
-  /**
-   * Busca um item específico pelo ID para exibição detalhada
-   * Necessário para o componente ItemAcervoDetail
-   */
-  async obterPorId(id: string): Promise<ItemAcervoResponseDTO> {
-    const response = await api.get(`/acervo/${id}`)
-    return response.data
-  },
+  /**
+   * Busca um item específico pelo ID para exibição detalhada
+   * Necessário para o componente ItemAcervoDetail
+   */
+  async obterPorId(id: string): Promise<ItemAcervoResponseDTO> {
+    const response = await api.get(`/acervo/${id}`)
+    return response.data
+  },
 
   /* ======================
      CRIAÇÃO
