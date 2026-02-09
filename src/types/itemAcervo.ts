@@ -8,12 +8,35 @@
    ========================== */
 export interface FotoDTO {
   id?: string
+
+  /**
+   * Public ID do asset no Cloudinary
+   * Ex: acervo/itens/avrjzqviihimejvz5yya
+   */
   publicId: string
+
+  /**
+   * Versão do asset no Cloudinary (obrigatória para delivery)
+   * Ex: v1770640528
+   */
+  version?: string
+
   legenda?: string
   ehDestaque?: boolean
+
+  /**
+   * URL original persistida no backend (fallback de segurança)
+   * Não contém marca d'água
+   */
   url: string
-  urlVisualizacao?: string // URL com transformações/marca d'água vinda do Cloudinary
-  filename: string;
+
+  /**
+   * URL de visualização opcional (legado / compatibilidade)
+   * ⚠️ Evitar uso direto no frontend
+   */
+  urlVisualizacao?: string
+
+  filename: string
   autorNomePublico?: string
   licenciamentoPermitido?: boolean
 }
@@ -41,7 +64,6 @@ export type TipoItemAcervo =
    DTO de criação / edição
    ========================== */
 export interface ItemAcervoCreateDTO {
-
   /* ======================
      Conteúdo editorial
      ====================== */

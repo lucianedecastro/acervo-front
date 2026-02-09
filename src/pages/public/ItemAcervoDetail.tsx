@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import { itemAcervoService } from "@/services/itemAcervoService"
 import { ItemAcervoResponseDTO } from "@/types/itemAcervo"
 import { ArrowLeft, ShieldCheck, Download, Info, Tag } from "lucide-react"
+import { cloudinaryImage } from "@/utils/cloudinary"
 
 export default function ItemAcervoDetail() {
   const { id } = useParams<{ id: string }>()
@@ -25,24 +26,54 @@ export default function ItemAcervoDetail() {
     carregarItem()
   }, [id])
 
-  if (loading) return <div className="p-10 text-center font-black uppercase">Carregando Detalhes do Acervo...</div>
-  if (!item) return <div className="p-10 text-center font-black uppercase">Item não encontrado.</div>
+  if (loading)
+    return (
+      <div className="p-10 text-center font-black uppercase">
+        Carregando Detalhes do Acervo...
+      </div>
+    )
 
-  const fotoObj = item.fotos?.find(f => f.ehDestaque) || item.fotos?.[0]
-  const cloudName = "dcet9fpu0"
-  const publicId = fotoObj?.publicId
+  if (!item)
+    return (
+      <div className="p-10 text-center font-black uppercase">
+        Item não encontrado.
+      </div>
+    )
 
-  // URL de Visualização Protegida
-  const urlComProtecao = publicId
-    ? `https://res.cloudinary.com/${cloudName}/image/upload/c_scale,w_1200/l_watermark_acervo,w_0.8,o_30,fl_relative/f_auto/v1/${publicId}`
-    : null
+  /**
+   * Resolução da imagem principal:
+   * - Prioriza foto marcada como destaque
+   * - Fallback para a primeira foto disponível
+   * - Aplica marca d'água via helper centralizado do Cloudinary
+   * - Mantém fallback de segurança para a imagem original
+   */
+  const fotoObj = item.fotos?.find((f) => f.ehDestaque) || item.fotos?.[0]
 
+  /**
+   * URL protegida com marca d'água (visualização pública):
+   * - Gerada exclusivamente pelo helper cloudinaryImage
+   * - Evita hardcode de publicId, versão ou transformações no componente
+   */
+  const urlComProtecao =
+    fotoObj?.publicId && fotoObj?.version
+      ? cloudinaryImage({
+          publicId: fotoObj.publicId,
+          version: fotoObj.version,
+          contexto: "detalhe-item",
+        })
+      : null
+
+  /**
+   * Imagem principal final:
+   * - Prioriza versão protegida
+   * - Fallback para URL original persistida no backend
+   */
   const fotoPrincipal = urlComProtecao || fotoObj?.url
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
       {/* Botão Voltar */}
-      <button 
+      <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 font-black uppercase hover:underline transition-all"
       >
@@ -53,20 +84,25 @@ export default function ItemAcervoDetail() {
         {/* Coluna da Imagem */}
         <div className="space-y-4">
           <div className="relative border-8 border-black bg-gray-200 aspect-square overflow-hidden group shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <div 
-              className="absolute inset-0 z-10" 
+            {/* Camada de proteção contra menu de contexto */}
+            <div
+              className="absolute inset-0 z-10"
               onContextMenu={(e) => e.preventDefault()}
             />
-            
+
             {fotoPrincipal ? (
-              <img 
-                src={fotoPrincipal} 
+              <img
+                src={fotoPrincipal}
                 alt={item.titulo}
                 className="w-full h-full object-contain pointer-events-none"
                 onError={(e) => {
-                  // Se a marca d'água falhar (Erro 400), usa a URL original do banco
+                  /**
+                   * Fallback de segurança:
+                   * - Caso a URL protegida falhe (Cloudinary, cache, etc)
+                   * - Reverte para a imagem original salva no backend
+                   */
                   if (fotoObj?.url && e.currentTarget.src !== fotoObj.url) {
-                    e.currentTarget.src = fotoObj.url;
+                    e.currentTarget.src = fotoObj.url
                   }
                 }}
               />
@@ -80,6 +116,7 @@ export default function ItemAcervoDetail() {
               Visualização Protegida
             </div>
           </div>
+
           <p className="text-xs font-bold text-gray-500 text-center uppercase tracking-widest">
             Proteção por marca d'água digital • Direitos Reservados
           </p>
@@ -96,6 +133,7 @@ export default function ItemAcervoDetail() {
                 {item.tipo || "FOTO"}
               </span>
             </div>
+
             <h1 className="text-4xl font-black uppercase leading-tight border-b-4 border-black pb-2">
               {item.titulo}
             </h1>
@@ -115,11 +153,13 @@ export default function ItemAcervoDetail() {
             <div className="flex items-start gap-3">
               <ShieldCheck className="shrink-0 text-black" size={28} />
               <div>
-                <h4 className="font-black uppercase text-sm underline">Regras de Licenciamento</h4>
+                <h4 className="font-black uppercase text-sm underline">
+                  Regras de Licenciamento
+                </h4>
                 <p className="text-sm font-bold mt-1">
-                  {item.disponivelParaLicenciamento 
-                    ? '✓ Este item está disponível para licenciamento comercial imediato.' 
-                    : '⚠ Uso restrito: Este item requer análise da curadoria para fins comerciais.'}
+                  {item.disponivelParaLicenciamento
+                    ? "✓ Este item está disponível para licenciamento comercial imediato."
+                    : "⚠ Uso restrito: Este item requer análise da curadoria para fins comerciais."}
                 </p>
               </div>
             </div>
@@ -134,11 +174,19 @@ export default function ItemAcervoDetail() {
           <div className="grid grid-cols-2 gap-4 text-xs font-black uppercase">
             <div className="border-4 border-black p-4 bg-gray-50">
               <span className="block text-gray-500 mb-1">Procedência</span>
-              <span className="text-sm">{item.procedencia || "Acervo Pessoal da Atleta"}</span>
+              <span className="text-sm">
+                {item.procedencia || "Acervo Pessoal da Atleta"}
+              </span>
             </div>
             <div className="border-4 border-black p-4 bg-gray-50">
-              <span className="block text-gray-500 mb-1">Status de Catálogo</span>
-              <span className="text-sm">{item.status === "MEMORIAL" ? "Pesquisa Histórica" : "Acervo Ativo"}</span>
+              <span className="block text-gray-500 mb-1">
+                Status de Catálogo
+              </span>
+              <span className="text-sm">
+                {item.status === "MEMORIAL"
+                  ? "Pesquisa Histórica"
+                  : "Acervo Ativo"}
+              </span>
             </div>
           </div>
 
