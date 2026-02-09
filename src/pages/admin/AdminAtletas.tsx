@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { atletaService } from "@/services/atletaService"
 import { Atleta, CategoriaAtleta, StatusAtleta, StatusVerificacao } from "@/types/atleta"
-import { Plus, Edit, Trash2, Filter, X } from "lucide-react"
+import { Plus, Edit, Trash2, Filter, X, Image } from "lucide-react"
 
 export default function AdminAtletas() {
   const navigate = useNavigate()
@@ -93,7 +93,6 @@ export default function AdminAtletas() {
         </div>
 
         <div className="space-y-3">
-          {/* Linha 1: Filtros */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-black uppercase mb-2 text-gray-700">Categoria</label>
@@ -123,7 +122,6 @@ export default function AdminAtletas() {
             </div>
           </div>
 
-          {/* Linha 2: Botão Limpar */}
           <div className="flex justify-end">
             <button
               onClick={limparFiltros}
@@ -136,10 +134,8 @@ export default function AdminAtletas() {
         </div>
       </div>
 
-      {/* Tabela Desktop / Cards Mobile */}
+      {/* Tabela Desktop */}
       <div className="bg-white border-4 sm:border-6 border-black rounded-xl overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
-
-        {/* TABELA - DESKTOP (≥768px) */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -153,44 +149,25 @@ export default function AdminAtletas() {
             </thead>
             <tbody>
               {atletasFiltradas.map((a, index) => (
-                <tr
-                  key={a.id}
-                  className={`border-b-4 border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                >
-                  <td className="p-4">
-                    <strong className="text-base font-black">{a.nome}</strong>
-                  </td>
+                <tr key={a.id} className={`border-b-4 border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                  <td className="p-4"><strong className="text-base font-black">{a.nome}</strong></td>
+                  <td className="p-4 text-center"><span className="inline-block px-3 py-1 bg-[#D4A244] border-2 border-black rounded-md font-black text-xs uppercase">{a.categoria}</span></td>
                   <td className="p-4 text-center">
-                    <span className="inline-block px-3 py-1 bg-[#D4A244] border-2 border-black rounded-md font-black text-xs uppercase">
-                      {a.categoria}
-                    </span>
-                  </td>
-                  <td className="p-4 text-center">
-                    <span className={`inline-block px-3 py-1 border-2 border-black rounded-md font-black text-xs uppercase ${a.statusVerificacao === 'VERIFICADO' ? 'bg-green-400' : 'bg-yellow-300'
-                      }`}>
+                    <span className={`inline-block px-3 py-1 border-2 border-black rounded-md font-black text-xs uppercase ${a.statusVerificacao === 'VERIFICADO' ? 'bg-green-400' : 'bg-yellow-300'}`}>
                       {a.statusVerificacao === 'VERIFICADO' ? 'VERIFICADO' : 'MEMORIAL PÚBLICO'}
                     </span>
                   </td>
-                  <td className="p-4 text-center">
-                    <span className="inline-block px-3 py-1 bg-white border-2 border-black rounded-md font-black text-xs uppercase">
-                      {a.statusAtleta === 'ATIVO' ? 'ATIVO' : 'MEMORIAL'}
-                    </span>
-                  </td>
+                  <td className="p-4 text-center"><span className="inline-block px-3 py-1 bg-white border-2 border-black rounded-md font-black text-xs uppercase">{a.statusAtleta === 'ATIVO' ? 'ATIVO' : 'MEMORIAL'}</span></td>
                   <td className="p-4">
                     <div className="flex justify-center gap-2">
-                      <button
-                        onClick={() => navigate(`/admin/atletas/editar/${a.id}`)}
-                        className="px-3 py-2 bg-white text-black font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1"
-                      >
-                        <Edit size={14} strokeWidth={3} />
-                        Editar
+                      <button onClick={() => navigate(`/admin/atletas/editar/${a.id}`)} className="px-3 py-2 bg-white text-black font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1">
+                        <Edit size={14} strokeWidth={3} /> Editar
                       </button>
-                      <button
-                        onClick={() => handleRemover(a.id, a.nome)}
-                        className="px-3 py-2 bg-red-500 text-white font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1"
-                      >
-                        <Trash2 size={14} strokeWidth={3} />
-                        Excluir
+                      <button onClick={() => navigate(`/admin/atletas/${a.id}/acervo`)} className="px-3 py-2 bg-[#D4A244] text-black font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1">
+                        <Image size={14} strokeWidth={3} /> Acervo
+                      </button>
+                      <button onClick={() => handleRemover(a.id, a.nome)} className="px-3 py-2 bg-red-500 text-white font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1">
+                        <Trash2 size={14} strokeWidth={3} /> Excluir
                       </button>
                     </div>
                   </td>
@@ -200,41 +177,20 @@ export default function AdminAtletas() {
           </table>
         </div>
 
-        {/* CARDS - MOBILE (<768px) */}
+        {/* Mobile */}
         <div className="md:hidden divide-y-4 divide-gray-200">
           {atletasFiltradas.map((a) => (
             <div key={a.id} className="p-4 space-y-3">
-              <div className="flex justify-between items-start gap-2">
-                <h3 className="text-base font-black flex-1">{a.nome}</h3>
-                <span className="px-2 py-1 bg-[#D4A244] border-2 border-black rounded-md font-black text-[10px] uppercase whitespace-nowrap">
-                  {a.categoria}
-                </span>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <span className={`px-2 py-1 border-2 border-black rounded-md font-black text-[10px] uppercase ${a.statusVerificacao === 'VERIFICADO' ? 'bg-green-400' : 'bg-yellow-300'
-                  }`}>
-                  {a.statusVerificacao === 'VERIFICADO' ? 'VERIFICADO' : 'MEMORIAL PÚBLICO'}
-                </span>
-                <span className="px-2 py-1 bg-white border-2 border-black rounded-md font-black text-[10px] uppercase">
-                  {a.statusAtleta === 'ATIVO' ? 'ATIVO' : 'MEMORIAL'}
-                </span>
-              </div>
-
+              <h3 className="text-base font-black">{a.nome}</h3>
               <div className="flex gap-2 pt-2">
-                <button
-                  onClick={() => navigate(`/admin/atletas/editar/${a.id}`)}
-                  className="flex-1 px-3 py-2 bg-white text-black font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1"
-                >
-                  <Edit size={14} strokeWidth={3} />
-                  Editar
+                <button onClick={() => navigate(`/admin/atletas/editar/${a.id}`)} className="flex-1 px-3 py-2 bg-white text-black font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <Edit size={14} strokeWidth={3} /> Editar
                 </button>
-                <button
-                  onClick={() => handleRemover(a.id, a.nome)}
-                  className="flex-1 px-3 py-2 bg-red-500 text-white font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1"
-                >
-                  <Trash2 size={14} strokeWidth={3} />
-                  Excluir
+                <button onClick={() => navigate(`/admin/atletas/${a.id}/acervo`)} className="flex-1 px-3 py-2 bg-[#D4A244] text-black font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <Image size={14} strokeWidth={3} /> Acervo
+                </button>
+                <button onClick={() => handleRemover(a.id, a.nome)} className="flex-1 px-3 py-2 bg-red-500 text-white font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <Trash2 size={14} strokeWidth={3} /> Excluir
                 </button>
               </div>
             </div>
