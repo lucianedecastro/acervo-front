@@ -29,25 +29,24 @@ export default function ItemAcervoDetail() {
   if (!item) return <div className="p-10 text-center font-black uppercase">Item não encontrado.</div>
 
   /**
-   * TRATAMENTO DE IMAGEM COM PRIORIDADE PARA URL PROTEGIDA
-   * Prioriza urlVisualizacao (com watermark oficial) vinda do banco.
+   * TRATAMENTO DE IMAGEM COM RECONSTRUÇÃO MANUAL
+   * Resolve o erro 400 das URLs gravadas e garante a marca d'água.
    */
   const fotoObj = item.fotos?.find(f => f.ehDestaque) || item.fotos?.[0]
   const cloudName = "dcet9fpu0"
   const publicId = fotoObj?.publicId
 
-  // URL Simples (garante a exibição caso a transformação falhe)
+  // URL de segurança sem transformações complexas
   const urlSimples = publicId 
     ? `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,q_auto,f_auto/v1/${publicId}`
     : null
 
-  // Tentativa de URL com Watermark (fallback manual)
-  const urlComProtecaoManual = publicId
-    ? `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,q_auto,f_auto/l_watermark_acervo,o_30,w_0.6,fl_relative/v1/${publicId}`
+  // Reconstrução manual da URL com marca d'água para evitar o erro 400 do banco
+  const urlComProtecao = publicId
+    ? `https://res.cloudinary.com/${cloudName}/image/upload/c_scale,w_1200/l_watermark_acervo,o_30,w_0.8,fl_relative/v1/${publicId}`
     : null
 
-  // A foto principal agora prioriza urlVisualizacao (salva no MongoDB)
-  const fotoPrincipal = fotoObj?.urlVisualizacao || fotoObj?.url || urlComProtecaoManual || urlSimples
+  const fotoPrincipal = urlComProtecao || urlSimples || fotoObj?.url
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -72,6 +71,7 @@ export default function ItemAcervoDetail() {
                 alt={item.titulo}
                 className="w-full h-full object-contain pointer-events-none"
                 onError={(e) => {
+                  // Fallback para url simples caso a com marca d'água falhe
                   if (urlSimples && e.currentTarget.src !== urlSimples) {
                     e.currentTarget.src = urlSimples;
                   }
