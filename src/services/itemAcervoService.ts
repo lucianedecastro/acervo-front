@@ -114,6 +114,6 @@ export const itemAcervoService = {
     formData.append("file", file)
     formData.append("metadata", JSON.stringify(metadata))
 
-    await api.post(`/acervo/${itemId}/fotos`, formData,)
+    await api.post(`/acervo/${itemId}/fotos`, formData)
   }
 }
