@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { itemAcervoService } from "@/services/itemAcervoService"
-import { Save, ArrowLeft, Upload } from "lucide-react"
+import { ArrowLeft, Upload, Loader2 } from "lucide-react"
 
 export default function AdminItemAcervoImagens() {
   const { itemId } = useParams<{ itemId: string }>()
@@ -26,10 +26,6 @@ export default function AdminItemAcervoImagens() {
       setLoading(true)
       setError(null)
 
-      /**
-       * O backend recebe o arquivo e deve retornar o objeto da foto
-       * com a URL e o publicId preenchidos.
-       */
       await itemAcervoService.adicionarFoto(
         itemId,
         file,
@@ -41,12 +37,11 @@ export default function AdminItemAcervoImagens() {
         }
       )
 
-      alert("Imagem enviada com sucesso! O sistema processou a versão protegida.")
-      // Redireciona para o detalhe do item para validar o resultado
-      navigate(`/acervo/item/${itemId}`)
-    } catch (err) {
-      console.error("Erro no upload:", err)
-      setError("Erro ao enviar imagem. Verifique se o arquivo é muito grande ou se a conexão caiu.")
+      alert("Imagem enviada e vinculada com sucesso!")
+      // Redireciona para o acervo administrativo para evitar o 404 da rota pública
+      navigate("/admin/acervo")
+    } catch {
+      setError("Erro ao enviar imagem do item.")
     } finally {
       setLoading(false)
     }
@@ -57,7 +52,7 @@ export default function AdminItemAcervoImagens() {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 border-4 border-black rounded-lg hover:bg-gray-100"
+          className="p-2 border-4 border-black rounded-lg"
         >
           <ArrowLeft size={20} strokeWidth={3} />
         </button>
@@ -67,13 +62,13 @@ export default function AdminItemAcervoImagens() {
             Imagens do Item
           </h1>
           <p className="text-sm font-bold text-gray-600">
-            A marca d'água será aplicada automaticamente no servidor.
+            Upload protegido com marca d’água automática
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="border-4 border-black bg-red-500 text-white p-4 font-black uppercase">
+        <div className="border-4 border-black bg-red-500 text-white p-4 font-black">
           {error}
         </div>
       )}
@@ -81,39 +76,39 @@ export default function AdminItemAcervoImagens() {
       <div className="border-4 border-black p-6 rounded-xl bg-white space-y-6">
         <div>
           <label className="block font-black uppercase text-sm mb-2">
-            Selecionar arquivo (JPG, PNG)
+            Selecionar imagem
           </label>
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="w-full font-bold file:mr-4 file:py-2 file:px-4 file:border-4 file:border-black file:bg-black file:text-white file:font-black file:uppercase"
+            className="w-full font-bold"
           />
         </div>
 
         {preview && (
           <div className="space-y-2">
-            <p className="font-black uppercase text-xs">Pré-visualização do Original</p>
+            <p className="font-black uppercase text-xs">
+              Pré-visualização (sem watermark)
+            </p>
             <img
               src={preview}
               alt="Preview"
-              className="w-full h-64 object-contain border-4 border-black bg-gray-50"
+              className="w-full h-64 object-contain border-4 border-black"
             />
           </div>
         )}
 
-        <button
-          onClick={handleUpload}
-          disabled={loading || !file}
-          className="w-full bg-black text-white font-black uppercase p-4 flex items-center justify-center gap-2 hover:bg-gray-800 disabled:bg-gray-400 transition-colors"
-        >
-          {loading ? "Processando..." : (
-            <>
-              <Upload size={20} />
-              Finalizar e Publicar
-            </>
-          )}
-        </button>
+        <div className="flex gap-4 pt-4">
+          <button
+            onClick={handleUpload}
+            disabled={loading || !file}
+            className="flex-1 bg-black text-white font-black uppercase p-3 flex items-center justify-center gap-2"
+          >
+            {loading ? <Loader2 className="animate-spin" /> : <Upload size={20} />}
+            {loading ? "Processando..." : "Enviar Imagem"}
+          </button>
+        </div>
       </div>
     </div>
   )

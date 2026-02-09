@@ -8,7 +8,7 @@ import { Save, ArrowLeft, ImagePlus } from "lucide-react"
 
 export default function AdminItemAcervoForm() {
   const navigate = useNavigate()
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>() 
   const [searchParams] = useSearchParams()
   const atletaId = searchParams.get("atletaId")
 
@@ -43,7 +43,7 @@ export default function AdminItemAcervoForm() {
     e.preventDefault()
 
     if (!atletaId && !isEdit) {
-      setError("Atleta não vinculada. Volte e selecione uma atleta primeiro.")
+      setError("Atleta não identificada.")
       return
     }
 
@@ -60,7 +60,7 @@ export default function AdminItemAcervoForm() {
       precoBaseLicenciamento: disponivelParaLicenciamento ? 250 : undefined,
       modalidadeId,
       atletasIds: atletaId ? [atletaId] : [],
-      fotos: [], // O binário será enviado no próximo passo
+      fotos: [],
       curadorResponsavel: "Curadoria Acervo Carmen Lydia"
     };
 
@@ -72,10 +72,10 @@ export default function AdminItemAcervoForm() {
       setSalvoComSucesso(true)
       setNovoItemId(criado.id)
 
-      // Salto automático para a próxima etapa
+      alert("Dados salvos! Agora vamos para o upload da imagem.")
       navigate(`/admin/acervo/imagens/${criado.id}`)
-    } catch (err) {
-      setError("Erro ao salvar dados básicos. Verifique os campos.")
+    } catch {
+      setError("Erro ao salvar o item de acervo.")
     } finally {
       setLoading(false)
     }
@@ -84,71 +84,123 @@ export default function AdminItemAcervoForm() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="p-2 border-4 border-black rounded-lg">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 border-4 border-black rounded-lg"
+        >
           <ArrowLeft size={20} strokeWidth={3} />
         </button>
+
         <div>
           <h1 className="text-3xl font-black uppercase">
-            {isEdit ? "Editar Item" : "Novo Cadastro"}
+            {isEdit ? "Editar Item" : "Novo Item de Acervo"}
           </h1>
+          <p className="text-sm font-bold text-gray-600">
+            Cadastro editorial do acervo da atleta
+          </p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 border-4 border-black p-6 rounded-xl bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      {error && (
+        <div className="border-4 border-black bg-red-500 text-white p-4 font-black">
+          {error}
+        </div>
+      )}
+
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 border-4 border-black p-6 rounded-xl bg-white"
+      >
+        <div className="border-4 border-black bg-gray-100 p-4 text-sm font-bold">
+          As imagens vinculadas a este item serão exibidas em baixa resolução,
+          com marca d’água do Acervo Carmen Lydia.
+        </div>
+
         <div>
-          <label className="block font-black uppercase text-sm mb-2">Título do Item</label>
+          <label className="block font-black uppercase text-sm mb-2">
+            Título do Item
+          </label>
           <input
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
             required
+            placeholder="Ex: Final do Campeonato Paulista de 1984"
             className="w-full border-4 border-black p-3 font-bold"
           />
         </div>
 
         <div>
-          <label className="block font-black uppercase text-sm mb-2">Descrição</label>
+          <label className="block font-black uppercase text-sm mb-2">
+            Descrição
+          </label>
           <textarea
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
             rows={4}
+            placeholder="Contexto histórico, local, evento..."
             className="w-full border-4 border-black p-3"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block font-black uppercase text-sm mb-2">Modalidade</label>
-            <select
-              value={modalidadeId}
-              onChange={(e) => setModalidadeId(e.target.value)}
-              required
-              className="w-full border-4 border-black p-3 font-bold"
-            >
-              <option value="">Selecione...</option>
-              {modalidades.map((m) => (
-                <option key={m.id} value={m.id}>{m.nome}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-black uppercase text-sm mb-2">Data</label>
+        <div>
+          <label className="block font-black uppercase text-sm mb-2">
+            Modalidade
+          </label>
+          <select
+            value={modalidadeId}
+            onChange={(e) => setModalidadeId(e.target.value)}
+            required
+            className="w-full border-4 border-black p-3 font-bold"
+          >
+            <option value="">Selecione a modalidade</option>
+            {modalidades.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-3">
+          <label className="flex items-center gap-3 font-black uppercase text-sm">
             <input
-              type="date"
-              value={dataAquisicao}
-              onChange={(e) => setDataAquisicao(e.target.value)}
-              className="w-full border-4 border-black p-3 font-bold"
+              type="checkbox"
+              checked={itemHistorico}
+              onChange={(e) => setItemHistorico(e.target.checked)}
             />
-          </div>
+            Item histórico / memorial
+          </label>
+
+          <label className="flex items-center gap-3 font-black uppercase text-sm">
+            <input
+              type="checkbox"
+              checked={disponivelParaLicenciamento}
+              onChange={(e) => setDisponivelParaLicenciamento(e.target.checked)}
+            />
+            Disponível para licenciamento
+          </label>
         </div>
 
         <div className="flex flex-col gap-4 pt-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-black text-white font-black uppercase p-4 flex items-center justify-center gap-2 hover:bg-gray-800"
-          >
-            {loading ? "Salvando..." : <><Save size={20} /> Salvar e Ir para Fotos</>}
-          </button>
+          {!salvoComSucesso ? (
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-black text-white font-black uppercase p-3 flex items-center justify-center gap-2"
+            >
+              <Save size={20} />
+              Salvar e Continuar para Imagens
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate(`/admin/acervo/imagens/${novoItemId}`)}
+              className="w-full bg-yellow-500 text-black border-4 border-black font-black uppercase p-3 flex items-center justify-center gap-2"
+            >
+              <ImagePlus size={20} />
+              Fazer Upload da Imagem
+            </button>
+          )}
         </div>
       </form>
     </div>
