@@ -53,6 +53,13 @@ import AdminLicenciamentos from "@/pages/admin/AdminLicenciamentos"
 import AdminSimulacaoLicenciamento from "@/pages/admin/AdminSimulacaoLicenciamento"
 import AdminExtratoAtleta from "@/pages/admin/AdminExtratoAtleta"
 
+/* ======================
+   Admin – Acervo
+   ====================== */
+import AdminAtletaAcervo from "@/pages/admin/AdminAtletaAcervo"
+import AdminItemAcervoForm from "@/pages/admin/AdminItemAcervoForm"
+import AdminItemAcervoImagens from "@/pages/admin/AdminItemAcervoImagens"
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -117,6 +124,26 @@ export function AppRoutes() {
         <Route path="atletas" element={<AdminAtletas />} />
         <Route path="atletas/nova" element={<AtletaForm />} />
         <Route path="atletas/editar/:id" element={<AtletaForm />} />
+
+        {/* Acervo por atleta */}
+        <Route
+          path="atletas/:id/acervo"
+          element={<AdminAtletaAcervo />}
+        />
+
+        {/* Itens de acervo */}
+        <Route
+          path="acervo/novo"
+          element={<AdminItemAcervoForm />}
+        />
+        <Route
+          path="acervo/editar/:id"
+          element={<AdminItemAcervoForm />}
+        />
+        <Route
+          path="acervo/:itemId/imagens"
+          element={<AdminItemAcervoImagens />}
+        />
 
         {/* Modalidades */}
         <Route path="modalidades" element={<AdminModalidades />} />
