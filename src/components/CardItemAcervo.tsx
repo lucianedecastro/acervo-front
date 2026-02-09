@@ -5,12 +5,22 @@ interface CardItemAcervoProps {
 }
 
 export default function CardItemAcervo({ item }: CardItemAcervoProps) {
+  /**
+   * Resolução da imagem pública:
+   * - Prioriza foto marcada como destaque
+   * - Fallback para a primeira foto disponível
+   * - Sempre versão protegida (baixa resolução + watermark)
+   */
+  const fotoPublica =
+    item.fotos?.find((f) => f.ehDestaque)?.url ||
+    item.fotos?.[0]?.url
+
   return (
     <div className="border-4 border-black bg-white p-4 space-y-3">
       {/* Imagem pública protegida */}
-      {item.fotoPrincipalUrl && (
+      {fotoPublica && (
         <img
-          src={item.fotoPrincipalUrl}
+          src={fotoPublica}
           alt={item.titulo}
           className="w-full h-48 object-cover border-4 border-black"
         />

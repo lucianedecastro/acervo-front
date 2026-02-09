@@ -47,33 +47,39 @@ export default function AdminItemAcervoForm() {
     }
 
     const payload: ItemAcervoCreateDTO = {
-      /* =====================================================
-         Conteúdo editorial
-         ===================================================== */
-      titulo,
-      descricao,
-      local: "Não informado",
-      dataOriginal: dataAquisicao || undefined,
-      procedencia: "Acervo pessoal da atleta",
+  /* ======================
+     Conteúdo editorial
+     ====================== */
+  titulo,
+  descricao,
+  local: "Não informado",
+  dataOriginal: dataAquisicao || undefined,
+  procedencia: "Acervo pessoal da atleta",
 
-      /* =====================================================
-         Licenciamento e memorial
-         ===================================================== */
-      itemHistorico,
-      disponivelParaLicenciamento,
-      precoBaseLicenciamento: undefined,
+  /* ======================
+     Tipificação
+     ====================== */
+  tipo: "FOTO",
+  status: itemHistorico ? "MEMORIAL" : "RASCUNHO",
 
-      /* =====================================================
-         Relacionamentos
-         ===================================================== */
-      modalidadeId,
-      atletasIds: atletaId ? [atletaId] : [],
+  /* ======================
+     Licenciamento
+     ====================== */
+  itemHistorico,
+  disponivelParaLicenciamento,
+  precoBaseLicenciamento: disponivelParaLicenciamento ? 250 : undefined,
 
-      /* =====================================================
-         Curadoria
-         ===================================================== */
-      curadorResponsavel: "Admin"
-    }
+  /* ======================
+     Relacionamentos
+     ====================== */
+  modalidadeId,
+  atletasIds: atletaId ? [atletaId] : [],
+
+  /* ======================
+     Curadoria
+     ====================== */
+  curadorResponsavel: "Curadoria Acervo Carmen Lydia"
+};
 
     try {
       setLoading(true)

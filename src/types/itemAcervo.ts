@@ -3,7 +3,18 @@
    Alinhado com Swagger (/acervo)
    ===================================================== */
 
-import { FotoAcervo } from "./modalidade";
+/* ==========================
+   DTO de Foto (INLINE)
+   ========================== */
+export interface FotoDTO {
+  id?: string
+  publicId: string
+  legenda?: string
+  ehDestaque?: boolean
+  url: string
+  autorNomePublico?: string
+  licenciamentoPermitido?: boolean
+}
 
 /* ==========================
    Status do item
@@ -11,89 +22,83 @@ import { FotoAcervo } from "./modalidade";
 export type StatusItem =
   | "RASCUNHO"
   | "PUBLICADO"
+  | "DISPONIVEL_LICENCIAMENTO"
+  | "MEMORIAL"
   | "ARQUIVADO"
-  | "MEMORIAL";
 
 /* ==========================
-   Item de Acervo (ADMIN / ATLETA)
+   Tipo do item
    ========================== */
-export interface ItemAcervo {
-  id: string;
-  titulo: string;
-  descricao: string;
-
-  /**
-   * ISO string
-   */
-  dataAquisicao?: string;
-  status: StatusItem;
-
-  /**
-   * Relacionamentos
-   */
-  atletaId: string;
-  modalidadeId: string;
-
-  /**
-   * Galeria (Sincronizado com FotoAcervo do Swagger)
-   */
-  fotos?: FotoAcervo[];
-}
+export type TipoItemAcervo =
+  | "FOTO"
+  | "DOCUMENTO"
+  | "VIDEO"
+  | "OBJETO"
 
 /* ==========================
-   DTO de criação / edição (POST / PUT)
+   DTO de criação / edição
    ========================== */
 export interface ItemAcervoCreateDTO {
-  /* ==========================
+
+  /* ======================
      Conteúdo editorial
-     ========================== */
-  titulo: string;
-  descricao: string;
-  local?: string;
-  dataOriginal?: string;
-  procedencia?: string;
+     ====================== */
+  titulo: string
+  descricao: string
+  local?: string
+  dataOriginal?: string
+  procedencia?: string
+  fotografoDoador?: string
 
-  /* ==========================
-     Licenciamento e memorial
-     ========================== */
-  itemHistorico: boolean;
-  disponivelParaLicenciamento: boolean;
-  precoBaseLicenciamento?: number;
+  /* ======================
+     Tipificação
+     ====================== */
+  tipo: TipoItemAcervo
+  status: StatusItem
 
-  /* ==========================
+  /* ======================
+     Licenciamento
+     ====================== */
+  precoBaseLicenciamento?: number
+  disponivelParaLicenciamento: boolean
+  itemHistorico: boolean
+  restricoesUso?: string
+
+  /* ======================
      Relacionamentos
-     ========================== */
-  modalidadeId: string;
+     ====================== */
+  modalidadeId: string
+  atletasIds: string[]
 
-  /**
-   * Permite vincular um item a uma ou mais atletas
-   * (curadoria histórica e itens coletivos)
-   */
-  atletasIds: string[];
+  /* ======================
+     Mídia
+     ====================== */
+  fotos?: FotoDTO[]
 
-  /* ==========================
+  /* ======================
      Curadoria
-     ========================== */
-  curadorResponsavel?: string;
+     ====================== */
+  curadorResponsavel?: string
 }
 
 /* ==========================
-   DTO público / listagem
+   DTO de resposta
    ========================== */
 export interface ItemAcervoResponseDTO {
-  id: string;
-  titulo: string;
-  descricao: string;
-  status: StatusItem;
-
-  /**
-   * Dados resolvidos pelo backend
-   */
-  atletaNome: string;
-  modalidadeNome: string;
-
-  /**
-   * Thumb principal para vitrines
-   */
-  fotoPrincipalUrl?: string;
+  id: string
+  titulo: string
+  descricao: string
+  local?: string
+  dataOriginal?: string
+  procedencia?: string
+  tipo: TipoItemAcervo
+  status: StatusItem
+  precoBaseLicenciamento?: number
+  disponivelParaLicenciamento?: boolean
+  itemHistorico?: boolean
+  modalidadeId: string
+  atletasIds: string[]
+  fotos?: FotoDTO[]
+  criadoEm: string
+  atualizadoEm: string
 }
