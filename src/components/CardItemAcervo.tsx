@@ -6,18 +6,19 @@ interface CardItemAcervoProps {
 }
 
 export default function CardItemAcervo({ item }: CardItemAcervoProps) {
-  /**
-   * Resolução da imagem pública:
-   * - Reconstrói a URL manualmente para evitar erro 400 da URL salva no banco
-   * - Aplica a marca d'água 'watermark_acervo' via Cloudinary
-   */
   const fotoObj = item.fotos?.find((f) => f.ehDestaque) || item.fotos?.[0]
   const cloudName = "dcet9fpu0"
   const publicId = fotoObj?.publicId
 
-  // Montagem manual da URL protegida para garantir o funcionamento e a marca d'água
+  /**
+   * SINTAXE DE OVERLAY CORRIGIDA:
+   * A largura da imagem base (w_600) vem primeiro.
+   * Depois a layer (l_watermark_acervo).
+   * Depois as transformações DA LAYER (c_scale,w_0.8,fl_relative).
+   * E por fim a opacidade (o_30).
+   */
   const urlProtegida = publicId 
-    ? `https://res.cloudinary.com/${cloudName}/image/upload/c_scale,w_600/l_watermark_acervo,o_30,w_0.8,fl_relative/v1/${publicId}`
+    ? `https://res.cloudinary.com/${cloudName}/image/upload/c_scale,w_600/l_watermark_acervo/c_scale,w_0.8,fl_relative/o_30/v1/${publicId}`
     : null
 
   const fotoPublica = urlProtegida || fotoObj?.url
@@ -34,7 +35,6 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
           alt={item.titulo}
           className="w-full h-48 object-cover border-4 border-black transition-opacity group-hover:opacity-90"
           onError={(e) => {
-            // Fallback para a URL original caso a transformação manual falhe
             if (fotoObj?.url && e.currentTarget.src !== fotoObj.url) {
               e.currentTarget.src = fotoObj.url;
             }
