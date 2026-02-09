@@ -52,7 +52,7 @@ export default function ItemAcervoDetail() {
   /**
    * URL protegida com marca d'água (visualização pública):
    * - Gerada exclusivamente pelo helper cloudinaryImage
-   * - Evita hardcode de publicId, versão ou transformações no componente
+   * - Version precisa ser prefixada com "v" (ex: v1770640528)
    */
   const urlComProtecao =
     fotoObj?.publicId && fotoObj?.version

@@ -30,6 +30,13 @@ export default function AdminItemAcervoImagens() {
         itemId,
         file,
         {
+          // 🔒 CONTRATO COMPLETO COM O BACKEND
+          id: null,
+          publicId: null,
+          version: null,
+          url: null,
+          filename: file.name,
+
           legenda: "Imagem do acervo",
           ehDestaque: true,
           autorNomePublico: "Acervo Carmen Lydia",
@@ -38,9 +45,9 @@ export default function AdminItemAcervoImagens() {
       )
 
       alert("Imagem enviada e vinculada com sucesso!")
-      // Redireciona para o acervo administrativo para evitar o 404 da rota pública
       navigate("/admin/acervo")
-    } catch {
+    } catch (err) {
+      console.error(err)
       setError("Erro ao enviar imagem do item.")
     } finally {
       setLoading(false)

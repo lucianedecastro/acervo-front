@@ -19,7 +19,7 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
   /**
    * URL protegida com marca d'água:
    * - Gerada exclusivamente pelo helper cloudinaryImage
-   * - Evita hardcode de publicId, versão ou transformações no componente
+   * - Version precisa ser prefixada com "v" (ex: v1770640528)
    */
   const urlProtegida =
     fotoObj?.publicId && fotoObj?.version
