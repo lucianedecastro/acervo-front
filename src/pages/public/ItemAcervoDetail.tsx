@@ -30,14 +30,28 @@ export default function ItemAcervoDetail() {
 
   /**
    * TRATAMENTO DE IMAGEM COM WATERMARK
-   * Prioriza a URL do banco, mas se estiver vazia e houver publicId,
-   * reconstrói o link usando o cloud_name dcet9fpu0 e a layer de watermark.
+   * Ajustado para evitar o Erro 400. 
+   * Se a marca d'água falhar, usamos uma versão simples para garantir a visualização.
    */
   const fotoObj = item.fotos?.find(f => f.ehDestaque) || item.fotos?.[0]
   
-  const fotoPrincipal = fotoObj?.url || (fotoObj?.publicId 
-    ? `https://res.cloudinary.com/dcet9fpu0/image/upload/c_limit,w_1200,q_auto,f_auto/l_acervo:watermark_acervo,o_40,fl_layer_apply,g_center/v1/${fotoObj.publicId}`
-    : null)
+  // Cloud name identificado nos seus logs: dcet9fpu0
+  const cloudName = "dcet9fpu0"
+  const publicId = fotoObj?.publicId
+
+  // URL Limpa (Sem watermark primeiro para testar a conexão)
+  const urlSimples = publicId 
+    ? `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,q_auto,f_auto/v1/${publicId}`
+    : null
+
+  // URL com Watermark (Tentativa corrigida de sintaxe)
+  const urlComProtecao = publicId
+    ? `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,q_auto,f_auto/l_watermark_acervo,o_30,w_0.6,fl_relative/v1/${publicId}`
+    : null
+
+  // Usaremos a urlSimples primeiro para garantir que você veja a foto, 
+  // depois ajustamos a watermark se necessário.
+  const fotoPrincipal = fotoObj?.url || urlComProtecao || urlSimples
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -53,7 +67,6 @@ export default function ItemAcervoDetail() {
         {/* Lado Esquerdo: Visualização Protegida */}
         <div className="space-y-4">
           <div className="relative border-8 border-black bg-gray-200 aspect-square overflow-hidden group">
-            {/* Camada de Proteção contra Clique Direito */}
             <div 
               className="absolute inset-0 z-10" 
               onContextMenu={(e) => e.preventDefault()}
@@ -64,6 +77,13 @@ export default function ItemAcervoDetail() {
                 src={fotoPrincipal} 
                 alt={item.titulo}
                 className="w-full h-full object-contain pointer-events-none"
+                onError={(e) => {
+                  // Se a URL com watermark der erro 400 de novo, carrega a simples
+                  if (urlSimples && e.currentTarget.src !== urlSimples) {
+                    console.warn("Erro na watermark, carregando imagem simples...");
+                    e.currentTarget.src = urlSimples;
+                  }
+                }}
               />
             ) : (
               <div className="flex items-center justify-center h-full font-black text-gray-400">
@@ -71,7 +91,6 @@ export default function ItemAcervoDetail() {
               </div>
             )}
 
-            {/* Selo de Proteção Visual */}
             <div className="absolute bottom-4 right-4 bg-black text-white px-3 py-1 text-xs font-black uppercase z-20">
               Visualização Protegida
             </div>
@@ -81,7 +100,7 @@ export default function ItemAcervoDetail() {
           </p>
         </div>
 
-        {/* Lado Direito: Metadados e Ações */}
+        {/* Lado Direito: Metadados */}
         <div className="space-y-6">
           <header className="space-y-2">
             <span className="inline-block border-4 border-black px-4 py-1 font-black uppercase text-sm">
