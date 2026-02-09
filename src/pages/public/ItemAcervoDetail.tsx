@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { itemAcervoService } from "@/services/itemAcervoService"
 import { ItemAcervoResponseDTO } from "@/types/itemAcervo"
-import { ArrowLeft, ShieldCheck, Download } from "lucide-react"
+import { ArrowLeft, ShieldCheck, Download, Info, Tag } from "lucide-react"
 
 export default function ItemAcervoDetail() {
   const { id } = useParams<{ id: string }>()
@@ -17,7 +17,7 @@ export default function ItemAcervoDetail() {
         const data = await itemAcervoService.obterPorId(id)
         setItem(data)
       } catch (error) {
-        console.error("Erro ao carregar item:", error)
+        console.error("Erro ao carregar detalhes:", error)
       } finally {
         setLoading(false)
       }
@@ -25,32 +25,34 @@ export default function ItemAcervoDetail() {
     carregarItem()
   }, [id])
 
-  if (loading) return <div className="p-10 text-center font-black uppercase">Carregando Detalhes...</div>
+  if (loading) return <div className="p-10 text-center font-black uppercase">Carregando Detalhes do Acervo...</div>
   if (!item) return <div className="p-10 text-center font-black uppercase">Item não encontrado.</div>
 
   const fotoObj = item.fotos?.find(f => f.ehDestaque) || item.fotos?.[0]
   const cloudName = "dcet9fpu0"
   const publicId = fotoObj?.publicId
 
-  // Sintaxe de overlay corrigida para o detalhe (w_1200)
+  // URL de Visualização Protegida
   const urlComProtecao = publicId
-    ? `https://res.cloudinary.com/${cloudName}/image/upload/c_scale,w_1200/l_watermark_acervo/c_scale,w_0.8,fl_relative/o_30/v1/${publicId}`
+    ? `https://res.cloudinary.com/${cloudName}/image/upload/c_scale,w_1200/l_watermark_acervo,w_0.8,o_30,fl_relative/f_auto/v1/${publicId}`
     : null
 
   const fotoPrincipal = urlComProtecao || fotoObj?.url
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
+      {/* Botão Voltar */}
       <button 
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 font-black uppercase hover:underline"
+        className="flex items-center gap-2 font-black uppercase hover:underline transition-all"
       >
-        <ArrowLeft size={20} /> Voltar para o acervo
+        <ArrowLeft size={20} /> Voltar para a Galeria
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Coluna da Imagem */}
         <div className="space-y-4">
-          <div className="relative border-8 border-black bg-gray-200 aspect-square overflow-hidden group">
+          <div className="relative border-8 border-black bg-gray-200 aspect-square overflow-hidden group shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             <div 
               className="absolute inset-0 z-10" 
               onContextMenu={(e) => e.preventDefault()}
@@ -62,14 +64,15 @@ export default function ItemAcervoDetail() {
                 alt={item.titulo}
                 className="w-full h-full object-contain pointer-events-none"
                 onError={(e) => {
+                  // Se a marca d'água falhar (Erro 400), usa a URL original do banco
                   if (fotoObj?.url && e.currentTarget.src !== fotoObj.url) {
                     e.currentTarget.src = fotoObj.url;
                   }
                 }}
               />
             ) : (
-              <div className="flex items-center justify-center h-full font-black text-gray-400">
-                Imagem em Processamento
+              <div className="flex items-center justify-center h-full font-black text-gray-400 p-8 text-center uppercase">
+                Imagem não disponível para este item
               </div>
             )}
 
@@ -77,53 +80,74 @@ export default function ItemAcervoDetail() {
               Visualização Protegida
             </div>
           </div>
-          <p className="text-xs font-bold text-gray-500 text-center uppercase">
-            A imagem acima contém marca d'água e resolução reduzida para proteção de direitos.
+          <p className="text-xs font-bold text-gray-500 text-center uppercase tracking-widest">
+            Proteção por marca d'água digital • Direitos Reservados
           </p>
         </div>
 
+        {/* Coluna de Dados */}
         <div className="space-y-6">
-          <header className="space-y-2">
-            <span className="inline-block border-4 border-black px-4 py-1 font-black uppercase text-sm">
-              {item.modalidadeId ? "Futebol" : "Geral"}
-            </span>
-            <h1 className="text-4xl font-black uppercase leading-none">
+          <header className="space-y-3">
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-block border-4 border-black bg-yellow-400 px-4 py-1 font-black uppercase text-xs">
+                {item.modalidadeId ? "Futebol Feminino" : "Geral"}
+              </span>
+              <span className="inline-block border-4 border-black bg-white px-4 py-1 font-black uppercase text-xs">
+                {item.tipo || "FOTO"}
+              </span>
+            </div>
+            <h1 className="text-4xl font-black uppercase leading-tight border-b-4 border-black pb-2">
               {item.titulo}
             </h1>
           </header>
 
-          <div className="border-l-8 border-black pl-6 py-2">
-            <p className="text-lg font-bold leading-relaxed text-gray-800">
-              {item.descricao || "Sem descrição informada."}
+          <div className="space-y-2">
+            <h3 className="flex items-center gap-2 font-black uppercase text-sm text-gray-500">
+              <Info size={16} /> Descrição do Item
+            </h3>
+            <p className="text-lg font-bold leading-relaxed text-gray-800 italic">
+              "{item.descricao || "Sem descrição informada no catálogo."}"
             </p>
           </div>
 
-          <div className="bg-yellow-50 border-4 border-black p-6 space-y-4">
+          {/* Card de Licenciamento */}
+          <div className="bg-yellow-50 border-4 border-black p-6 space-y-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <div className="flex items-start gap-3">
-              <ShieldCheck className="shrink-0" size={24} />
+              <ShieldCheck className="shrink-0 text-black" size={28} />
               <div>
-                <h4 className="font-black uppercase text-sm">Informações de Licenciamento</h4>
-                <p className="text-sm font-medium">
-                  Este item {item.disponivelParaLicenciamento ? 'está disponível' : 'requer análise'} para uso comercial.
+                <h4 className="font-black uppercase text-sm underline">Regras de Licenciamento</h4>
+                <p className="text-sm font-bold mt-1">
+                  {item.disponivelParaLicenciamento 
+                    ? '✓ Este item está disponível para licenciamento comercial imediato.' 
+                    : '⚠ Uso restrito: Este item requer análise da curadoria para fins comerciais.'}
                 </p>
               </div>
             </div>
 
-            <button className="w-full bg-black text-white font-black uppercase p-4 flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors">
+            <button className="w-full bg-black text-white font-black uppercase p-4 flex items-center justify-center gap-2 hover:bg-yellow-600 hover:text-black transition-colors border-2 border-black">
               <Download size={20} />
-              Solicitar Alta Resolução
+              Solicitar Alta Resolução (TIFF/JPG)
             </button>
           </div>
 
+          {/* Metadados Adicionais */}
           <div className="grid grid-cols-2 gap-4 text-xs font-black uppercase">
-            <div className="border-2 border-black p-3">
-              <span className="block text-gray-500">Procedência</span>
-              {item.procedencia || "Acervo Pessoal da Atleta"}
+            <div className="border-4 border-black p-4 bg-gray-50">
+              <span className="block text-gray-500 mb-1">Procedência</span>
+              <span className="text-sm">{item.procedencia || "Acervo Pessoal da Atleta"}</span>
             </div>
-            <div className="border-2 border-black p-3">
-              <span className="block text-gray-500">Status</span>
-              {item.status === "MEMORIAL" ? "Pesquisa Histórica" : "Acervo Ativo"}
+            <div className="border-4 border-black p-4 bg-gray-50">
+              <span className="block text-gray-500 mb-1">Status de Catálogo</span>
+              <span className="text-sm">{item.status === "MEMORIAL" ? "Pesquisa Histórica" : "Acervo Ativo"}</span>
             </div>
+          </div>
+
+          {/* Localização/Tags */}
+          <div className="flex items-center gap-2 pt-4 border-t-2 border-black border-dashed">
+            <Tag size={16} className="text-gray-400" />
+            <span className="text-[10px] font-black uppercase text-gray-400">
+              Local: {item.local || "Não informado"} • ID: {item.id}
+            </span>
           </div>
         </div>
       </div>
