@@ -12,9 +12,7 @@ const API_BASE_URL =
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000, // 30 segundos de limite para uploads de mídia pesados
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // ❌ NÃO definir Content-Type globalmente
 })
 
 /* ==========================
@@ -28,6 +26,21 @@ api.interceptors.request.use(
     if (token && config.headers) {
       // Aplica o token em todas as chamadas privadas (Atleta e Admin)
       config.headers.Authorization = `Bearer ${token}`
+    }
+
+    /**
+     * ⚠️ REGRA DE OURO:
+     * - Se for FormData (upload), NÃO definir Content-Type
+     * - Se for JSON, define explicitamente
+     */
+    if (config.data instanceof FormData) {
+      if (config.headers) {
+        delete config.headers["Content-Type"]
+      }
+    } else {
+      if (config.headers) {
+        config.headers["Content-Type"] = "application/json"
+      }
     }
 
     return config
@@ -44,14 +57,15 @@ api.interceptors.response.use(
     // Gerenciamento de erro de autenticação (401)
     if (error.response?.status === 401) {
       console.warn("⚠️ Sessão expirada ou acesso não autorizado.")
-
-      // NÃO remove token aqui
       // Deixe o AuthContext decidir o que fazer
     }
 
     // Tratamento genérico de erros para facilitar o debug no console
     if (import.meta.env.DEV) {
-      console.error(`[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url}:`, error.response?.data || error.message)
+      console.error(
+        `[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url}:`,
+        error.response?.data || error.message
+      )
     }
 
     return Promise.reject(error)
