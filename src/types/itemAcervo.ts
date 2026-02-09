@@ -12,6 +12,7 @@ export interface FotoDTO {
   legenda?: string
   ehDestaque?: boolean
   url: string
+  filename: string;
   autorNomePublico?: string
   licenciamentoPermitido?: boolean
 }
