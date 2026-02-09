@@ -29,8 +29,8 @@ export default function ItemAcervoDetail() {
   if (!item) return <div className="p-10 text-center font-black uppercase">Item não encontrado.</div>
 
   /**
-   * TRATAMENTO DE IMAGEM COM RECONSTRUÇÃO DE URL
-   * Resolve o problema de URLs vazias no banco de dados.
+   * TRATAMENTO DE IMAGEM COM PRIORIDADE PARA URL PROTEGIDA
+   * Prioriza urlVisualizacao (com watermark oficial) vinda do banco.
    */
   const fotoObj = item.fotos?.find(f => f.ehDestaque) || item.fotos?.[0]
   const cloudName = "dcet9fpu0"
@@ -41,12 +41,13 @@ export default function ItemAcervoDetail() {
     ? `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,q_auto,f_auto/v1/${publicId}`
     : null
 
-  // Tentativa de URL com Watermark
-  const urlComProtecao = publicId
+  // Tentativa de URL com Watermark (fallback manual)
+  const urlComProtecaoManual = publicId
     ? `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,q_auto,f_auto/l_watermark_acervo,o_30,w_0.6,fl_relative/v1/${publicId}`
     : null
 
-  const fotoPrincipal = fotoObj?.url || urlComProtecao || urlSimples
+  // A foto principal agora prioriza urlVisualizacao (salva no MongoDB)
+  const fotoPrincipal = fotoObj?.urlVisualizacao || fotoObj?.url || urlComProtecaoManual || urlSimples
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">

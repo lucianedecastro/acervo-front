@@ -12,6 +12,7 @@ export interface FotoDTO {
   legenda?: string
   ehDestaque?: boolean
   url: string
+  urlVisualizacao?: string // URL com transformações/marca d'água vinda do Cloudinary
   filename: string;
   autorNomePublico?: string
   licenciamentoPermitido?: boolean
