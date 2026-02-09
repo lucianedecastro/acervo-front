@@ -47,13 +47,32 @@ export default function AdminItemAcervoForm() {
     }
 
     const payload: ItemAcervoCreateDTO = {
+      /* =====================================================
+         Conteúdo editorial
+         ===================================================== */
       titulo,
       descricao,
-      atletaId: atletaId as string,
-      modalidadeId,
-      dataAquisicao: dataAquisicao || undefined,
+      local: "Não informado",
+      dataOriginal: dataAquisicao || undefined,
+      procedencia: "Acervo pessoal da atleta",
+
+      /* =====================================================
+         Licenciamento e memorial
+         ===================================================== */
       itemHistorico,
       disponivelParaLicenciamento,
+      precoBaseLicenciamento: undefined,
+
+      /* =====================================================
+         Relacionamentos
+         ===================================================== */
+      modalidadeId,
+      atletasIds: atletaId ? [atletaId] : [],
+
+      /* =====================================================
+         Curadoria
+         ===================================================== */
+      curadorResponsavel: "Admin"
     }
 
     try {
@@ -111,7 +130,7 @@ export default function AdminItemAcervoForm() {
         {/* Aviso Editorial */}
         <div className="border-4 border-black bg-gray-100 p-4 text-sm font-bold">
           As imagens vinculadas a este item serão exibidas em baixa resolução,
-          com marca d’água do Acervo Carmen Lydia.  
+          com marca d’água do Acervo Carmen Lydia.
           O uso comercial depende de autorização expressa e licenciamento.
         </div>
 

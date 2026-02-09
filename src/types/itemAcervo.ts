@@ -44,14 +44,37 @@ export interface ItemAcervo {
    DTO de criação / edição (POST / PUT)
    ========================== */
 export interface ItemAcervoCreateDTO {
+  /* ==========================
+     Conteúdo editorial
+     ========================== */
   titulo: string;
   descricao: string;
-  atletaId: string;
-  modalidadeId: string;
-  dataAquisicao?: string;
+  local?: string;
+  dataOriginal?: string;
+  procedencia?: string;
+
+  /* ==========================
+     Licenciamento e memorial
+     ========================== */
   itemHistorico: boolean;
   disponivelParaLicenciamento: boolean;
   precoBaseLicenciamento?: number;
+
+  /* ==========================
+     Relacionamentos
+     ========================== */
+  modalidadeId: string;
+
+  /**
+   * Permite vincular um item a uma ou mais atletas
+   * (curadoria histórica e itens coletivos)
+   */
+  atletasIds: string[];
+
+  /* ==========================
+     Curadoria
+     ========================== */
+  curadorResponsavel?: string;
 }
 
 /* ==========================
