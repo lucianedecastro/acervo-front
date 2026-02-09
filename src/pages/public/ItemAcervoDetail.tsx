@@ -29,33 +29,27 @@ export default function ItemAcervoDetail() {
   if (!item) return <div className="p-10 text-center font-black uppercase">Item não encontrado.</div>
 
   /**
-   * TRATAMENTO DE IMAGEM COM WATERMARK
-   * Ajustado para evitar o Erro 400. 
-   * Se a marca d'água falhar, usamos uma versão simples para garantir a visualização.
+   * TRATAMENTO DE IMAGEM COM RECONSTRUÇÃO DE URL
+   * Resolve o problema de URLs vazias no banco de dados.
    */
   const fotoObj = item.fotos?.find(f => f.ehDestaque) || item.fotos?.[0]
-  
-  // Cloud name identificado nos seus logs: dcet9fpu0
   const cloudName = "dcet9fpu0"
   const publicId = fotoObj?.publicId
 
-  // URL Limpa (Sem watermark primeiro para testar a conexão)
+  // URL Simples (garante a exibição caso a transformação falhe)
   const urlSimples = publicId 
     ? `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,q_auto,f_auto/v1/${publicId}`
     : null
 
-  // URL com Watermark (Tentativa corrigida de sintaxe)
+  // Tentativa de URL com Watermark
   const urlComProtecao = publicId
     ? `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,q_auto,f_auto/l_watermark_acervo,o_30,w_0.6,fl_relative/v1/${publicId}`
     : null
 
-  // Usaremos a urlSimples primeiro para garantir que você veja a foto, 
-  // depois ajustamos a watermark se necessário.
   const fotoPrincipal = fotoObj?.url || urlComProtecao || urlSimples
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
-      {/* Voltar */}
       <button 
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 font-black uppercase hover:underline"
@@ -64,7 +58,6 @@ export default function ItemAcervoDetail() {
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Lado Esquerdo: Visualização Protegida */}
         <div className="space-y-4">
           <div className="relative border-8 border-black bg-gray-200 aspect-square overflow-hidden group">
             <div 
@@ -78,9 +71,7 @@ export default function ItemAcervoDetail() {
                 alt={item.titulo}
                 className="w-full h-full object-contain pointer-events-none"
                 onError={(e) => {
-                  // Se a URL com watermark der erro 400 de novo, carrega a simples
                   if (urlSimples && e.currentTarget.src !== urlSimples) {
-                    console.warn("Erro na watermark, carregando imagem simples...");
                     e.currentTarget.src = urlSimples;
                   }
                 }}
@@ -100,7 +91,6 @@ export default function ItemAcervoDetail() {
           </p>
         </div>
 
-        {/* Lado Direito: Metadados */}
         <div className="space-y-6">
           <header className="space-y-2">
             <span className="inline-block border-4 border-black px-4 py-1 font-black uppercase text-sm">
@@ -137,7 +127,7 @@ export default function ItemAcervoDetail() {
           <div className="grid grid-cols-2 gap-4 text-xs font-black uppercase">
             <div className="border-2 border-black p-3">
               <span className="block text-gray-500">Procedência</span>
-              {item.procedencia || "Acervo Pessoal"}
+              {item.procedencia || "Acervo Pessoal da Atleta"}
             </div>
             <div className="border-2 border-black p-3">
               <span className="block text-gray-500">Status</span>
