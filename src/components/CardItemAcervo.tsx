@@ -17,22 +17,22 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
     item.fotos?.[0]?.url
 
   return (
-    <Link 
-      to={`/acervo/item/${item.id}`} 
-      className="group block border-4 border-black bg-white p-4 space-y-3 transition-transform hover:-translate-y-1"
-    >
+    <Link 
+      to={`/acervo/item/${item.id}`} 
+      className="group block border-4 border-black bg-white p-4 space-y-3 transition-transform hover:-translate-y-1 overflow-hidden"
+    >
       {/* Imagem pública protegida */}
       {fotoPublica ? (
         <img
           src={fotoPublica}
           alt={item.titulo}
-          className="w-full h-48 object-cover border-4 border-black"
+          className="w-full h-48 object-cover border-4 border-black transition-opacity group-hover:opacity-90"
         />
       ) : (
-        <div className="w-full h-48 bg-gray-200 border-4 border-black flex items-center justify-center font-black uppercase text-xs text-gray-500">
-          Sem imagem disponível
-        </div>
-      )}
+        <div className="w-full h-48 bg-gray-200 border-4 border-black flex items-center justify-center font-black uppercase text-xs text-gray-500">
+          Sem imagem disponível
+        </div>
+      )}
 
       {/* Título */}
       <h3 className="font-black uppercase text-lg group-hover:text-yellow-600 transition-colors">
@@ -50,6 +50,6 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
       <p className="text-xs font-bold text-gray-600">
         Imagem protegida • Uso mediante autorização expressa
       </p>
-    </Link>
+    </Link>
   )
 }

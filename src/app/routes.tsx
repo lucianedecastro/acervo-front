@@ -25,6 +25,7 @@ import ModalidadesList from "@/pages/public/ModalidadesList"
 import ModalidadeDetail from "@/pages/public/ModalidadeDetail"
 import AtletasList from "@/pages/public/AtletasList"
 import AtletaDetail from "@/pages/public/AtletaDetail"
+import ItemAcervoDetail from "@/pages/public/ItemAcervoDetail"
 import Login from "@/pages/admin/Login"
 
 /* ======================
@@ -76,6 +77,9 @@ export function AppRoutes() {
 
         <Route path="/atletas" element={<AtletasList />} />
         <Route path="/atleta/:slug" element={<AtletaDetail />} />
+
+        {/* Detalhe do Item do Acervo */}
+        <Route path="/acervo/item/:id" element={<ItemAcervoDetail />} />
 
         {/* Registro inicial da atleta */}
         <Route path="/atleta/registro" element={<AtletaRegistroForm />} />
