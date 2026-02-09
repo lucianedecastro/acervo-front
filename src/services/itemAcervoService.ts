@@ -103,6 +103,10 @@ export const itemAcervoService = {
    * - O backend é responsável por:
    *   - Enviar ao Cloudinary
    *   - Persistir publicId, version e url retornados
+   *
+   * IMPORTANTE:
+   * - metadata DEVE ser enviado como application/json (Blob)
+   * - Caso contrário, o Spring não desserializa @RequestPart
    */
   async adicionarFoto(
     itemId: string,
@@ -111,8 +115,17 @@ export const itemAcervoService = {
   ): Promise<void> {
 
     const formData = new FormData()
+
+    // Arquivo binário
     formData.append("file", file)
-    formData.append("metadata", JSON.stringify(metadata))
+
+    // ⚠️ METADATA COMO JSON REAL (Blob)
+    formData.append(
+      "metadata",
+      new Blob([JSON.stringify(metadata)], {
+        type: "application/json",
+      })
+    )
 
     await api.post(`/acervo/${itemId}/fotos`, formData)
   }
