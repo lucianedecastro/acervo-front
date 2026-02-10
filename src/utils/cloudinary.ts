@@ -5,9 +5,9 @@ const CLOUDINARY_BASE =
 
 /**
  * Public ID do watermark no Cloudinary
- * (armazenado em: acervo/watermark_acervo_d81v5z)
+ * Ajustado para o caminho exato da pasta e sufixo
  */
-const WATERMARK_PUBLIC_ID = "watermark_acervo_d81v5z"
+const WATERMARK_PUBLIC_ID = "acervo:watermark_acervo_d81v5z"
 
 export type CloudinaryContexto =
   | "card-atleta"
@@ -45,10 +45,12 @@ export function cloudinaryImage({
   }
 
   // Card de listagem (miniatura protegida)
+  // f_auto adicionado para garantir o formato correto da imagem
   if (contexto === "card-atleta") {
-    return `${CLOUDINARY_BASE}/c_fill,w_400,h_260/l_acervo:${WATERMARK_PUBLIC_ID},o_20,g_south_east,x_10,y_10/${v}/${publicId}.jpg`
+    return `${CLOUDINARY_BASE}/c_fill,w_400,h_260/l_${WATERMARK_PUBLIC_ID},o_20,g_south_east,x_10,y_10/f_auto/${v}/${publicId}.jpg`
   }
 
   // Detalhe do item do acervo (visualização protegida)
-  return `${CLOUDINARY_BASE}/c_limit,w_1200/l_acervo:${WATERMARK_PUBLIC_ID},o_30,g_center/${v}/${publicId}.jpg`
+  // l_${WATERMARK_PUBLIC_ID} utiliza o ID corrigido com a pasta
+  return `${CLOUDINARY_BASE}/c_limit,w_1200/l_${WATERMARK_PUBLIC_ID},o_30,g_center/f_auto/${v}/${publicId}.jpg`
 }
