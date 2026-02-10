@@ -11,15 +11,13 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
    * Resolução da imagem pública:
    * - Prioriza foto marcada como destaque
    * - Fallback para a primeira foto disponível
-   * - Aplica marca d'água via helper centralizado do Cloudinary
-   * - Mantém fallback de segurança para a imagem original
    */
   const fotoObj = item.fotos?.find((f) => f.ehDestaque) || item.fotos?.[0]
 
   /**
    * URL protegida com marca d'água:
-   * - Gerada exclusivamente pelo helper cloudinaryImage
-   * - Version precisa ser prefixada com "v" (ex: v1770640528)
+   * - Só tenta gerar se publicId e version existirem
+   * - Se falhar, o fallback será a URL original ou placeholder
    */
   const urlProtegida =
     fotoObj?.publicId && fotoObj?.version
@@ -32,37 +30,42 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
 
   /**
    * Imagem pública final:
-   * - Prioriza versão protegida
-   * - Fallback para URL original persistida no backend
+   * - Se não houver urlProtegida nem fotoObj.url, usamos um placeholder cinza
+   * para evitar o ícone de imagem quebrada do navegador.
    */
-  const fotoPublica = urlProtegida || fotoObj?.url
+  const fotoPublica = urlProtegida || fotoObj?.url || null
 
   return (
     <Link
       to={`/acervo/item/${item.id}`}
       className="group block border-4 border-black bg-white p-4 space-y-3 transition-transform hover:-translate-y-1 overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
     >
-      {/* Imagem pública protegida */}
-      <div className="relative w-full h-48 bg-gray-200 border-4 border-black overflow-hidden">
+      {/* Container da Imagem */}
+      <div className="relative w-full h-48 bg-gray-100 border-4 border-black overflow-hidden flex items-center justify-center">
         {fotoPublica ? (
           <img
             src={fotoPublica}
             alt={item.titulo}
             className="w-full h-full object-cover transition-opacity group-hover:opacity-90"
+            loading="lazy"
             onError={(e) => {
               /**
-               * Fallback de segurança:
-               * - Caso a URL protegida falhe (Cloudinary, cache, etc)
-               * - Reverte para a imagem original salva no backend
+               * Se a URL protegida falhar, tenta a original. 
+               * Se a original falhar, remove o src para mostrar o fallback visual do container.
                */
-              if (fotoObj?.url && e.currentTarget.src !== fotoObj.url) {
-                e.currentTarget.src = fotoObj.url
+              const target = e.currentTarget;
+              if (fotoObj?.url && target.src !== fotoObj.url) {
+                target.src = fotoObj.url;
+              } else {
+                target.style.display = 'none'; // Esconde a imagem quebrada
               }
             }}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center font-black uppercase text-xs text-gray-500">
-            Sem imagem disponível
+          <div className="text-center p-4">
+            <p className="font-black uppercase text-[10px] text-gray-400">
+              Arquivo em Processamento
+            </p>
           </div>
         )}
       </div>
@@ -73,15 +76,17 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
       </h3>
 
       {/* Status editorial */}
-      <span className="inline-block border-2 border-black px-3 py-1 text-xs font-black uppercase bg-gray-50">
-        {item.status === "MEMORIAL"
-          ? "Item memorial / pesquisa"
-          : "Item do acervo"}
-      </span>
+      <div className="flex items-center gap-2">
+        <span className="inline-block border-2 border-black px-3 py-1 text-[10px] font-black uppercase bg-gray-50">
+          {item.status === "MEMORIAL"
+            ? "Item memorial"
+            : "Acervo Ativo"}
+        </span>
+      </div>
 
       {/* Aviso jurídico */}
-      <p className="text-xs font-bold text-gray-600">
-        Imagem protegida • Uso mediante autorização expressa
+      <p className="text-[10px] font-bold text-gray-500 leading-tight">
+        IMAGEM PROTEGIDA • ACERVO CARMEN LYDIA
       </p>
     </Link>
   )

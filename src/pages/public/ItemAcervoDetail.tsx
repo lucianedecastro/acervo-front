@@ -28,54 +28,52 @@ export default function ItemAcervoDetail() {
 
   if (loading)
     return (
-      <div className="p-10 text-center font-black uppercase">
-        Carregando Detalhes do Acervo...
+      <div className="p-10 text-center font-black uppercase animate-pulse">
+        Sincronizando Dados do Acervo...
       </div>
     )
 
   if (!item)
     return (
-      <div className="p-10 text-center font-black uppercase">
-        Item não encontrado.
+      <div className="p-10 text-center font-black uppercase text-red-600">
+        Item não localizado no catálogo.
       </div>
     )
 
   /**
-   * Resolução da imagem principal:
-   * - Prioriza foto marcada como destaque
-   * - Fallback para a primeira foto disponível
-   * - Aplica marca d'água via helper centralizado do Cloudinary
-   * - Mantém fallback de segurança para a imagem original
+   * Resolução da imagem principal
    */
   const fotoObj = item.fotos?.find((f) => f.ehDestaque) || item.fotos?.[0]
 
   /**
-   * URL protegida com marca d'água (visualização pública):
-   * - Gerada exclusivamente pelo helper cloudinaryImage
-   * - Version precisa ser prefixada com "v" (ex: v1770640528)
+   * Construção da URL Protegida:
+   * Garante que a versão tenha o prefixo 'v' antes de enviar ao helper
    */
+  const versionFormatada = fotoObj?.version 
+    ? (fotoObj.version.toString().startsWith('v') ? fotoObj.version : `v${fotoObj.version}`)
+    : null;
+
   const urlComProtecao =
-    fotoObj?.publicId && fotoObj?.version
+    fotoObj?.publicId && versionFormatada
       ? cloudinaryImage({
           publicId: fotoObj.publicId,
-          version: fotoObj.version,
+          version: versionFormatada,
           contexto: "detalhe-item",
         })
       : null
 
   /**
-   * Imagem principal final:
-   * - Prioriza versão protegida
-   * - Fallback para URL original persistida no backend
+   * Prioridade de exibição:
+   * 1. URL com Marca d'água (Transformada)
+   * 2. URL Original (Fallback de emergência)
    */
   const fotoPrincipal = urlComProtecao || fotoObj?.url
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
-      {/* Botão Voltar */}
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 font-black uppercase hover:underline transition-all"
+        className="flex items-center gap-2 font-black uppercase hover:text-yellow-600 transition-all border-b-2 border-transparent hover:border-yellow-600"
       >
         <ArrowLeft size={20} /> Voltar para a Galeria
       </button>
@@ -83,10 +81,10 @@ export default function ItemAcervoDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Coluna da Imagem */}
         <div className="space-y-4">
-          <div className="relative border-8 border-black bg-gray-200 aspect-square overflow-hidden group shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            {/* Camada de proteção contra menu de contexto */}
+          <div className="relative border-8 border-black bg-gray-100 aspect-square overflow-hidden group shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+            {/* Overlay de Proteção (Z-index alto para bloquear clique direito) */}
             <div
-              className="absolute inset-0 z-10"
+              className="absolute inset-0 z-30 select-none"
               onContextMenu={(e) => e.preventDefault()}
             />
 
@@ -94,107 +92,95 @@ export default function ItemAcervoDetail() {
               <img
                 src={fotoPrincipal}
                 alt={item.titulo}
-                className="w-full h-full object-contain pointer-events-none"
+                className="w-full h-full object-contain pointer-events-none select-none z-10"
                 onError={(e) => {
-                  /**
-                   * Fallback de segurança:
-                   * - Caso a URL protegida falhe (Cloudinary, cache, etc)
-                   * - Reverte para a imagem original salva no backend
-                   */
-                  if (fotoObj?.url && e.currentTarget.src !== fotoObj.url) {
-                    e.currentTarget.src = fotoObj.url
+                  // Se a protegida falhar, tenta a original. Se a original falhar, oculta.
+                  const target = e.currentTarget;
+                  if (fotoObj?.url && target.src !== fotoObj.url) {
+                    target.src = fotoObj.url;
                   }
                 }}
               />
             ) : (
-              <div className="flex items-center justify-center h-full font-black text-gray-400 p-8 text-center uppercase">
-                Imagem não disponível para este item
+              <div className="flex items-center justify-center h-full font-black text-gray-300 p-8 text-center uppercase text-sm">
+                Aguardando processamento da mídia
               </div>
             )}
 
-            <div className="absolute bottom-4 right-4 bg-black text-white px-3 py-1 text-xs font-black uppercase z-20">
+            <div className="absolute bottom-4 right-4 bg-black text-white px-3 py-1 text-[10px] font-black uppercase z-40 shadow-[4px_4px_0px_0px_rgba(212,162,68,1)]">
               Visualização Protegida
             </div>
           </div>
 
-          <p className="text-xs font-bold text-gray-500 text-center uppercase tracking-widest">
-            Proteção por marca d'água digital • Direitos Reservados
+          <p className="text-[10px] font-black text-gray-400 text-center uppercase tracking-widest leading-tight">
+            Este arquivo contém marcas d'água digitais invisíveis <br /> 
+            Proteção por Direitos Autorais • Acervo Carmen Lydia
           </p>
         </div>
 
         {/* Coluna de Dados */}
         <div className="space-y-6">
-          <header className="space-y-3">
+          <header className="space-y-4">
             <div className="flex flex-wrap gap-2">
-              <span className="inline-block border-4 border-black bg-yellow-400 px-4 py-1 font-black uppercase text-xs">
-                {item.modalidadeId ? "Futebol Feminino" : "Geral"}
+              <span className="inline-block border-4 border-black bg-[#D4A244] px-4 py-1 font-black uppercase text-[10px]">
+                {item.modalidadeId ? "Futebol Feminino" : "História Esportiva"}
               </span>
-              <span className="inline-block border-4 border-black bg-white px-4 py-1 font-black uppercase text-xs">
-                {item.tipo || "FOTO"}
+              <span className="inline-block border-4 border-black bg-white px-4 py-1 font-black uppercase text-[10px]">
+                DOC / {item.tipo || "FOTOGRAFIA"}
               </span>
             </div>
 
-            <h1 className="text-4xl font-black uppercase leading-tight border-b-4 border-black pb-2">
+            <h1 className="text-3xl sm:text-4xl font-black uppercase leading-none border-b-6 border-black pb-4">
               {item.titulo}
             </h1>
           </header>
 
-          <div className="space-y-2">
-            <h3 className="flex items-center gap-2 font-black uppercase text-sm text-gray-500">
-              <Info size={16} /> Descrição do Item
+          <div className="space-y-3">
+            <h3 className="flex items-center gap-2 font-black uppercase text-xs text-gray-400">
+              <Info size={14} /> Contexto Histórico
             </h3>
-            <p className="text-lg font-bold leading-relaxed text-gray-800 italic">
-              "{item.descricao || "Sem descrição informada no catálogo."}"
+            <p className="text-lg font-bold leading-snug text-gray-800 italic bg-gray-50 p-4 border-l-8 border-black">
+              "{item.descricao || "Item catalogado sem descrição narrativa."}"
             </p>
           </div>
 
-          {/* Card de Licenciamento */}
-          <div className="bg-yellow-50 border-4 border-black p-6 space-y-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          {/* Licenciamento */}
+          <div className="bg-white border-4 border-black p-6 space-y-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
             <div className="flex items-start gap-3">
-              <ShieldCheck className="shrink-0 text-black" size={28} />
+              <ShieldCheck className="shrink-0 text-[#D4A244]" size={32} strokeWidth={3} />
               <div>
-                <h4 className="font-black uppercase text-sm underline">
-                  Regras de Licenciamento
-                </h4>
-                <p className="text-sm font-bold mt-1">
+                <h4 className="font-black uppercase text-xs">Licenciamento de Uso</h4>
+                <p className="text-xs font-bold mt-1 text-gray-600">
                   {item.disponivelParaLicenciamento
-                    ? "✓ Este item está disponível para licenciamento comercial imediato."
-                    : "⚠ Uso restrito: Este item requer análise da curadoria para fins comerciais."}
+                    ? "✓ Disponível para publicações editoriais e comerciais."
+                    : "⚠ Uso restrito a fins de pesquisa acadêmica e jornalística."}
                 </p>
               </div>
             </div>
 
-            <button className="w-full bg-black text-white font-black uppercase p-4 flex items-center justify-center gap-2 hover:bg-yellow-600 hover:text-black transition-colors border-2 border-black">
-              <Download size={20} />
-              Solicitar Alta Resolução (TIFF/JPG)
+            <button className="w-full bg-black text-white font-black uppercase p-4 flex items-center justify-center gap-3 hover:bg-[#D4A244] hover:text-black transition-all border-4 border-black active:translate-y-1">
+              <Download size={20} strokeWidth={3} />
+              Solicitar Original em Alta
             </button>
           </div>
 
-          {/* Metadados Adicionais */}
-          <div className="grid grid-cols-2 gap-4 text-xs font-black uppercase">
-            <div className="border-4 border-black p-4 bg-gray-50">
-              <span className="block text-gray-500 mb-1">Procedência</span>
-              <span className="text-sm">
-                {item.procedencia || "Acervo Pessoal da Atleta"}
-              </span>
+          {/* Rodapé de Metadados */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="border-4 border-black p-3 bg-gray-50">
+              <span className="block text-[10px] font-black text-gray-400 uppercase mb-1">Procedência</span>
+              <span className="text-xs font-black uppercase">{item.procedencia || "Acervo Carmen Lydia"}</span>
             </div>
-            <div className="border-4 border-black p-4 bg-gray-50">
-              <span className="block text-gray-500 mb-1">
-                Status de Catálogo
-              </span>
-              <span className="text-sm">
-                {item.status === "MEMORIAL"
-                  ? "Pesquisa Histórica"
-                  : "Acervo Ativo"}
+            <div className="border-4 border-black p-3 bg-gray-50">
+              <span className="block text-[10px] font-black text-gray-400 uppercase mb-1">Catálogo</span>
+              <span className="text-xs font-black uppercase">
+                {item.status === "MEMORIAL" ? "Arquivo Histórico" : "Exibição Ativa"}
               </span>
             </div>
           </div>
 
-          {/* Localização/Tags */}
-          <div className="flex items-center gap-2 pt-4 border-t-2 border-black border-dashed">
-            <Tag size={16} className="text-gray-400" />
-            <span className="text-[10px] font-black uppercase text-gray-400">
-              Local: {item.local || "Não informado"} • ID: {item.id}
+          <div className="pt-4 border-t-4 border-black border-dotted">
+            <span className="text-[9px] font-black uppercase text-gray-400 flex items-center gap-2">
+              <Tag size={12} /> Local: {item.local || "Não identificado"} • Registro: {item.id}
             </span>
           </div>
         </div>
