@@ -17,7 +17,7 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
   /**
    * URL protegida com marca d'água:
    * - Só tenta gerar se publicId e version existirem
-   * - Se falhar, o fallback será a URL original ou placeholder
+   * - A URL é sempre derivada no frontend
    */
   const urlProtegida =
     fotoObj?.publicId && fotoObj?.version
@@ -30,10 +30,10 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
 
   /**
    * Imagem pública final:
-   * - Se não houver urlProtegida nem fotoObj.url, usamos um placeholder cinza
-   * para evitar o ícone de imagem quebrada do navegador.
+   * - Se não houver URL derivada, exibimos apenas o placeholder visual
+   * - Não utilizamos URL persistida como fallback técnico
    */
-  const fotoPublica = urlProtegida || fotoObj?.url || null
+  const fotoPublica = urlProtegida || null
 
   return (
     <Link
@@ -50,15 +50,11 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
             loading="lazy"
             onError={(e) => {
               /**
-               * Se a URL protegida falhar, tenta a original. 
-               * Se a original falhar, remove o src para mostrar o fallback visual do container.
+               * Em caso de erro na imagem derivada:
+               * - removemos o src para manter apenas o fallback visual
+               * - não tentamos trocar a URL em runtime
                */
-              const target = e.currentTarget;
-              if (fotoObj?.url && target.src !== fotoObj.url) {
-                target.src = fotoObj.url;
-              } else {
-                target.style.display = 'none'; // Esconde a imagem quebrada
-              }
+              e.currentTarget.style.display = "none"
             }}
           />
         ) : (

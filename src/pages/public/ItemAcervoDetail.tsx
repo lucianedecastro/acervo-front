@@ -41,33 +41,32 @@ export default function ItemAcervoDetail() {
     )
 
   /**
-   * Resolução da imagem principal
+   * Resolução da imagem principal:
+   * - Prioriza foto de destaque
+   * - Fallback para a primeira foto disponível
    */
   const fotoObj = item.fotos?.find((f) => f.ehDestaque) || item.fotos?.[0]
 
   /**
-   * Construção da URL Protegida:
-   * Garante que a versão tenha o prefixo 'v' antes de enviar ao helper
+   * URL protegida com marca d'água:
+   * - Sempre derivada no frontend
+   * - Contexto de detalhe (resolução maior)
    */
-  const versionFormatada = fotoObj?.version 
-    ? (fotoObj.version.toString().startsWith('v') ? fotoObj.version : `v${fotoObj.version}`)
-    : null;
-
   const urlComProtecao =
-    fotoObj?.publicId && versionFormatada
+    fotoObj?.publicId && fotoObj?.version
       ? cloudinaryImage({
           publicId: fotoObj.publicId,
-          version: versionFormatada,
+          version: fotoObj.version,
           contexto: "detalhe-item",
         })
       : null
 
   /**
-   * Prioridade de exibição:
-   * 1. URL com Marca d'água (Transformada)
-   * 2. URL Original (Fallback de emergência)
+   * Imagem principal:
+   * - Utiliza apenas a URL derivada
+   * - Não utiliza URL persistida como fallback técnico
    */
-  const fotoPrincipal = urlComProtecao || fotoObj?.url
+  const fotoPrincipal = urlComProtecao || null
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -82,7 +81,7 @@ export default function ItemAcervoDetail() {
         {/* Coluna da Imagem */}
         <div className="space-y-4">
           <div className="relative border-8 border-black bg-gray-100 aspect-square overflow-hidden group shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
-            {/* Overlay de Proteção (Z-index alto para bloquear clique direito) */}
+            {/* Overlay de Proteção */}
             <div
               className="absolute inset-0 z-30 select-none"
               onContextMenu={(e) => e.preventDefault()}
@@ -94,11 +93,12 @@ export default function ItemAcervoDetail() {
                 alt={item.titulo}
                 className="w-full h-full object-contain pointer-events-none select-none z-10"
                 onError={(e) => {
-                  // Se a protegida falhar, tenta a original. Se a original falhar, oculta.
-                  const target = e.currentTarget;
-                  if (fotoObj?.url && target.src !== fotoObj.url) {
-                    target.src = fotoObj.url;
-                  }
+                  /**
+                   * Em caso de erro:
+                   * - removemos o src
+                   * - mantemos apenas o fallback visual
+                   */
+                  e.currentTarget.style.display = "none"
                 }}
               />
             ) : (
@@ -113,7 +113,7 @@ export default function ItemAcervoDetail() {
           </div>
 
           <p className="text-[10px] font-black text-gray-400 text-center uppercase tracking-widest leading-tight">
-            Este arquivo contém marcas d'água digitais invisíveis <br /> 
+            Este arquivo contém marcas d&apos;água digitais invisíveis <br />
             Proteção por Direitos Autorais • Acervo Carmen Lydia
           </p>
         </div>
@@ -168,7 +168,9 @@ export default function ItemAcervoDetail() {
           <div className="grid grid-cols-2 gap-4">
             <div className="border-4 border-black p-3 bg-gray-50">
               <span className="block text-[10px] font-black text-gray-400 uppercase mb-1">Procedência</span>
-              <span className="text-xs font-black uppercase">{item.procedencia || "Acervo Carmen Lydia"}</span>
+              <span className="text-xs font-black uppercase">
+                {item.procedencia || "Acervo Carmen Lydia"}
+              </span>
             </div>
             <div className="border-4 border-black p-3 bg-gray-50">
               <span className="block text-[10px] font-black text-gray-400 uppercase mb-1">Catálogo</span>
