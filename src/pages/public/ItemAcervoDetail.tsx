@@ -108,7 +108,7 @@ export default function ItemAcervoDetail() {
             )}
 
             <div className="absolute bottom-4 right-4 bg-black text-white px-3 py-1 text-[10px] font-black uppercase z-40 shadow-[4px_4px_0px_0px_rgba(212,162,68,1)]">
-              Visualização Protegida
+              Visualização pública — Original sob licenciamento
             </div>
           </div>
 
