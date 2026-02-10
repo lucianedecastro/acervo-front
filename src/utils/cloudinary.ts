@@ -28,28 +28,27 @@ export function cloudinaryImage({
 
   /**
    * 1. Limpeza do ID: 
-   * Remove extensões (ex: .jpg) para evitar "imagem.jpg.jpg".
+   * Remove extensões para evitar duplicação (ex: foto.jpg.jpg).
    */
   const cleanId = publicId.replace(/\.(jpg|jpeg|png|webp)$/i, "");
 
   /**
    * 2. Tratamento da Versão:
-   * Garante o prefixo 'v'.
+   * Garante o prefixo 'v' obrigatório para assets em pastas.
    */
   const v = version.toString().startsWith("v") ? version : `v${version}`;
 
-  // 3. Caso para imagem original (Uso administrativo ou download)
+  // 3. Caso para imagem original
   if (contexto === "original") {
     return `${CLOUDINARY_BASE}/${v}/${cleanId}.jpg`;
   }
 
   // 4. Caso para Miniatura (Card da Atleta)
-  // AJUSTE: Movemos o formato .jpg para dentro da transformação e removemos o escapedId.
+  // Sintaxe limpa: transformações / overlay / versão / caminho.extensao
   if (contexto === "card-atleta") {
-    return `${CLOUDINARY_BASE}/c_fill,g_auto,w_400,h_260,f_jpg/l_${WATERMARK_PUBLIC_ID},o_20,g_south_east,w_100/${v}/${cleanId}`;
+    return `${CLOUDINARY_BASE}/c_fill,g_auto,w_400,h_260/l_${WATERMARK_PUBLIC_ID},o_20,g_south_east,w_100/${v}/${cleanId}.jpg`;
   }
 
-  // 6. Caso para Detalhe do Item (Visualização com marca d'água centralizada)
-  // AJUSTE: f_jpg adicionado para estabilizar o processamento de camadas.
-  return `${CLOUDINARY_BASE}/c_limit,w_1200,f_jpg/l_${WATERMARK_PUBLIC_ID},o_30,g_center,w_600/${v}/${cleanId}`;
+  // 5. Caso para Detalhe do Item
+  return `${CLOUDINARY_BASE}/c_limit,w_1200/l_${WATERMARK_PUBLIC_ID},o_30,g_center,w_600/${v}/${cleanId}.jpg`;
 }
