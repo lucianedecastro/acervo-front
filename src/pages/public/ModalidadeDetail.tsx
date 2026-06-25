@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { modalidadeService } from "@/services/modalidadeService"
 import { ModalidadePublicaDTO } from "@/types/modalidade"
+import { ArrowLeft } from "lucide-react"
 
 export default function ModalidadeDetail() {
   const { slug } = useParams<{ slug: string }>()
@@ -30,28 +31,24 @@ export default function ModalidadeDetail() {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-acl-cream">
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#D4A244] border-6 border-black mx-auto mb-4 animate-pulse"></div>
-          <p className="text-lg font-black uppercase tracking-wide">
-            Carregando história...
-          </p>
+          <div className="w-10 h-10 bg-acl-gold rounded-sm mx-auto mb-4 animate-fade-pulse" />
+          <p className="text-sm text-acl-muted">Carregando história...</p>
         </div>
       </div>
     )
 
   if (error || !modalidade)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white px-6">
+      <div className="min-h-screen flex items-center justify-center bg-acl-cream px-6">
         <div className="text-center">
-          <p className="text-xl font-black text-red-600 mb-6 uppercase">
-            {error}
-          </p>
+          <p className="text-acl-wine mb-6">{error}</p>
           <button
             onClick={() => navigate("/modalidades")}
-            className="px-8 py-3 bg-black text-white font-black uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all"
+            className="btn-secondary-light"
           >
-            Voltar para Lista
+            Voltar para a lista
           </button>
         </div>
       </div>
@@ -67,47 +64,47 @@ export default function ModalidadeDetail() {
     : null
 
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-acl-cream min-h-screen">
 
       {/* Botão Voltar */}
-      <div className="max-w-6xl mx-auto px-6 pt-8">
+      <div className="max-w-5xl mx-auto px-6 pt-8">
         <button
           onClick={() => navigate("/modalidades")}
-          className="px-6 py-3 bg-white text-black font-black uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all text-sm"
+          className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-deep transition-colors"
         >
-          ← Voltar
+          <ArrowLeft size={16} /> Voltar
         </button>
       </div>
 
-      {/* FOTO DE DESTAQUE (HERO) */}
+      {/* Foto de destaque */}
       {fotoDestaqueUrl && (
-        <section className="relative h-[420px] w-full overflow-hidden border-b-6 border-black mt-8">
-          <img
-            src={fotoDestaqueUrl}
-            alt={`Foto de destaque da modalidade ${modalidade.nome}`}
-            className="w-full h-full object-cover"
-          />
+        <section className="mt-8 px-6">
+          <div className="max-w-5xl mx-auto">
+            <img
+              src={fotoDestaqueUrl}
+              alt={`Foto de destaque da modalidade ${modalidade.nome}`}
+              className="w-full h-[360px] object-cover border border-acl-line"
+            />
+          </div>
         </section>
       )}
 
-      {/* TÍTULO DA MODALIDADE */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight">
+      {/* Título */}
+      <section className="py-14 px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          <h1 className="font-serif text-3xl md:text-5xl text-acl-ink">
             {modalidade.nome}
           </h1>
         </div>
       </section>
 
       {/* História */}
-      <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-black uppercase mb-4 tracking-tight">
-            História e Contexto
-          </h2>
-          <div className="w-24 h-2 bg-[#D4A244] mb-8 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"></div>
+      <section className="py-14 px-6 bg-white border-t border-acl-line">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="mb-3">História e contexto</h2>
+          <div className="w-12 h-px bg-acl-gold-deep mb-8" />
 
-          <p className="text-base md:text-lg leading-relaxed text-gray-800 whitespace-pre-wrap font-medium">
+          <p className="text-acl-ink-soft leading-relaxed whitespace-pre-wrap">
             {modalidade.historia ||
               "Nenhuma descrição histórica disponível no momento."}
           </p>
@@ -116,26 +113,23 @@ export default function ModalidadeDetail() {
 
       {/* Galeria Fotográfica */}
       {modalidade.fotos && modalidade.fotos.length > 0 && (
-        <section className="py-16 px-6 bg-black text-white border-t-6 border-[#D4A244]">
+        <section className="py-14 px-6 bg-acl-ink">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-black uppercase mb-4 tracking-tight text-[#D4A244]">
-              Acervo Fotográfico
-            </h2>
-            <div className="w-24 h-2 bg-white mb-12 border-4 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]"></div>
+            <h2 className="text-acl-cream mb-10">Acervo fotográfico</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {modalidade.fotos.map((foto) => (
                 <div
                   key={foto.publicId}
-                  className="bg-white text-black border-6 border-white shadow-[8px_8px_0px_0px_rgba(212,162,68,1)] overflow-hidden"
+                  className="bg-white overflow-hidden"
                 >
                   <img
                     src={foto.urlVisualizacao}
                     alt={foto.legenda}
-                    className="w-full h-64 object-cover border-b-6 border-black"
+                    className="w-full h-64 object-cover"
                   />
                   {foto.legenda && (
-                    <p className="p-4 text-sm font-medium leading-relaxed">
+                    <p className="p-4 text-sm text-acl-ink-soft leading-relaxed">
                       {foto.legenda}
                     </p>
                   )}

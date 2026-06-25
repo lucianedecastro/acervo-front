@@ -11,40 +11,20 @@
     --cor-fundo: #f8f9fa;
 }
 
-body {
-    font-family: var(--fonte-corpo);
-    color: var(--cor-texto-principal);
-    background-color: var(--cor-fundo);
-    margin: 0;
-    text-align: left;
-}
+/* ======================================================= */
+/* NOTA (redesign público, [data]):                        */
+/* As regras globais de body / #root / h1-h4 / h2 abaixo    */
+/* foram removidas daqui porque conflitavam com o sistema   */
+/* de design do site público (index.css) — carregavam      */
+/* depois e ganhavam no empate de especificidade.           */
+/* Tudo o que é específico por classe (.login-form,         */
+/* .nav-card, .admin-dashboard, galeria, lightbox etc.)      */
+/* continua abaixo, intacto.                                */
+/* ======================================================= */
 
 /* Garante que o conteúdo não role quando o menu mobile estiver aberto */
 body.nav-open-active {
     overflow: hidden;
-}
-
-#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-h1, h2, h3, h4 {
-    font-family: var(--fonte-titulo);
-    font-weight: 700;
-    color: var(--cor-texto-principal);
-}
-
-h2 {
-    font-size: 1.8rem;
-    margin-top: 3rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #dee2e6;
-}
-h2:first-child {
-    margin-top: 0;
 }
 
 
@@ -408,10 +388,6 @@ main section {
 /* 4. ESTILOS PARA DESKTOP (TELAS > 900px)                 */
 /* ======================================================= */
 @media (min-width: 900px) {
-    h2 {
-        font-size: 2rem; /* Retorna ao tamanho original */
-    }
-
     .app-header {
         /* Retorna ao layout de desktop */
         display: block;
@@ -509,14 +485,6 @@ main section {
 /* 5. AJUSTES FINOS PARA TELAS MUITO PEQUENAS (< 480px)   */
 /* ======================================================= */
 @media (max-width: 480px) {
-    #root {
-        padding: 0 1rem; /* Menos padding lateral */
-    }
-
-    h2 {
-        font-size: 1.5rem;
-    }
-
     .btn-action {
         width: 100%;
         text-align: center;

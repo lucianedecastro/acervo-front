@@ -38,10 +38,10 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
   return (
     <Link
       to={`/acervo/item/${item.id}`}
-      className="group block border-4 border-black bg-white p-4 space-y-3 transition-transform hover:-translate-y-1 overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+      className="group block bg-white border border-acl-line p-4 space-y-3 overflow-hidden hover:border-acl-gold-deep transition-colors"
     >
       {/* Container da Imagem */}
-      <div className="relative w-full h-48 bg-gray-100 border-4 border-black overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-48 bg-acl-line/30 overflow-hidden flex items-center justify-center">
         {fotoPublica ? (
           <img
             src={fotoPublica}
@@ -59,30 +59,30 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
           />
         ) : (
           <div className="text-center p-4">
-            <p className="font-black uppercase text-[10px] text-gray-400">
-              Arquivo em Processamento
+            <p className="text-xs text-acl-muted">
+              Arquivo em processamento
             </p>
           </div>
         )}
       </div>
 
       {/* Título */}
-      <h3 className="font-black uppercase text-lg group-hover:text-yellow-600 transition-colors truncate">
+      <h3 className="font-serif text-base text-acl-ink group-hover:text-acl-gold-deep transition-colors truncate">
         {item.titulo}
       </h3>
 
       {/* Status editorial */}
       <div className="flex items-center gap-2">
-        <span className="inline-block border-2 border-black px-3 py-1 text-[10px] font-black uppercase bg-gray-50">
+        <span className="inline-block border border-acl-line px-2.5 py-1 text-[11px] text-acl-ink-soft bg-acl-cream">
           {item.status === "MEMORIAL"
             ? "Item memorial"
-            : "Acervo Ativo"}
+            : "Acervo ativo"}
         </span>
       </div>
 
       {/* Aviso jurídico */}
-      <p className="text-[10px] font-bold text-gray-500 leading-tight">
-        IMAGEM PROTEGIDA • ACERVO CARMEN LYDIA
+      <p className="text-[11px] text-acl-muted leading-tight">
+        Imagem protegida • Acervo Carmen Lydia
       </p>
     </Link>
   )

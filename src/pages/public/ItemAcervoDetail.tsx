@@ -28,14 +28,14 @@ export default function ItemAcervoDetail() {
 
   if (loading)
     return (
-      <div className="p-10 text-center font-black uppercase animate-pulse">
-        Sincronizando Dados do Acervo...
+      <div className="p-10 text-center text-sm text-acl-muted animate-fade-pulse">
+        Sincronizando dados do acervo...
       </div>
     )
 
   if (!item)
     return (
-      <div className="p-10 text-center font-black uppercase text-red-600">
+      <div className="p-10 text-center text-acl-wine">
         Item não localizado no catálogo.
       </div>
     )
@@ -61,26 +61,21 @@ export default function ItemAcervoDetail() {
         })
       : null
 
-  /**
-   * Imagem principal:
-   * - Utiliza apenas a URL derivada
-   * - Não utiliza URL persistida como fallback técnico
-   */
   const fotoPrincipal = urlComProtecao || null
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-6 space-y-8 bg-acl-cream">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 font-black uppercase hover:text-yellow-600 transition-all border-b-2 border-transparent hover:border-yellow-600"
+        className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-deep transition-colors"
       >
-        <ArrowLeft size={20} /> Voltar para a Galeria
+        <ArrowLeft size={16} /> Voltar para a galeria
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Coluna da Imagem */}
         <div className="space-y-4">
-          <div className="relative border-8 border-black bg-gray-100 aspect-square overflow-hidden group shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+          <div className="relative border border-acl-line bg-white aspect-square overflow-hidden group">
             {/* Overlay de Proteção */}
             <div
               className="absolute inset-0 z-30 select-none"
@@ -102,19 +97,19 @@ export default function ItemAcervoDetail() {
                 }}
               />
             ) : (
-              <div className="flex items-center justify-center h-full font-black text-gray-300 p-8 text-center uppercase text-sm">
+              <div className="flex items-center justify-center h-full text-acl-muted p-8 text-center text-sm">
                 Aguardando processamento da mídia
               </div>
             )}
 
-            <div className="absolute bottom-4 right-4 bg-black text-white px-3 py-1 text-[10px] font-black uppercase z-40 shadow-[4px_4px_0px_0px_rgba(212,162,68,1)]">
-              Visualização pública — Original sob licenciamento
+            <div className="absolute bottom-3 right-3 bg-acl-ink text-acl-cream px-3 py-1.5 text-[11px] z-40">
+              Visualização pública — original sob licenciamento
             </div>
           </div>
 
-          <p className="text-[10px] font-black text-gray-400 text-center uppercase tracking-widest leading-tight">
-            Este arquivo contém marcas d&apos;água digitais invisíveis <br />
-            Proteção por Direitos Autorais • Acervo Carmen Lydia
+          <p className="text-xs text-acl-muted text-center leading-relaxed">
+            Este arquivo contém marcas d&apos;água digitais invisíveis<br />
+            Proteção por direitos autorais • Acervo Carmen Lydia
           </p>
         </div>
 
@@ -122,66 +117,66 @@ export default function ItemAcervoDetail() {
         <div className="space-y-6">
           <header className="space-y-4">
             <div className="flex flex-wrap gap-2">
-              <span className="inline-block border-4 border-black bg-[#D4A244] px-4 py-1 font-black uppercase text-[10px]">
-                {item.modalidadeId ? "Futebol Feminino" : "História Esportiva"}
+              <span className="inline-block border border-acl-line bg-white px-3 py-1 text-xs text-acl-ink-soft">
+                {item.modalidadeId ? "Futebol feminino" : "História esportiva"}
               </span>
-              <span className="inline-block border-4 border-black bg-white px-4 py-1 font-black uppercase text-[10px]">
-                DOC / {item.tipo || "FOTOGRAFIA"}
+              <span className="inline-block border border-acl-line bg-white px-3 py-1 text-xs text-acl-ink-soft">
+                Doc / {item.tipo || "Fotografia"}
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-black uppercase leading-none border-b-6 border-black pb-4">
+            <h1 className="font-serif text-2xl sm:text-3xl text-acl-ink border-b border-acl-line pb-5">
               {item.titulo}
             </h1>
           </header>
 
           <div className="space-y-3">
-            <h3 className="flex items-center gap-2 font-black uppercase text-xs text-gray-400">
-              <Info size={14} /> Contexto Histórico
+            <h3 className="flex items-center gap-2 text-xs text-acl-muted">
+              <Info size={14} /> Contexto histórico
             </h3>
-            <p className="text-lg font-bold leading-snug text-gray-800 italic bg-gray-50 p-4 border-l-8 border-black">
-              "{item.descricao || "Item catalogado sem descrição narrativa."}"
+            <p className="aside-serif text-acl-ink-soft text-lg bg-white p-4 border-l-2 border-acl-gold-deep">
+              {item.descricao || "Item catalogado sem descrição narrativa."}
             </p>
           </div>
 
           {/* Licenciamento */}
-          <div className="bg-white border-4 border-black p-6 space-y-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-white border border-acl-line p-6 space-y-4">
             <div className="flex items-start gap-3">
-              <ShieldCheck className="shrink-0 text-[#D4A244]" size={32} strokeWidth={3} />
+              <ShieldCheck className="shrink-0 text-acl-gold-deep" size={26} strokeWidth={1.5} />
               <div>
-                <h4 className="font-black uppercase text-xs">Licenciamento de Uso</h4>
-                <p className="text-xs font-bold mt-1 text-gray-600">
+                <h4 className="text-xs text-acl-ink mb-1">Licenciamento de uso</h4>
+                <p className="text-xs text-acl-muted leading-relaxed">
                   {item.disponivelParaLicenciamento
-                    ? "✓ Disponível para publicações editoriais e comerciais."
-                    : "⚠ Uso restrito a fins de pesquisa acadêmica e jornalística."}
+                    ? "Disponível para publicações editoriais e comerciais."
+                    : "Uso restrito a fins de pesquisa acadêmica e jornalística."}
                 </p>
               </div>
             </div>
 
-            <button className="w-full bg-black text-white font-black uppercase p-4 flex items-center justify-center gap-3 hover:bg-[#D4A244] hover:text-black transition-all border-4 border-black active:translate-y-1">
-              <Download size={20} strokeWidth={3} />
-              Solicitar Original em Alta
+            <button className="w-full bg-acl-ink text-acl-cream text-sm py-3.5 flex items-center justify-center gap-3 hover:bg-acl-gold-deep hover:text-acl-ink transition-colors">
+              <Download size={16} />
+              Solicitar original em alta resolução
             </button>
           </div>
 
           {/* Rodapé de Metadados */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="border-4 border-black p-3 bg-gray-50">
-              <span className="block text-[10px] font-black text-gray-400 uppercase mb-1">Procedência</span>
-              <span className="text-xs font-black uppercase">
+            <div className="border border-acl-line p-3 bg-white">
+              <span className="block text-[11px] text-acl-muted mb-1">Procedência</span>
+              <span className="text-xs text-acl-ink">
                 {item.procedencia || "Acervo Carmen Lydia"}
               </span>
             </div>
-            <div className="border-4 border-black p-3 bg-gray-50">
-              <span className="block text-[10px] font-black text-gray-400 uppercase mb-1">Catálogo</span>
-              <span className="text-xs font-black uppercase">
-                {item.status === "MEMORIAL" ? "Arquivo Histórico" : "Exibição Ativa"}
+            <div className="border border-acl-line p-3 bg-white">
+              <span className="block text-[11px] text-acl-muted mb-1">Catálogo</span>
+              <span className="text-xs text-acl-ink">
+                {item.status === "MEMORIAL" ? "Arquivo histórico" : "Exibição ativa"}
               </span>
             </div>
           </div>
 
-          <div className="pt-4 border-t-4 border-black border-dotted">
-            <span className="text-[9px] font-black uppercase text-gray-400 flex items-center gap-2">
+          <div className="pt-4 border-t border-acl-line">
+            <span className="text-[11px] text-acl-muted flex items-center gap-2">
               <Tag size={12} /> Local: {item.local || "Não identificado"} • Registro: {item.id}
             </span>
           </div>

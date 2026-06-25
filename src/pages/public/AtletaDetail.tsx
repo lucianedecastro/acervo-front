@@ -3,9 +3,15 @@ import { useParams, useNavigate } from "react-router-dom"
 import { atletaService } from "@/services/atletaService"
 import { Atleta } from "@/types/atleta"
 import { ItemAcervoResponseDTO } from "@/types/itemAcervo"
+import { ArrowLeft } from "lucide-react"
 
-// IMPORT NECESSÁRIO PARA O LINK FUNCIONAR
 import CardItemAcervo from "@/components/CardItemAcervo"
+
+const categoriaLabel: Record<string, string> = {
+  ATIVA: "Ativa",
+  HISTORICA: "Histórica",
+  ESPOLIO: "Espólio",
+}
 
 export default function AtletaDetail() {
   const { slug } = useParams<{ slug: string }>()
@@ -39,28 +45,24 @@ export default function AtletaDetail() {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-acl-cream">
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#D4A244] border-6 border-black mx-auto mb-4 animate-pulse"></div>
-          <p className="text-lg font-black uppercase tracking-wide">
-            Carregando história...
-          </p>
+          <div className="w-10 h-10 bg-acl-gold rounded-sm mx-auto mb-4 animate-fade-pulse" />
+          <p className="text-sm text-acl-muted">Carregando história...</p>
         </div>
       </div>
     )
 
   if (error || !atleta)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white px-6">
+      <div className="min-h-screen flex items-center justify-center bg-acl-cream px-6">
         <div className="text-center">
-          <p className="text-xl font-black text-red-600 mb-6 uppercase">
-            {error}
-          </p>
+          <p className="text-acl-wine mb-6">{error}</p>
           <button
             onClick={() => navigate("/atletas")}
-            className="px-8 py-3 bg-black text-white font-black uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all"
+            className="btn-secondary-light"
           >
-            Voltar para Galeria
+            Voltar para a galeria
           </button>
         </div>
       </div>
@@ -72,41 +74,39 @@ export default function AtletaDetail() {
     null
 
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-acl-cream min-h-screen">
       {/* Botão Voltar */}
-      <div className="max-w-6xl mx-auto px-6 pt-8">
+      <div className="max-w-5xl mx-auto px-6 pt-8">
         <button
           onClick={() => navigate(-1)}
-          className="px-6 py-3 bg-white text-black font-black uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all text-sm"
+          className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-deep transition-colors"
         >
-          ← Voltar
+          <ArrowLeft size={16} /> Voltar
         </button>
       </div>
 
       {/* Header */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
+      <section className="py-14 px-6">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="bg-white p-2 border border-acl-line">
             {imagemPrincipal ? (
               <img
                 src={imagemPrincipal}
                 alt={atleta.nome}
-                className="w-full border-8 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)]"
+                className="w-full aspect-[4/5] object-cover"
               />
             ) : (
-              <div className="w-full h-96 bg-gray-200 border-8 border-black flex items-center justify-center shadow-[16px_16px_0px_0px_rgba(0,0,0,1)]">
-                <span className="text-gray-600 font-black uppercase text-sm">
-                  Imagem em Pesquisa
-                </span>
+              <div className="w-full aspect-[4/5] bg-acl-line/40 flex items-center justify-center">
+                <span className="text-acl-muted text-xs">Imagem em pesquisa</span>
               </div>
             )}
           </div>
 
           <div>
-            <div className="inline-block mb-4 px-6 py-2 bg-[#D4A244] border-4 border-black font-black text-xs uppercase tracking-[0.2em] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              {atleta.categoria}
-            </div>
-            <h1 className="text-4xl md:text-6xl font-black uppercase">
+            <p className="eyebrow text-acl-gold-deep mb-3">
+              {categoriaLabel[atleta.categoria] ?? atleta.categoria}
+            </p>
+            <h1 className="font-serif text-3xl md:text-5xl text-acl-ink">
               {atleta.nome}
             </h1>
           </div>
@@ -114,13 +114,11 @@ export default function AtletaDetail() {
       </section>
 
       {/* Biografia */}
-      <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-black uppercase mb-4">
-            Biografia e Trajetória
-          </h2>
-          <div className="w-24 h-2 bg-[#D4A244] mb-8 border-4 border-black"></div>
-          <p className="whitespace-pre-wrap">
+      <section className="py-14 px-6 bg-white border-t border-acl-line">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="mb-3">Biografia e trajetória</h2>
+          <div className="w-12 h-px bg-acl-gold-deep mb-8" />
+          <p className="text-acl-ink-soft leading-relaxed whitespace-pre-wrap">
             {atleta.biografia || "Biografia em fase de pesquisa."}
           </p>
         </div>
@@ -128,11 +126,9 @@ export default function AtletaDetail() {
 
       {/* Itens do Acervo */}
       {itensAcervo.length > 0 && (
-        <section className="py-16 px-6 bg-black text-white">
+        <section className="py-14 px-6 bg-acl-ink">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-black uppercase mb-12 text-[#D4A244]">
-              Itens do Acervo Histórico
-            </h2>
+            <h2 className="text-acl-cream mb-10">Itens do acervo histórico</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {itensAcervo.map((item) => (

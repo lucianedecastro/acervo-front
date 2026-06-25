@@ -7,29 +7,36 @@ export default {
     theme: {
         extend: {
             colors: {
-                'cl-yellow': '#FFD700',
-                'cl-pink': '#FF006E',
-                'cl-lime': '#CCFF00',
-                'cl-dark': '#1a1a1a',
+                // Fundo principal (marfim, não branco puro — papel, não tela)
+                'acl-cream': '#F6F1E7',
+
+                // Preto quente, usado em seções de destaque (não preto puro)
+                'acl-ink': '#2A211A',
+                'acl-ink-soft': '#5C5142',
+
+                // Texto terciário / legendas
+                'acl-muted': '#7A6F5A',
+
+                // Acento principal — dourado antigo (medalha, não construção)
+                'acl-gold': '#C9A45C',
+                'acl-gold-deep': '#9C7A3C',
+
+                // Acento secundário, uso esparso (tags, variação visual)
+                'acl-wine': '#8C4A3D',
+
+                // Linhas/divisórias sobre o creme
+                'acl-line': '#D8CFB8',
             },
             fontFamily: {
-                'display': ['system-ui', '-apple-system', 'Inter', 'sans-serif'],
+                // Serifa editorial para títulos — substitui o display neobrutalista
+                serif: ['Fraunces', 'Georgia', 'serif'],
+                // Sans para UI e corpo de texto
+                sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
             },
-            boxShadow: {
-                'neo-sm': '4px 4px 0px 0px rgba(0, 0, 0, 1)',
-                'neo': '8px 8px 0px 0px rgba(0, 0, 0, 1)',
-                'neo-md': '12px 12px 0px 0px rgba(0, 0, 0, 1)',
-                'neo-lg': '16px 16px 0px 0px rgba(0, 0, 0, 1)',
-                'neo-hover': '4px 4px 0px 0px rgba(0, 0, 0, 1)',
+            borderRadius: {
+                'sm': '2px',
             },
         },
     },
     plugins: [],
-    safelist: [
-        'bg-yellow-400',
-        'bg-pink-500',
-        'bg-lime-400',
-        'border-8',
-        'border-black',
-    ],
 }
