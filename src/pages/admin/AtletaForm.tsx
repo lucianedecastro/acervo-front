@@ -46,6 +46,7 @@ export default function AtletaForm() {
 
   /* =====================
      REPRESENTAÇÃO
+     (estado existe; sem campos no formulário ainda — ver observação)
      ===================== */
 
   const [nomeRepresentante, setNomeRepresentante] = useState("")
@@ -54,6 +55,7 @@ export default function AtletaForm() {
 
   /* =====================
      FINANCEIRO
+     (estado existe; sem campos no formulário ainda — ver observação)
      ===================== */
 
   const [tipoChavePix, setTipoChavePix] = useState<TipoChavePix>("CPF")
@@ -179,107 +181,175 @@ export default function AtletaForm() {
   if (loading) return null
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto">
-      <h1 className="text-4xl font-black uppercase flex items-center gap-3">
-        <UserPlus />
-        {isEditing ? `Editar: ${nome}` : "Nova Inserção Curatorial"}
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto pb-16">
+      <h1 className="font-serif text-2xl text-acl-ink flex items-center gap-3">
+        <UserPlus size={22} className="text-acl-gold-deep" />
+        {isEditing ? `Editar: ${nome}` : "Nova inserção curatorial"}
       </h1>
 
       {/* DADOS PRINCIPAIS */}
-      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
-        <h2 className="text-xl font-black uppercase">Dados da Atleta</h2>
+      <section className="card-editorial p-6 space-y-4">
+        <h2 className="text-sm text-acl-ink-soft">Dados da atleta</h2>
 
-        <input
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          placeholder="Nome da atleta"
-          className="w-full border-4 border-black p-3"
-          required
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">Nome</label>
+            <input
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Nome da atleta"
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+              required
+            />
+          </div>
 
-        <select
-          value={categoria}
-          onChange={(e) => setCategoria(e.target.value as CategoriaAtleta)}
-          className="w-full border-4 border-black p-3"
-        >
-          <option value="ATIVA">ATIVA</option>
-          <option value="HISTORICA">HISTÓRICA</option>
-          <option value="ESPOLIO">ESPÓLIO</option>
-        </select>
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">Nome social</label>
+            <input
+              value={nomeSocial}
+              onChange={(e) => setNomeSocial(e.target.value)}
+              placeholder="Opcional"
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+            />
+          </div>
 
-        <select
-          value={statusVerificacao}
-          onChange={(e) => setStatusVerificacao(e.target.value as StatusVerificacao)}
-          className="w-full border-4 border-black p-3"
-        >
-          <option value="PENDENTE">PENDENTE</option>
-          <option value="VERIFICADO">VERIFICADO</option>
-          <option value="REJEITADO">REJEITADO</option>
-          <option value="MEMORIAL_PUBLICO">MEMORIAL PÚBLICO</option>
-        </select>
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="email@exemplo.com"
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+              required
+            />
+          </div>
 
-        <select
-          value={statusAtleta}
-          onChange={(e) => setStatusAtleta(e.target.value as StatusAtleta)}
-          className="w-full border-4 border-black p-3"
-        >
-          <option value="ATIVO">ATIVO</option>
-          <option value="INATIVO">INATIVO</option>
-          <option value="SUSPENSO">SUSPENSO</option>
-        </select>
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">CPF</label>
+            <input
+              value={cpf}
+              onChange={(e) => setCpf(e.target.value)}
+              placeholder="000.000.000-00"
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">Senha</label>
+            <input
+              type="password"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder={isEditing ? "Deixe em branco para manter a atual" : "Senha de acesso"}
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">Categoria</label>
+            <select
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value as CategoriaAtleta)}
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
+            >
+              <option value="ATIVA">Ativa</option>
+              <option value="HISTORICA">Histórica</option>
+              <option value="ESPOLIO">Espólio</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">Status de verificação</label>
+            <select
+              value={statusVerificacao}
+              onChange={(e) => setStatusVerificacao(e.target.value as StatusVerificacao)}
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
+            >
+              <option value="PENDENTE">Pendente</option>
+              <option value="VERIFICADO">Verificado</option>
+              <option value="REJEITADO">Rejeitado</option>
+              <option value="MEMORIAL_PUBLICO">Memorial público</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">Status</label>
+            <select
+              value={statusAtleta}
+              onChange={(e) => setStatusAtleta(e.target.value as StatusAtleta)}
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
+            >
+              <option value="ATIVO">Ativo</option>
+              <option value="INATIVO">Inativo</option>
+              <option value="SUSPENSO">Suspenso</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs text-acl-muted mb-1.5">Observações administrativas</label>
+          <textarea
+            value={observacoesAdmin}
+            onChange={(e) => setObservacoesAdmin(e.target.value)}
+            rows={2}
+            placeholder="Visível apenas internamente, registrada junto à verificação"
+            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep resize-none"
+          />
+        </div>
       </section>
 
       {/* MODALIDADES */}
-      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
-        <h2 className="text-xl font-black uppercase">Modalidades</h2>
+      <section className="card-editorial p-6 space-y-4">
+        <h2 className="text-sm text-acl-ink-soft">Modalidades</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {modalidades.map((modalidade) => (
-        <label
-        key={modalidade.id}
-        className="flex items-center gap-3 border-4 border-black p-3 cursor-pointer font-bold"
-      >
-        <input
-          type="checkbox"
-          checked={modalidadesSelecionadas.includes(modalidade.id)}
-          onChange={(e) => {
-            if (e.target.checked) {
-              setModalidadesSelecionadas((prev) => [
-                ...prev,
-                modalidade.id,
-              ])
-            } else {
-              setModalidadesSelecionadas((prev) =>
-                prev.filter((id) => id !== modalidade.id)
-              )
-            }
-          }}
-          className="w-5 h-5"
-        />
-        {modalidade.nome}
-        </label>
-    ))}
-    </div>
-    </section>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+          {modalidades.map((modalidade) => (
+            <label
+              key={modalidade.id}
+              className="flex items-center gap-3 border border-acl-line rounded-sm p-2.5 text-sm text-acl-ink-soft cursor-pointer hover:border-acl-gold-deep transition-colors"
+            >
+              <input
+                type="checkbox"
+                checked={modalidadesSelecionadas.includes(modalidade.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setModalidadesSelecionadas((prev) => [
+                      ...prev,
+                      modalidade.id,
+                    ])
+                  } else {
+                    setModalidadesSelecionadas((prev) =>
+                      prev.filter((mid) => mid !== modalidade.id)
+                    )
+                  }
+                }}
+                className="w-4 h-4 accent-acl-gold-deep"
+              />
+              {modalidade.nome}
+            </label>
+          ))}
+        </div>
+      </section>
 
       {/* BIOGRAFIA */}
-      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-3">
-        <h2 className="text-xl font-black uppercase">Biografia</h2>
+      <section className="card-editorial p-6 space-y-3">
+        <h2 className="text-sm text-acl-ink-soft">Biografia</h2>
         <textarea
           value={biografia}
           onChange={(e) => setBiografia(e.target.value)}
           rows={6}
-          className="w-full border-4 border-black p-3"
+          className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
         />
       </section>
 
       {/* IMAGENS */}
-      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
-        <h2 className="text-xl font-black uppercase">Imagens</h2>
+      <section className="card-editorial p-6 space-y-4">
+        <h2 className="text-sm text-acl-ink-soft">Imagens</h2>
 
-        <label className="flex items-center gap-3 font-black cursor-pointer">
-          <Upload /> Foto de Perfil
+        <label className="flex items-center gap-2 text-sm text-acl-ink-soft cursor-pointer">
+          <Upload size={15} /> Foto de perfil
           <input
             type="file"
             accept="image/*"
@@ -293,11 +363,11 @@ export default function AtletaForm() {
         </label>
 
         {fotoPerfilPreview && (
-          <img src={fotoPerfilPreview} className="w-32 border-4 border-black" />
+          <img src={fotoPerfilPreview} className="w-28 border border-acl-line" />
         )}
 
-        <label className="flex items-center gap-3 font-black cursor-pointer">
-          <Upload /> Foto de Destaque
+        <label className="flex items-center gap-2 text-sm text-acl-ink-soft cursor-pointer">
+          <Upload size={15} /> Foto de destaque
           <input
             type="file"
             accept="image/*"
@@ -313,26 +383,26 @@ export default function AtletaForm() {
         {fotoDestaquePreview && (
           <img
             src={fotoDestaquePreview}
-            className="w-full max-w-md border-4 border-black"
+            className="w-full max-w-md border border-acl-line"
           />
         )}
       </section>
 
       {/* BOTÕES */}
-      <div className="flex gap-4">
+      <div className="flex gap-3">
         <button
           type="submit"
           disabled={saving}
-          className="bg-black text-white px-8 py-4 font-black uppercase flex items-center gap-2"
+          className="btn-primary flex items-center gap-2 disabled:opacity-50"
         >
-          <Save /> Salvar
+          <Save size={16} /> {saving ? "Salvando..." : "Salvar"}
         </button>
         <button
           type="button"
           onClick={() => navigate("/admin/atletas")}
-          className="border-4 border-black px-8 py-4 font-black uppercase flex items-center gap-2"
+          className="btn-secondary-light flex items-center gap-2"
         >
-          <X /> Cancelar
+          <X size={16} /> Cancelar
         </button>
       </div>
     </form>

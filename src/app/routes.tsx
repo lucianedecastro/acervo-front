@@ -50,7 +50,7 @@ import ModalidadeForm from "@/pages/admin/ModalidadeForm"
 import AdminAtletas from "@/pages/admin/AdminAtletas"
 import AtletaForm from "@/pages/admin/AtletaForm"
 import AdminConfiguracaoFiscal from "@/pages/admin/AdminConfiguracaoFiscal"
-import AdminLicenciamentos from "@/pages/admin/AdminLicenciamentos"
+import AdminVendas from "@/pages/admin/AdminVendas"
 import AdminSimulacaoLicenciamento from "@/pages/admin/AdminSimulacaoLicenciamento"
 import AdminExtratoAtleta from "@/pages/admin/AdminExtratoAtleta"
 
@@ -155,7 +155,7 @@ export function AppRoutes() {
         <Route path="modalidades/editar/:id" element={<ModalidadeForm />} />
 
         {/* Licenciamento */}
-        <Route path="licenciamentos" element={<AdminLicenciamentos />} />
+        <Route path="licenciamentos" element={<AdminVendas />} />
         <Route
           path="licenciamentos/simulacao"
           element={<AdminSimulacaoLicenciamento />}

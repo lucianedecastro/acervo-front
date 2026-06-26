@@ -41,7 +41,7 @@ export default function AdminAtletaAcervo() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="font-black uppercase">Carregando acervo…</p>
+        <p className="text-sm text-acl-muted">Carregando acervo…</p>
       </div>
     )
   }
@@ -53,14 +53,14 @@ export default function AdminAtletaAcervo() {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate("/admin/atletas")}
-          className="p-2 border-4 border-black rounded-lg"
+          className="p-2 border border-acl-line rounded-sm hover:border-acl-gold-deep transition-colors"
         >
-          <ArrowLeft size={20} strokeWidth={3} />
+          <ArrowLeft size={18} className="text-acl-ink-soft" />
         </button>
 
         <div>
-          <h1 className="text-3xl font-black uppercase">Acervo da Atleta</h1>
-          <p className="text-sm font-bold text-gray-600">
+          <h1 className="font-serif text-2xl text-acl-ink">Acervo da atleta</h1>
+          <p className="text-sm text-acl-muted">
             Curadoria, publicação e gestão de imagens
           </p>
         </div>
@@ -68,43 +68,43 @@ export default function AdminAtletaAcervo() {
         <div className="ml-auto">
           <button
             onClick={() => navigate(`/admin/acervo/novo?atletaId=${id}`)}
-            className="px-5 py-3 bg-black text-white font-black uppercase text-xs border-4 border-black flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 text-sm"
           >
-            <Plus size={16} />
-            Novo Item
+            <Plus size={15} />
+            Novo item
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="border-4 border-black bg-red-500 text-white p-4 font-black">
-          {error}
+        <div className="bg-acl-wine/10 border border-acl-wine rounded-sm p-3">
+          <p className="text-acl-wine text-sm">{error}</p>
         </div>
       )}
 
       {itens.length === 0 ? (
-        <div className="border-4 border-black p-6 font-black text-center">
+        <div className="card-editorial p-6 text-center text-sm text-acl-muted">
           Nenhum item cadastrado.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {itens.map(item => (
             <div
               key={item.id}
-              className="border-4 border-black bg-white p-4 space-y-3"
+              className="card-editorial p-4 space-y-3"
             >
-              <h3 className="font-black uppercase text-lg">
+              <h3 className="font-serif text-base text-acl-ink">
                 {item.titulo}
               </h3>
 
-              <span className="inline-block px-3 py-1 border-2 border-black font-black text-xs uppercase">
+              <span className="inline-block px-2.5 py-1 border border-acl-line text-xs text-acl-ink-soft">
                 {item.status}
               </span>
 
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => navigate(`/admin/acervo/editar/${item.id}`)}
-                  className="flex-1 px-3 py-2 border-4 border-black font-black uppercase text-xs"
+                  className="flex-1 px-3 py-2 border border-acl-line rounded-sm text-xs text-acl-ink-soft hover:border-acl-gold-deep transition-colors"
                 >
                   Editar
                 </button>
@@ -112,18 +112,19 @@ export default function AdminAtletaAcervo() {
                 {item.status === "RASCUNHO" && (
                   <button
                     onClick={() => publicarItem(item.id)}
-                    className="flex-1 px-3 py-2 bg-green-500 border-4 border-black font-black uppercase text-xs flex items-center gap-1 justify-center"
+                    className="flex-1 px-3 py-2 bg-acl-gold text-acl-ink rounded-sm text-xs flex items-center gap-1 justify-center hover:bg-acl-gold-deep transition-colors"
                   >
-                    <CheckCircle size={14} />
+                    <CheckCircle size={13} />
                     Publicar
                   </button>
                 )}
 
                 <button
-                  onClick={() => navigate(`/admin/acervo/${item.id}/imagens`)}
-                  className="px-3 py-2 bg-[#D4A244] border-4 border-black"
+                  onClick={() => navigate(`/admin/acervo/imagens/${item.id}`)}
+                  className="px-3 py-2 border border-acl-line rounded-sm hover:border-acl-gold-deep transition-colors"
+                  title="Imagens"
                 >
-                  <Upload size={14} />
+                  <Upload size={14} className="text-acl-ink-soft" />
                 </button>
               </div>
             </div>

@@ -75,8 +75,8 @@ export default function AdminModalidades() {
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center">
-        <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
-        <p className="text-sm sm:text-lg font-black uppercase tracking-wide">Sincronizando modalidades...</p>
+        <div className="w-10 h-10 bg-acl-gold rounded-sm mx-auto mb-4 animate-fade-pulse" />
+        <p className="text-sm text-acl-muted">Sincronizando modalidades...</p>
       </div>
     </div>
   )
@@ -84,94 +84,89 @@ export default function AdminModalidades() {
   if (error) return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center">
-        <p className="text-lg sm:text-xl font-black text-red-600 mb-4 sm:mb-6 uppercase">{error}</p>
+        <p className="text-acl-wine text-sm mb-5">{error}</p>
         <button
           onClick={carregarModalidades}
-          className="px-6 sm:px-8 py-3 bg-black text-white font-black uppercase text-xs sm:text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all"
+          className="btn-secondary-light"
         >
-          Tentar Novamente
+          Tentar novamente
         </button>
       </div>
     </div>
   )
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-        <div className="flex-1">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight mb-2 text-black">
-            Gerenciar Modalidades
-          </h1>
-          <div className="w-24 sm:w-32 h-2 bg-[#D4A244] border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"></div>
-        </div>
+        <h1 className="font-serif text-2xl sm:text-3xl text-acl-ink">
+          Gerenciar modalidades
+        </h1>
 
         <button
           onClick={() => navigate("/admin/modalidades/nova")}
-          className="w-full sm:w-auto px-6 py-3 bg-black text-white font-black uppercase text-xs sm:text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2"
+          className="btn-primary flex items-center justify-center gap-2"
         >
-          <Plus size={18} strokeWidth={3} />
-          Nova Modalidade
+          <Plus size={16} />
+          Nova modalidade
         </button>
       </div>
 
       {/* Conteúdo */}
       {modalidades.length === 0 ? (
-        <div className="bg-white border-4 sm:border-6 border-black rounded-xl p-8 sm:p-16 text-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
-          <p className="text-lg sm:text-xl font-black uppercase text-gray-500">Nenhuma modalidade cadastrada.</p>
+        <div className="card-editorial p-12 text-center">
+          <p className="text-sm text-acl-muted">Nenhuma modalidade cadastrada.</p>
         </div>
       ) : (
-        <div className="bg-white border-4 sm:border-6 border-black rounded-xl overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+        <div className="card-editorial overflow-hidden">
 
           {/* TABELA - DESKTOP (≥768px) */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-black text-white border-b-4 border-black">
-                  <th className="text-left p-4 font-black uppercase text-xs tracking-wider">Ícone</th>
-                  <th className="text-left p-4 font-black uppercase text-xs tracking-wider">Modalidade</th>
-                  <th className="text-center p-4 font-black uppercase text-xs tracking-wider">Pública?</th>
-                  <th className="text-center p-4 font-black uppercase text-xs tracking-wider">Gestão</th>
+                <tr className="border-b border-acl-line">
+                  <th className="text-left p-4 text-xs text-acl-muted">Ícone</th>
+                  <th className="text-left p-4 text-xs text-acl-muted">Modalidade</th>
+                  <th className="text-center p-4 text-xs text-acl-muted">Pública?</th>
+                  <th className="text-center p-4 text-xs text-acl-muted">Gestão</th>
                 </tr>
               </thead>
               <tbody>
-                {modalidades.map((modalidade, index) => (
-                  <tr
-                    key={modalidade.id}
-                    className={`border-b-4 border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                  >
+                {modalidades.map((modalidade) => (
+                  <tr key={modalidade.id} className="border-b border-acl-line">
                     {/* Ícone */}
                     <td className="p-4">
                       {modalidade.pictogramaUrl ? (
-                        <div className="w-12 h-12 bg-gray-100 border-4 border-black rounded-lg flex items-center justify-center p-2">
+                        <div className="w-11 h-11 bg-white border border-acl-line rounded-sm flex items-center justify-center p-2">
                           <img src={modalidade.pictogramaUrl} alt={modalidade.nome} className="w-full h-full object-contain" />
                         </div>
                       ) : (
-                        <div className="w-12 h-12 bg-gray-200 border-4 border-black rounded-lg flex items-center justify-center">
-                          <span className="text-xs font-black text-gray-500">N/A</span>
+                        <div className="w-11 h-11 bg-acl-line/30 rounded-sm flex items-center justify-center">
+                          <span className="text-[10px] text-acl-muted">N/A</span>
                         </div>
                       )}
                     </td>
 
                     {/* Nome */}
                     <td className="p-4">
-                      <strong className="text-base font-black block mb-1">{modalidade.nome}</strong>
-                      <code className="text-xs text-gray-500 font-bold">/{modalidade.slug}</code>
+                      <span className="text-sm text-acl-ink block mb-0.5">{modalidade.nome}</span>
+                      <code className="text-xs text-acl-muted">/{modalidade.slug}</code>
                     </td>
 
                     {/* Status Pública */}
                     <td className="p-4 text-center">
                       <button
                         onClick={() => handleToggleAtiva(modalidade)}
-                        className={`inline-flex items-center gap-2 px-3 py-2 border-4 border-black rounded-lg font-black text-xs uppercase transition-all ${modalidade.ativa
-                            ? 'bg-[#D4A244] hover:bg-[#c59336]'
-                            : 'bg-gray-200 hover:bg-gray-300'
-                          }`}
+                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs transition-colors ${
+                          modalidade.ativa
+                            ? 'bg-acl-gold/15 text-acl-gold-deep'
+                            : 'bg-acl-line/30 text-acl-muted'
+                        }`}
                       >
                         {modalidade.ativa ? (
-                          <CheckCircle size={18} strokeWidth={3} className="text-black" />
+                          <CheckCircle size={14} />
                         ) : (
-                          <XCircle size={18} strokeWidth={3} className="text-gray-600" />
+                          <XCircle size={14} />
                         )}
                         <span>{modalidade.ativa ? 'Sim' : 'Não'}</span>
                       </button>
@@ -182,17 +177,17 @@ export default function AdminModalidades() {
                       <div className="flex justify-center gap-2">
                         <button
                           onClick={() => navigate(`/admin/modalidades/editar/${modalidade.id}`)}
-                          className="px-3 py-2 bg-white text-black font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1"
+                          className="p-2 border border-acl-line rounded-sm hover:border-acl-gold-deep transition-colors"
+                          title="Editar"
                         >
-                          <Edit size={14} strokeWidth={3} />
-                          Editar
+                          <Edit size={14} className="text-acl-ink-soft" />
                         </button>
                         <button
                           onClick={() => handleRemover(modalidade.id)}
-                          className="px-3 py-2 bg-red-500 text-white font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1"
+                          className="p-2 border border-acl-line rounded-sm hover:border-acl-wine transition-colors"
+                          title="Excluir"
                         >
-                          <Trash2 size={14} strokeWidth={3} />
-                          Excluir
+                          <Trash2 size={14} className="text-acl-wine" />
                         </button>
                       </div>
                     </td>
@@ -203,63 +198,52 @@ export default function AdminModalidades() {
           </div>
 
           {/* CARDS - MOBILE (<768px) */}
-          <div className="md:hidden divide-y-4 divide-gray-200">
+          <div className="md:hidden divide-y divide-acl-line">
             {modalidades.map((modalidade) => (
               <div key={modalidade.id} className="p-4 space-y-3">
                 <div className="flex items-start gap-3">
-                  {/* Ícone */}
                   {modalidade.pictogramaUrl ? (
-                    <div className="w-14 h-14 bg-gray-100 border-4 border-black rounded-lg flex items-center justify-center p-2 flex-shrink-0">
+                    <div className="w-12 h-12 bg-white border border-acl-line rounded-sm flex items-center justify-center p-2 flex-shrink-0">
                       <img src={modalidade.pictogramaUrl} alt={modalidade.nome} className="w-full h-full object-contain" />
                     </div>
                   ) : (
-                    <div className="w-14 h-14 bg-gray-200 border-4 border-black rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-black text-gray-500">N/A</span>
+                    <div className="w-12 h-12 bg-acl-line/30 rounded-sm flex items-center justify-center flex-shrink-0">
+                      <span className="text-[10px] text-acl-muted">N/A</span>
                     </div>
                   )}
 
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-black mb-1 break-words">{modalidade.nome}</h3>
-                    <code className="text-xs text-gray-500 font-bold break-all">/{modalidade.slug}</code>
+                    <h3 className="text-sm text-acl-ink mb-1 break-words">{modalidade.nome}</h3>
+                    <code className="text-xs text-acl-muted break-all">/{modalidade.slug}</code>
                   </div>
                 </div>
 
-                {/* Status Toggle */}
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
-                  <span className="text-xs font-black uppercase text-gray-600">Pública</span>
+                <div className="flex items-center justify-between p-2.5 bg-acl-cream rounded-sm">
+                  <span className="text-xs text-acl-muted">Pública</span>
                   <button
                     onClick={() => handleToggleAtiva(modalidade)}
-                    className={`flex items-center gap-2 px-3 py-2 border-4 border-black rounded-lg transition-all ${modalidade.ativa
-                        ? 'bg-[#D4A244]'
-                        : 'bg-gray-200'
-                      }`}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs transition-colors ${
+                      modalidade.ativa ? 'bg-acl-gold/15 text-acl-gold-deep' : 'bg-acl-line/30 text-acl-muted'
+                    }`}
                   >
-                    {modalidade.ativa ? (
-                      <CheckCircle size={16} strokeWidth={3} className="text-black" />
-                    ) : (
-                      <XCircle size={16} strokeWidth={3} className="text-gray-600" />
-                    )}
-                    <span className="font-black text-xs uppercase">
-                      {modalidade.ativa ? 'Sim' : 'Não'}
-                    </span>
+                    {modalidade.ativa ? <CheckCircle size={14} /> : <XCircle size={14} />}
+                    <span>{modalidade.ativa ? 'Sim' : 'Não'}</span>
                   </button>
                 </div>
 
-                {/* Ações */}
                 <div className="flex gap-2">
                   <button
                     onClick={() => navigate(`/admin/modalidades/editar/${modalidade.id}`)}
-                    className="flex-1 px-3 py-2 bg-white text-black font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1"
+                    className="flex-1 px-3 py-2 border border-acl-line rounded-sm text-xs text-acl-ink-soft flex items-center justify-center gap-1.5"
                   >
-                    <Edit size={14} strokeWidth={3} />
+                    <Edit size={13} />
                     Editar
                   </button>
                   <button
                     onClick={() => handleRemover(modalidade.id)}
-                    className="flex-1 px-3 py-2 bg-red-500 text-white font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1"
+                    className="flex-1 px-3 py-2 border border-acl-line rounded-sm text-xs text-acl-wine flex items-center justify-center gap-1.5"
                   >
-                    <Trash2 size={14} strokeWidth={3} />
+                    <Trash2 size={13} />
                     Excluir
                   </button>
                 </div>

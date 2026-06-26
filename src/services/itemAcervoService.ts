@@ -55,6 +55,16 @@ export const itemAcervoService = {
     return response.data
   },
 
+  /**
+   * Busca um item pelo ID para contexto administrativo (curadoria)
+   * - Sem filtro de status — funciona também para RASCUNHO/ARQUIVADO
+   * - Use esta, não obterPorId, dentro de telas de edição do admin
+   */
+  async obterPorIdAdmin(id: string): Promise<ItemAcervoResponseDTO> {
+    const response = await api.get(`/acervo/admin/${id}`)
+    return response.data
+  },
+
   /* ======================
      CRIAÇÃO
      ====================== */
@@ -66,6 +76,15 @@ export const itemAcervoService = {
    */
   async criar(payload: ItemAcervoCreateDTO): Promise<ItemAcervoResponseDTO> {
     const response = await api.post("/acervo", payload)
+    return response.data
+  },
+
+  /**
+   * Atualiza os dados editoriais de um item já existente
+   * - Não altera fotos nem o registro de blockchain
+   */
+  async atualizar(id: string, payload: ItemAcervoCreateDTO): Promise<ItemAcervoResponseDTO> {
+    const response = await api.put(`/acervo/${id}`, payload)
     return response.data
   },
 

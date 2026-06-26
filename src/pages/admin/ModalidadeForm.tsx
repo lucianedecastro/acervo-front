@@ -18,6 +18,9 @@ export default function ModalidadeForm() {
   const [pictogramaFile, setPictogramaFile] = useState<File | null>(null)
   const [fotoDestaqueFile, setFotoDestaqueFile] = useState<File | null>(null)
 
+  const [pictogramaPreview, setPictogramaPreview] = useState<string | null>(null)
+  const [fotoDestaquePreview, setFotoDestaquePreview] = useState<string | null>(null)
+
   const [ativa, setAtiva] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -91,79 +94,141 @@ export default function ModalidadeForm() {
     }
   }
 
+  if (loading && isEdit && !nome) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-sm text-acl-muted">Carregando modalidade...</p>
+      </div>
+    )
+  }
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <h1 className="text-4xl font-black uppercase flex items-center gap-4">
-        <Trophy size={36} strokeWidth={3} />
-        {isEdit ? `Editar: ${nome}` : "Cadastrar Modalidade"}
+    <div className="max-w-3xl mx-auto space-y-6 pb-16">
+      <h1 className="font-serif text-2xl text-acl-ink flex items-center gap-3">
+        <Trophy size={22} className="text-acl-gold-deep" />
+        {isEdit ? `Editar: ${nome}` : "Cadastrar modalidade"}
       </h1>
 
       {error && (
-        <div className="bg-red-500 border-4 border-black p-4 rounded-xl text-white font-black">
-          {error}
+        <div className="bg-acl-wine/10 border border-acl-wine rounded-sm p-3">
+          <p className="text-acl-wine text-sm">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6 border-4 border-black p-6 rounded-xl bg-white">
+      <form onSubmit={handleSubmit} className="card-editorial p-6 space-y-5">
 
         {/* Nome */}
-        <input
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          required
-          placeholder="Nome da modalidade"
-          className="w-full border-4 border-black p-3 font-bold"
-        />
-
-        {/* Pictograma (URL Cloudinary) */}
         <div>
-          <label className="font-black uppercase text-sm flex items-center gap-2">
-            <Upload size={16} /> Pictograma (URL do Cloudinary)
+          <label className="block text-xs text-acl-muted mb-1.5">Nome</label>
+          <input
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            required
+            placeholder="Nome da modalidade"
+            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+          />
+        </div>
+
+        {/* Pictograma */}
+        <div className="space-y-2.5">
+          <label className="block text-xs text-acl-muted">Pictograma</label>
+
+          {(pictogramaPreview || pictogramaUrl) && (
+            <div className="w-16 h-16 border border-acl-line rounded-sm flex items-center justify-center p-2 bg-white">
+              <img
+                src={pictogramaPreview || pictogramaUrl}
+                alt="Pictograma atual"
+                className="w-full h-full object-contain"
+              />
+            </div>
+          )}
+
+          <label className="flex items-center gap-2 text-sm text-acl-ink-soft cursor-pointer">
+            <Upload size={15} /> Enviar arquivo
+            <input
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                setPictogramaFile(file)
+                if (file) setPictogramaPreview(URL.createObjectURL(file))
+              }}
+            />
           </label>
+
           <input
             type="url"
             value={pictogramaUrl}
             onChange={(e) => setPictogramaUrl(e.target.value)}
-            placeholder="https://res.cloudinary.com/..."
-            className="w-full border-4 border-black p-3 font-bold"
+            placeholder="ou cole a URL do Cloudinary manualmente"
+            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
           />
         </div>
 
-        {/* Upload Foto Destaque */}
-        <div>
-          <label className="font-black uppercase text-sm flex items-center gap-2">
-            <Upload size={16} /> Foto de Destaque
+        {/* Foto de destaque */}
+        <div className="space-y-2.5">
+          <label className="block text-xs text-acl-muted">Foto de destaque</label>
+
+          {fotoDestaquePreview && (
+            <img
+              src={fotoDestaquePreview}
+              alt="Pré-visualização"
+              className="w-full max-w-sm border border-acl-line rounded-sm"
+            />
+          )}
+
+          <label className="flex items-center gap-2 text-sm text-acl-ink-soft cursor-pointer">
+            <Upload size={15} /> Enviar arquivo
+            <input
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                setFotoDestaqueFile(file)
+                if (file) setFotoDestaquePreview(URL.createObjectURL(file))
+              }}
+            />
           </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFotoDestaqueFile(e.target.files?.[0] || null)}
+        </div>
+
+        {/* História */}
+        <div>
+          <label className="block text-xs text-acl-muted mb-1.5">História</label>
+          <textarea
+            value={historia}
+            onChange={(e) => setHistoria(e.target.value)}
+            rows={6}
+            placeholder="História da modalidade"
+            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
           />
         </div>
 
-        <textarea
-          value={historia}
-          onChange={(e) => setHistoria(e.target.value)}
-          rows={6}
-          placeholder="História da modalidade"
-          className="w-full border-4 border-black p-3"
-        />
-
-        <label className="flex items-center gap-3 font-black uppercase text-sm">
-          <input type="checkbox" checked={ativa} onChange={(e) => setAtiva(e.target.checked)} />
+        <label className="flex items-center gap-3 text-sm text-acl-ink-soft cursor-pointer">
+          <input
+            type="checkbox"
+            checked={ativa}
+            onChange={(e) => setAtiva(e.target.checked)}
+            className="w-4 h-4 accent-acl-gold-deep"
+          />
           Modalidade ativa
         </label>
 
-        <div className="flex gap-4">
-          <button className="flex-1 bg-black text-white font-black uppercase p-3 flex items-center justify-center gap-2">
-            <Save size={20} /> Salvar
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <Save size={16} /> {loading ? "Salvando..." : "Salvar"}
           </button>
           <button
             type="button"
             onClick={() => navigate("/admin/modalidades")}
-            className="border-4 border-black p-3 font-black uppercase"
+            className="btn-secondary-light flex items-center gap-2"
           >
-            <X size={20} /> Cancelar
+            <X size={16} /> Cancelar
           </button>
         </div>
       </form>

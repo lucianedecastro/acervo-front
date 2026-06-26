@@ -4,12 +4,14 @@ import { itemAcervoService } from "@/services/itemAcervoService"
 import { ArrowLeft, Upload, Loader2 } from "lucide-react"
 
 export default function AdminItemAcervoImagens() {
-  
+
   const { itemId } = useParams<{ itemId: string }>()
   const navigate = useNavigate()
 
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [ehDestaque, setEhDestaque] = useState(true)
+  const [legenda, setLegenda] = useState("Imagem do acervo")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -40,22 +42,21 @@ export default function AdminItemAcervoImagens() {
         {
           // CONTRATO COMPLETO COM O BACKEND
           // Estes campos são nulos porque o Backend/Cloudinary os preencherá
-          id: undefined, 
-          publicId: "", 
-          version: "", 
-          url: "", 
+          id: undefined,
+          publicId: "",
+          version: "",
+          url: "",
           filename: file.name,
 
-          legenda: "Imagem do acervo",
-          ehDestaque: true,
+          legenda,
+          ehDestaque,
           autorNomePublico: "Acervo Carmen Lydia",
           licenciamentoPermitido: true,
         }
       )
 
       alert("Imagem enviada e vinculada com sucesso!")
-      // Redireciona para a lista geral ou para o detalhe do item recém criado
-      navigate("/admin/atletas") 
+      navigate("/admin/atletas")
     } catch (err) {
       console.error("Erro no upload:", err)
       setError("Erro ao enviar imagem. Verifique a conexão com o servidor.")
@@ -65,50 +66,71 @@ export default function AdminItemAcervoImagens() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 border-4 border-black rounded-lg hover:bg-gray-100 transition-colors"
+          className="p-2 border border-acl-line rounded-sm hover:border-acl-gold-deep transition-colors"
         >
-          <ArrowLeft size={20} strokeWidth={3} />
+          <ArrowLeft size={18} className="text-acl-ink-soft" />
         </button>
 
         <div>
-          <h1 className="text-3xl font-black uppercase">
-            Imagens do Item
+          <h1 className="font-serif text-2xl text-acl-ink">
+            Imagens do item
           </h1>
-          <p className="text-sm font-bold text-gray-600">
-            Upload protegido • ID do Item: {itemId}
+          <p className="text-sm text-acl-muted">
+            Upload protegido • ID do item: {itemId}
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="border-4 border-black bg-red-500 text-white p-4 font-black">
-          {error}
+        <div className="bg-acl-wine/10 border border-acl-wine rounded-sm p-3">
+          <p className="text-acl-wine text-sm">{error}</p>
         </div>
       )}
 
-      <div className="border-4 border-black p-6 rounded-xl bg-white space-y-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      <div className="card-editorial p-6 space-y-5">
         <div>
-          <label className="block font-black uppercase text-sm mb-2">
-            Selecionar arquivo original (Alta Resolução)
+          <label className="block text-sm text-acl-ink-soft mb-2">
+            Selecionar arquivo original (alta resolução)
           </label>
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="w-full font-bold file:mr-4 file:py-2 file:px-4 file:border-4 file:border-black file:bg-yellow-400 file:font-black file:uppercase hover:file:bg-black hover:file:text-white cursor-pointer"
+            className="w-full text-sm text-acl-ink-soft file:mr-4 file:py-2 file:px-4 file:border file:border-acl-line file:rounded-sm file:bg-white file:text-acl-ink-soft hover:file:border-acl-gold-deep cursor-pointer"
           />
         </div>
 
+        <div>
+          <label className="block text-sm text-acl-ink-soft mb-2">
+            Legenda
+          </label>
+          <input
+            value={legenda}
+            onChange={(e) => setLegenda(e.target.value)}
+            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+          />
+        </div>
+
+        <label className="flex items-center gap-2.5 text-sm text-acl-ink-soft cursor-pointer">
+          <input
+            type="checkbox"
+            checked={ehDestaque}
+            onChange={(e) => setEhDestaque(e.target.checked)}
+            className="w-4 h-4 accent-acl-gold-deep"
+          />
+          Marcar como foto de destaque deste item
+        </label>
+
         {preview && (
-          <div className="space-y-2 pt-4 border-t-4 border-black border-dashed">
-            <p className="font-black uppercase text-xs text-gray-500">
-              Pré-visualização do Arquivo
+          <div className="space-y-2 pt-4 border-t border-acl-line">
+            <p className="text-xs text-acl-muted">
+              Pré-visualização do arquivo
             </p>
-            <div className="relative aspect-video border-4 border-black bg-gray-100 overflow-hidden">
+            <div className="relative aspect-video border border-acl-line bg-acl-cream overflow-hidden">
               <img
                 src={preview}
                 alt="Preview"
@@ -118,23 +140,23 @@ export default function AdminItemAcervoImagens() {
           </div>
         )}
 
-        <div className="flex gap-4 pt-4">
+        <div className="pt-2">
           <button
             onClick={handleUpload}
             disabled={loading || !file}
-            className={`flex-1 bg-black text-white font-black uppercase p-4 flex items-center justify-center gap-2 transition-transform active:scale-95 ${
-              (loading || !file) ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-500 hover:text-black"
+            className={`w-full btn-primary flex items-center justify-center gap-2 ${
+              (loading || !file) ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {loading ? <Loader2 className="animate-spin" /> : <Upload size={20} />}
-            {loading ? "Enviando para o Acervo..." : "Confirmar e Vincular Imagem"}
+            {loading ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
+            {loading ? "Enviando para o acervo..." : "Confirmar e vincular imagem"}
           </button>
         </div>
       </div>
 
-      <div className="bg-blue-50 border-4 border-blue-600 p-4">
-        <p className="text-xs font-bold text-blue-800 uppercase">
-          ℹ Nota: Após o upload, o sistema gerará automaticamente as versões com marca d'água para visualização pública.
+      <div className="bg-acl-gold/10 border border-acl-gold-deep rounded-sm p-4">
+        <p className="text-xs text-acl-ink-soft">
+          Nota: após o upload, o sistema gerará automaticamente as versões com marca d'água para visualização pública.
         </p>
       </div>
     </div>

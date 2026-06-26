@@ -4,6 +4,25 @@ import { atletaService } from "@/services/atletaService"
 import { Atleta, CategoriaAtleta, StatusAtleta, StatusVerificacao } from "@/types/atleta"
 import { Plus, Edit, Trash2, Filter, X, Image } from "lucide-react"
 
+const categoriaLabel: Record<string, string> = {
+  ATIVA: "Ativa",
+  HISTORICA: "Histórica",
+  ESPOLIO: "Espólio",
+}
+
+const verificacaoLabel: Record<string, string> = {
+  PENDENTE: "Pendente",
+  VERIFICADO: "Verificado",
+  REJEITADO: "Rejeitado",
+  MEMORIAL_PUBLICO: "Memorial público",
+}
+
+const statusAtletaLabel: Record<string, string> = {
+  ATIVO: "Ativo",
+  INATIVO: "Inativo",
+  SUSPENSO: "Suspenso",
+}
+
 export default function AdminAtletas() {
   const navigate = useNavigate()
   const [atletas, setAtletas] = useState<Atleta[]>([])
@@ -17,6 +36,7 @@ export default function AdminAtletas() {
   async function carregar() {
     try {
       setLoading(true)
+      setError(null)
       const data = await atletaService.listarTodasAdmin()
       setAtletas(data)
     } catch (err) {
@@ -56,68 +76,89 @@ export default function AdminAtletas() {
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center">
-        <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
-        <p className="text-sm sm:text-lg font-black uppercase tracking-wide">Sincronizando acervo...</p>
+        <div className="w-10 h-10 bg-acl-gold rounded-sm mx-auto mb-4 animate-fade-pulse" />
+        <p className="text-sm text-acl-muted">Sincronizando acervo...</p>
       </div>
     </div>
   )
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-        <div className="flex-1">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight mb-2 text-black">
-            Gestão do Acervo
+        <div>
+          <h1 className="font-serif text-2xl sm:text-3xl text-acl-ink mb-1">
+            Gestão do acervo
           </h1>
-          <p className="text-gray-600 font-bold text-sm sm:text-base mb-3">
+          <p className="text-acl-muted text-sm">
             Administração técnica de perfis esportivos
           </p>
-          <div className="w-24 sm:w-32 h-2 bg-[#D4A244] border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"></div>
         </div>
 
         <button
           onClick={() => navigate("/admin/atletas/nova")}
-          className="w-full sm:w-auto px-6 py-3 bg-black text-white font-black uppercase text-xs sm:text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2"
+          className="btn-primary flex items-center justify-center gap-2"
         >
-          <Plus size={18} strokeWidth={3} />
-          Nova Atleta
+          <Plus size={16} />
+          Nova atleta
         </button>
       </div>
 
+      {error && (
+        <div className="bg-acl-wine/10 border border-acl-wine rounded-sm p-3">
+          <p className="text-acl-wine text-sm">{error}</p>
+        </div>
+      )}
+
       {/* Barra de Filtros */}
-      <div className="bg-white border-4 sm:border-6 border-black rounded-xl p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      <div className="card-editorial p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Filter size={20} strokeWidth={3} />
-          <h3 className="text-base font-black uppercase">Filtros</h3>
+          <Filter size={16} className="text-acl-ink-soft" />
+          <h3 className="text-sm text-acl-ink-soft">Filtros</h3>
         </div>
 
         <div className="space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Categoria</label>
+              <label className="block text-xs text-acl-muted mb-2">Categoria</label>
               <select
                 value={filtroCategoria}
                 onChange={e => setFiltroCategoria(e.target.value as any)}
-                className="w-full px-3 py-2 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-3 py-2 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
               >
-                <option value="ALL">Todas as Categorias</option>
-                <option value="ATIVA">ATIVA</option>
-                <option value="HISTORICA">HISTÓRICA</option>
-                <option value="ESPOLIO">ESPÓLIO</option>
+                <option value="ALL">Todas as categorias</option>
+                <option value="ATIVA">Ativa</option>
+                <option value="HISTORICA">Histórica</option>
+                <option value="ESPOLIO">Espólio</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Verificação</label>
+              <label className="block text-xs text-acl-muted mb-2">Status</label>
+              <select
+                value={filtroStatus}
+                onChange={e => setFiltroStatus(e.target.value as any)}
+                className="w-full px-3 py-2 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
+              >
+                <option value="ALL">Todos os status</option>
+                <option value="ATIVO">Ativo</option>
+                <option value="INATIVO">Inativo</option>
+                <option value="SUSPENSO">Suspenso</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs text-acl-muted mb-2">Verificação</label>
               <select
                 value={filtroVerificacao}
                 onChange={e => setFiltroVerificacao(e.target.value as any)}
-                className="w-full px-3 py-2 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-3 py-2 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
               >
-                <option value="ALL">Status de Verificação</option>
-                <option value="PENDENTE">PENDENTE</option>
-                <option value="VERIFICADO">VERIFICADO</option>
+                <option value="ALL">Status de verificação</option>
+                <option value="PENDENTE">Pendente</option>
+                <option value="VERIFICADO">Verificado</option>
+                <option value="REJEITADO">Rejeitado</option>
+                <option value="MEMORIAL_PUBLICO">Memorial público</option>
               </select>
             </div>
           </div>
@@ -125,9 +166,9 @@ export default function AdminAtletas() {
           <div className="flex justify-end">
             <button
               onClick={limparFiltros}
-              className="px-4 py-2 bg-gray-200 text-black font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
+              className="px-4 py-2 text-xs text-acl-ink-soft hover:text-acl-gold-deep transition-colors flex items-center gap-2"
             >
-              <X size={16} strokeWidth={3} />
+              <X size={14} />
               Limpar
             </button>
           </div>
@@ -135,39 +176,53 @@ export default function AdminAtletas() {
       </div>
 
       {/* Tabela Desktop */}
-      <div className="bg-white border-4 sm:border-6 border-black rounded-xl overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+      <div className="card-editorial overflow-hidden">
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-black text-white border-b-4 border-black">
-                <th className="text-left p-4 font-black uppercase text-xs tracking-wider">Nome</th>
-                <th className="text-center p-4 font-black uppercase text-xs tracking-wider">Categoria</th>
-                <th className="text-center p-4 font-black uppercase text-xs tracking-wider">Verificação</th>
-                <th className="text-center p-4 font-black uppercase text-xs tracking-wider">Status</th>
-                <th className="text-center p-4 font-black uppercase text-xs tracking-wider">Ações</th>
+              <tr className="border-b border-acl-line">
+                <th className="text-left p-4 text-xs text-acl-muted">Nome</th>
+                <th className="text-center p-4 text-xs text-acl-muted">Categoria</th>
+                <th className="text-center p-4 text-xs text-acl-muted">Verificação</th>
+                <th className="text-center p-4 text-xs text-acl-muted">Status</th>
+                <th className="text-center p-4 text-xs text-acl-muted">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {atletasFiltradas.map((a, index) => (
-                <tr key={a.id} className={`border-b-4 border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                  <td className="p-4"><strong className="text-base font-black">{a.nome}</strong></td>
-                  <td className="p-4 text-center"><span className="inline-block px-3 py-1 bg-[#D4A244] border-2 border-black rounded-md font-black text-xs uppercase">{a.categoria}</span></td>
+              {atletasFiltradas.map((a) => (
+                <tr key={a.id} className="border-b border-acl-line">
+                  <td className="p-4">
+                    <span className="text-sm text-acl-ink">{a.nome}</span>
+                  </td>
                   <td className="p-4 text-center">
-                    <span className={`inline-block px-3 py-1 border-2 border-black rounded-md font-black text-xs uppercase ${a.statusVerificacao === 'VERIFICADO' ? 'bg-green-400' : 'bg-yellow-300'}`}>
-                      {a.statusVerificacao === 'VERIFICADO' ? 'VERIFICADO' : 'MEMORIAL PÚBLICO'}
+                    <span className="text-xs text-acl-gold-deep">
+                      {categoriaLabel[a.categoria] ?? a.categoria}
                     </span>
                   </td>
-                  <td className="p-4 text-center"><span className="inline-block px-3 py-1 bg-white border-2 border-black rounded-md font-black text-xs uppercase">{a.statusAtleta === 'ATIVO' ? 'ATIVO' : 'MEMORIAL'}</span></td>
+                  <td className="p-4 text-center">
+                    <span className={`text-xs ${
+                      a.statusVerificacao === 'VERIFICADO' ? 'text-green-700' :
+                      a.statusVerificacao === 'REJEITADO' ? 'text-acl-wine' :
+                      'text-acl-muted'
+                    }`}>
+                      {verificacaoLabel[a.statusVerificacao] ?? a.statusVerificacao}
+                    </span>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="text-xs text-acl-ink-soft">
+                      {statusAtletaLabel[a.statusAtleta] ?? a.statusAtleta}
+                    </span>
+                  </td>
                   <td className="p-4">
                     <div className="flex justify-center gap-2">
-                      <button onClick={() => navigate(`/admin/atletas/editar/${a.id}`)} className="px-3 py-2 bg-white text-black font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1">
-                        <Edit size={14} strokeWidth={3} /> Editar
+                      <button onClick={() => navigate(`/admin/atletas/editar/${a.id}`)} className="p-2 border border-acl-line rounded-sm hover:border-acl-gold-deep transition-colors" title="Editar">
+                        <Edit size={14} className="text-acl-ink-soft" />
                       </button>
-                      <button onClick={() => navigate(`/admin/atletas/${a.id}/acervo`)} className="px-3 py-2 bg-[#D4A244] text-black font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1">
-                        <Image size={14} strokeWidth={3} /> Acervo
+                      <button onClick={() => navigate(`/admin/atletas/${a.id}/acervo`)} className="p-2 border border-acl-line rounded-sm hover:border-acl-gold-deep transition-colors" title="Acervo">
+                        <Image size={14} className="text-acl-ink-soft" />
                       </button>
-                      <button onClick={() => handleRemover(a.id, a.nome)} className="px-3 py-2 bg-red-500 text-white font-black uppercase text-xs border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1">
-                        <Trash2 size={14} strokeWidth={3} /> Excluir
+                      <button onClick={() => handleRemover(a.id, a.nome)} className="p-2 border border-acl-line rounded-sm hover:border-acl-wine transition-colors" title="Excluir">
+                        <Trash2 size={14} className="text-acl-wine" />
                       </button>
                     </div>
                   </td>
@@ -178,19 +233,25 @@ export default function AdminAtletas() {
         </div>
 
         {/* Mobile */}
-        <div className="md:hidden divide-y-4 divide-gray-200">
+        <div className="md:hidden divide-y divide-acl-line">
           {atletasFiltradas.map((a) => (
             <div key={a.id} className="p-4 space-y-3">
-              <h3 className="text-base font-black">{a.nome}</h3>
-              <div className="flex gap-2 pt-2">
-                <button onClick={() => navigate(`/admin/atletas/editar/${a.id}`)} className="flex-1 px-3 py-2 bg-white text-black font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                  <Edit size={14} strokeWidth={3} /> Editar
+              <div>
+                <h3 className="text-sm text-acl-ink mb-1">{a.nome}</h3>
+                <div className="flex items-center gap-3 text-xs text-acl-muted">
+                  <span className="text-acl-gold-deep">{categoriaLabel[a.categoria] ?? a.categoria}</span>
+                  <span>{statusAtletaLabel[a.statusAtleta] ?? a.statusAtleta}</span>
+                </div>
+              </div>
+              <div className="flex gap-2 pt-1">
+                <button onClick={() => navigate(`/admin/atletas/editar/${a.id}`)} className="flex-1 px-3 py-2 border border-acl-line rounded-sm text-xs text-acl-ink-soft flex items-center justify-center gap-1.5">
+                  <Edit size={13} /> Editar
                 </button>
-                <button onClick={() => navigate(`/admin/atletas/${a.id}/acervo`)} className="flex-1 px-3 py-2 bg-[#D4A244] text-black font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                  <Image size={14} strokeWidth={3} /> Acervo
+                <button onClick={() => navigate(`/admin/atletas/${a.id}/acervo`)} className="flex-1 px-3 py-2 border border-acl-line rounded-sm text-xs text-acl-ink-soft flex items-center justify-center gap-1.5">
+                  <Image size={13} /> Acervo
                 </button>
-                <button onClick={() => handleRemover(a.id, a.nome)} className="flex-1 px-3 py-2 bg-red-500 text-white font-black uppercase text-[10px] border-4 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                  <Trash2 size={14} strokeWidth={3} /> Excluir
+                <button onClick={() => handleRemover(a.id, a.nome)} className="flex-1 px-3 py-2 border border-acl-line rounded-sm text-xs text-acl-wine flex items-center justify-center gap-1.5">
+                  <Trash2 size={13} /> Excluir
                 </button>
               </div>
             </div>

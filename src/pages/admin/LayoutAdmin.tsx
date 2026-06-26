@@ -6,6 +6,7 @@ import {
   Users,
   DollarSign,
   FileText,
+  Calculator,
   Scale,
   Eye,
   LogOut,
@@ -56,36 +57,38 @@ export default function LayoutAdmin() {
   }
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-3 px-4 py-3 font-black uppercase text-xs border-4 border-black rounded-xl transition-all mb-2 ${collapsed && !isMobile ? "justify-center" : ""
-    } ${isActive
-      ? "bg-[#D4A244] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-      : "bg-white text-black hover:bg-gray-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1"
+    `flex items-center gap-3 px-4 py-2.5 text-sm rounded-sm transition-colors mb-1 border-l-2 ${
+      collapsed && !isMobile ? "justify-center" : ""
+    } ${
+      isActive
+        ? "bg-acl-gold/15 text-acl-gold-deep border-acl-gold-deep"
+        : "text-acl-ink-soft border-transparent hover:bg-white hover:text-acl-ink"
     }`
 
   const sidebarWidth = collapsed && !isMobile ? "w-20" : "w-64"
   const showLabels = !collapsed || isMobile
 
   return (
-    <div className="min-h-screen flex bg-gray-50 overflow-x-hidden">
+    <div className="min-h-screen flex bg-acl-cream overflow-x-hidden">
       {/* OVERLAY MOBILE */}
       {isMobile && mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 transition-opacity"
+          className="fixed inset-0 bg-acl-ink/40 z-30 transition-opacity"
           onClick={closeMobileSidebar}
         />
       )}
 
       {/* TOP BAR MOBILE */}
       {isMobile && (
-        <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b-4 border-black flex items-center justify-between px-4 z-20 shadow-[0_4px_0px_0px_rgba(0,0,0,1)]">
-          <h1 className="text-lg font-black uppercase">
-            <span className="text-[#D4A244]">Admin</span> Acervo
+        <div className="fixed top-0 left-0 right-0 h-16 bg-acl-cream/95 backdrop-blur-sm border-b border-acl-line flex items-center justify-between px-4 z-20">
+          <h1 className="font-serif text-base text-acl-ink">
+            Admin <span className="text-acl-gold-deep">Acervo</span>
           </h1>
           <button
             onClick={toggleSidebar}
-            className="w-12 h-12 bg-[#D4A244] text-black border-4 border-black rounded-lg flex items-center justify-center hover:bg-black hover:text-[#D4A244] transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+            className="w-10 h-10 border border-acl-line rounded-sm flex items-center justify-center text-acl-ink hover:border-acl-gold-deep transition-colors"
           >
-            {mobileOpen ? <X size={24} strokeWidth={3} /> : <Menu size={24} strokeWidth={3} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       )}
@@ -94,7 +97,7 @@ export default function LayoutAdmin() {
       <aside
         className={`
           ${sidebarWidth}
-          bg-white border-r-4 border-black flex flex-col h-screen transition-all duration-300 ease-in-out
+          bg-white border-r border-acl-line flex flex-col h-screen transition-all duration-300 ease-in-out
           ${isMobile
             ? `fixed top-0 left-0 z-40 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`
             : 'fixed'
@@ -102,95 +105,100 @@ export default function LayoutAdmin() {
         `}
       >
         {/* Header Sidebar */}
-        <div className="p-4 border-b-4 border-black bg-gray-50 relative flex items-center justify-between">
+        <div className="p-4 border-b border-acl-line relative flex items-center justify-between">
           {showLabels && (
             <h1
               onClick={() => navigate("/admin")}
-              className="text-xl font-black uppercase cursor-pointer leading-tight hover:text-[#D4A244] transition-colors"
+              className="font-serif text-lg text-acl-ink cursor-pointer leading-tight hover:text-acl-gold-deep transition-colors"
             >
-              ADMIN
+              Admin
               <br />
-              <span className="text-[#D4A244]">Acervo Atleta</span>
+              <span className="text-acl-gold-deep text-base">Acervo Carmen Lydia</span>
             </h1>
           )}
 
           {!isMobile && (
             <button
               onClick={toggleSidebar}
-              className="w-10 h-10 bg-[#D4A244] text-black border-4 border-black rounded-lg flex items-center justify-center hover:bg-black hover:text-[#D4A244] transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none flex-shrink-0"
+              className="w-9 h-9 border border-acl-line rounded-sm flex items-center justify-center text-acl-ink-soft hover:border-acl-gold-deep hover:text-acl-gold-deep transition-colors flex-shrink-0"
             >
-              {collapsed ? <Menu size={20} strokeWidth={3} /> : <X size={20} strokeWidth={3} />}
+              {collapsed ? <Menu size={16} /> : <X size={16} />}
             </button>
           )}
 
           {isMobile && (
             <button
               onClick={closeMobileSidebar}
-              className="w-10 h-10 bg-black text-white border-4 border-black rounded-lg flex items-center justify-center hover:bg-[#D4A244] hover:text-black transition-all"
+              className="w-9 h-9 border border-acl-line rounded-sm flex items-center justify-center text-acl-ink-soft hover:border-acl-gold-deep transition-colors"
             >
-              <X size={20} strokeWidth={3} />
+              <X size={16} />
             </button>
           )}
         </div>
 
         {/* Perfil */}
-        <div className={`p-4 border-b-4 border-black bg-[#D4A244]/10 ${collapsed && !isMobile ? "flex justify-center" : ""}`}>
+        <div className={`p-4 border-b border-acl-line bg-acl-cream ${collapsed && !isMobile ? "flex justify-center" : ""}`}>
           <div className={`flex items-center ${collapsed && !isMobile ? "flex-col gap-2" : "gap-3"}`}>
-            <div className="w-12 h-12 bg-white border-4 border-black rounded-full flex items-center justify-center flex-shrink-0">
-              <User size={24} strokeWidth={3} className="text-[#D4A244]" />
+            <div className="w-10 h-10 bg-white border border-acl-line rounded-full flex items-center justify-center flex-shrink-0">
+              <User size={18} className="text-acl-gold-deep" />
             </div>
             {showLabels && (
               <div>
-                <p className="font-black text-xs uppercase">Administrador</p>
-                <p className="text-[10px] text-gray-600 font-medium">Acesso Total</p>
+                <p className="text-sm text-acl-ink">Administrador</p>
+                <p className="text-xs text-acl-muted">Acesso total</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Menu */}
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className="flex-1 p-3 overflow-y-auto">
           <NavLink to="/admin" end className={navLinkClass} title="Dashboard" onClick={closeMobileSidebar}>
-            <LayoutDashboard size={18} strokeWidth={3} />
+            <LayoutDashboard size={17} />
             {showLabels && <span>Dashboard</span>}
           </NavLink>
 
           <NavLink to="/admin/modalidades" className={navLinkClass} title="Modalidades" onClick={closeMobileSidebar}>
-            <Trophy size={18} strokeWidth={3} />
+            <Trophy size={17} />
             {showLabels && <span>Modalidades</span>}
           </NavLink>
 
           <NavLink to="/admin/atletas" className={navLinkClass} title="Atletas" onClick={closeMobileSidebar}>
-            <Users size={18} strokeWidth={3} />
+            <Users size={17} />
             {showLabels && <span>Atletas</span>}
           </NavLink>
 
           <NavLink to="/admin/licenciamentos" end className={navLinkClass} title="Vendas" onClick={closeMobileSidebar}>
-            <DollarSign size={18} strokeWidth={3} />
+            <DollarSign size={17} />
             {showLabels && <span>Vendas</span>}
           </NavLink>
 
+          <NavLink to="/admin/licenciamentos/simulacao" className={navLinkClass} title="Simulação" onClick={closeMobileSidebar}>
+            <Calculator size={17} />
+            {showLabels && <span>Simulação</span>}
+          </NavLink>
+
           <NavLink to="/admin/licenciamentos/extratos" className={navLinkClass} title="Extratos" onClick={closeMobileSidebar}>
-            <FileText size={18} strokeWidth={3} />
+            <FileText size={17} />
             {showLabels && <span>Extratos</span>}
           </NavLink>
 
           <NavLink to="/admin/configuracao-fiscal" className={navLinkClass} title="Fiscal" onClick={closeMobileSidebar}>
-            <Scale size={18} strokeWidth={3} />
+            <Scale size={17} />
             {showLabels && <span>Fiscal</span>}
           </NavLink>
         </nav>
 
         {/* Footer Sidebar */}
-        <div className="p-4 border-t-4 border-black bg-gray-50 space-y-2">
+        <div className="p-3 border-t border-acl-line space-y-2">
           <NavLink
             to="/"
-            className={`flex items-center ${collapsed && !isMobile ? "justify-center" : "justify-center gap-2"} px-4 py-3 bg-[#D4A244] text-black font-black uppercase text-xs border-4 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all`}
-            title="Ver Site"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 btn-secondary-light text-sm"
+            title="Ver site"
             onClick={closeMobileSidebar}
           >
-            <Eye size={18} strokeWidth={3} />
-            {showLabels && <span>Site</span>}
+            <Eye size={16} />
+            {showLabels && <span>Ver site</span>}
           </NavLink>
 
           <button
@@ -198,10 +206,10 @@ export default function LayoutAdmin() {
               closeMobileSidebar()
               handleLogout()
             }}
-            className={`w-full flex items-center ${collapsed && !isMobile ? "justify-center" : "justify-center gap-2"} px-4 py-3 bg-black text-white font-black uppercase text-xs border-4 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all`}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-acl-muted hover:text-acl-wine transition-colors"
             title="Sair"
           >
-            <LogOut size={18} strokeWidth={3} />
+            <LogOut size={16} />
             {showLabels && <span>Sair</span>}
           </button>
         </div>
@@ -219,15 +227,15 @@ export default function LayoutAdmin() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-gray-50 border-t-2 border-gray-200 mt-auto">
+        <footer className="border-t border-acl-line mt-auto">
           <div className="px-4 md:px-6 py-3">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-gray-500">
-              <p className="font-medium text-center md:text-left">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-acl-muted">
+              <p className="text-center md:text-left">
                 © 2026 Acervo Carmen Lydia • Desenvolvido por{" "}
-                <span className="text-black font-bold">Luciane de Castro</span>
+                <span className="text-acl-ink-soft">Luciane de Castro</span>
               </p>
-              <p className="font-medium text-center">
-                Registro INPI: <span className="text-black font-bold">BR512025005170-0</span>
+              <p className="text-center">
+                Registro INPI: <span className="text-acl-ink-soft">BR512025005170-0</span>
               </p>
             </div>
           </div>

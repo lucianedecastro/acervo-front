@@ -40,12 +40,31 @@ export const licenciamentoService = {
     return response.data
   },
 
+  /**
+   * ⚠️ Esta rota não existe no backend atual (confirmado em
+   * 26/06) — o endpoint real para extrato por atleta é
+   * /licenciamento/extrato/atleta/{atletaId}, igual a
+   * buscarExtratoPorAtleta() acima. Mantida aqui sem uso até
+   * decidirmos remover de vez.
+   */
   // GET /licenciamento/transacoes/atleta/{atletaId}
   async listarTransacoesPorAtleta(
     atletaId: string
   ): Promise<TransacaoLicenciamentoDTO[]> {
     const response = await api.get<TransacaoLicenciamentoDTO[]>(
       `/licenciamento/transacoes/atleta/${atletaId}`
+    )
+    return response.data
+  },
+
+  /**
+   * Lista todas as transações, sem filtro por atleta.
+   * Uso exclusivo da visão administrativa geral (AdminVendas).
+   */
+  // GET /licenciamento/admin/transacoes
+  async listarTodasTransacoes(): Promise<TransacaoLicenciamentoDTO[]> {
+    const response = await api.get<TransacaoLicenciamentoDTO[]>(
+      "/licenciamento/admin/transacoes"
     )
     return response.data
   },
