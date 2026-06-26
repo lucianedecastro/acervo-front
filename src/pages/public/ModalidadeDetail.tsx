@@ -79,11 +79,11 @@ export default function ModalidadeDetail() {
       {/* Foto de destaque */}
       {fotoDestaqueUrl && (
         <section className="mt-8 px-6">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto bg-acl-line/10 border border-acl-line flex justify-center">
             <img
               src={fotoDestaqueUrl}
               alt={`Foto de destaque da modalidade ${modalidade.nome}`}
-              className="w-full h-[360px] object-cover border border-acl-line"
+              className="w-full max-h-[640px] object-contain"
             />
           </div>
         </section>
@@ -123,11 +123,13 @@ export default function ModalidadeDetail() {
                   key={foto.publicId}
                   className="bg-white overflow-hidden"
                 >
-                  <img
-                    src={foto.urlVisualizacao}
-                    alt={foto.legenda}
-                    className="w-full h-64 object-cover"
-                  />
+                  <div className="h-64 bg-acl-line/10 flex items-center justify-center overflow-hidden">
+                    <img
+                      src={foto.urlVisualizacao}
+                      alt={foto.legenda}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
                   {foto.legenda && (
                     <p className="p-4 text-sm text-acl-ink-soft leading-relaxed">
                       {foto.legenda}
