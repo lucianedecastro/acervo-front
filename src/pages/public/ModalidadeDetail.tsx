@@ -54,11 +54,6 @@ export default function ModalidadeDetail() {
       </div>
     )
 
-  /**
-   * Foto de destaque (hero da modalidade)
-   * - Usada exclusivamente no detail
-   * - Pictograma NÃO é exibido nesta página
-   */
   const fotoDestaqueUrl = modalidade.fotoDestaquePublicId
     ? `https://res.cloudinary.com/dcet9fpu0/image/upload/${modalidade.fotoDestaquePublicId}`
     : null
@@ -79,12 +74,19 @@ export default function ModalidadeDetail() {
       {/* Foto de destaque */}
       {fotoDestaqueUrl && (
         <section className="mt-8 px-6">
-          <div className="max-w-5xl mx-auto bg-acl-line/10 border border-acl-line flex justify-center">
-            <img
-              src={fotoDestaqueUrl}
-              alt={`Foto de destaque da modalidade ${modalidade.nome}`}
-              className="w-full max-h-[640px] object-contain"
-            />
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-acl-line/10 border border-acl-line flex justify-center">
+              <img
+                src={fotoDestaqueUrl}
+                alt={`Foto de destaque da modalidade ${modalidade.nome}`}
+                className="w-full max-h-[640px] object-contain"
+              />
+            </div>
+            {(modalidade as any).legendaFotoDestaque && (
+              <p className="mt-3 text-xs text-acl-muted text-center italic">
+                {(modalidade as any).legendaFotoDestaque}
+              </p>
+            )}
           </div>
         </section>
       )}
@@ -104,10 +106,19 @@ export default function ModalidadeDetail() {
           <h2 className="mb-3">História e contexto</h2>
           <div className="w-12 h-px bg-acl-gold-deep mb-8" />
 
-          <p className="text-acl-ink-soft leading-relaxed whitespace-pre-wrap">
-            {modalidade.historia ||
-              "Nenhuma descrição histórica disponível no momento."}
-          </p>
+          {modalidade.historia ? (
+            <div
+              className="prose prose-sm max-w-none text-acl-ink-soft"
+              dangerouslySetInnerHTML={{ __html: modalidade.historia }}
+              style={{
+                lineHeight: "1.8",
+              }}
+            />
+          ) : (
+            <p className="text-acl-muted">
+              Nenhuma descrição histórica disponível no momento.
+            </p>
+          )}
         </div>
       </section>
 
@@ -119,10 +130,7 @@ export default function ModalidadeDetail() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {modalidade.fotos.map((foto) => (
-                <div
-                  key={foto.publicId}
-                  className="bg-white overflow-hidden"
-                >
+                <div key={foto.publicId} className="bg-white overflow-hidden">
                   <div className="h-64 bg-acl-line/10 flex items-center justify-center overflow-hidden">
                     <img
                       src={foto.urlVisualizacao}

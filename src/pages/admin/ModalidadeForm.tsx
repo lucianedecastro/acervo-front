@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { modalidadeService } from "@/services/modalidadeService"
 import { Modalidade, ModalidadeDTO } from "@/types/modalidade"
 import { Trophy, Save, X, Upload } from "lucide-react"
+import RichTextEditor from "@/components/RichTextEditor"
 
 export default function ModalidadeForm() {
   const { id } = useParams<{ id: string }>()
@@ -13,6 +14,7 @@ export default function ModalidadeForm() {
   const [historia, setHistoria] = useState("")
   const [pictogramaUrl, setPictogramaUrl] = useState("")
   const [fotoDestaquePublicId, setFotoDestaquePublicId] = useState("")
+  const [legendaFotoDestaque, setLegendaFotoDestaque] = useState("")
 
   // Uploads (fonte única da verdade)
   const [pictogramaFile, setPictogramaFile] = useState<File | null>(null)
@@ -38,6 +40,7 @@ export default function ModalidadeForm() {
         setHistoria(data.historia || "")
         setPictogramaUrl(data.pictogramaUrl || "")
         setFotoDestaquePublicId(data.fotoDestaquePublicId || "")
+        setLegendaFotoDestaque(data.legendaFotoDestaque || "")
         setAtiva(data.ativa !== false)
       } catch (err) {
         setError("Não foi possível carregar os dados desta modalidade.")
@@ -64,6 +67,7 @@ export default function ModalidadeForm() {
       historia,
       pictogramaUrl,
       fotoDestaquePublicId,
+      legendaFotoDestaque,
       ativa,
       fotos: [],
     }
@@ -191,17 +195,30 @@ export default function ModalidadeForm() {
               }}
             />
           </label>
+
+          {/* Legenda da foto de destaque */}
+          <div>
+            <label className="block text-xs text-acl-muted mb-1.5">
+              Legenda da foto de destaque
+            </label>
+            <input
+              type="text"
+              value={legendaFotoDestaque}
+              onChange={(e) => setLegendaFotoDestaque(e.target.value)}
+              placeholder="Ex: Seleção brasileira feminina de basquete, Pan-Americanos 1971"
+              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+            />
+          </div>
         </div>
 
         {/* História */}
         <div>
           <label className="block text-xs text-acl-muted mb-1.5">História</label>
-          <textarea
+          <RichTextEditor
             value={historia}
-            onChange={(e) => setHistoria(e.target.value)}
-            rows={6}
-            placeholder="História da modalidade"
-            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+            onChange={setHistoria}
+            placeholder="Conte a história desta modalidade no esporte feminino brasileiro..."
+            minHeight="240px"
           />
         </div>
 

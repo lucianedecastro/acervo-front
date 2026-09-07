@@ -19,6 +19,7 @@ export interface Modalidade {
   historia?: string;
   fotos: FotoAcervo[];
   fotoDestaquePublicId?: string;
+  legendaFotoDestaque?: string;
   ativa: boolean;
   criadoEm: string;
   atualizadoEm: string;
@@ -39,4 +40,5 @@ export interface ModalidadeDTO {
   ativa: boolean;
   fotos: FotoAcervo[];
   fotoDestaquePublicId: string;
+  legendaFotoDestaque?: string;
 }

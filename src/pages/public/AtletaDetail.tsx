@@ -88,17 +88,24 @@ export default function AtletaDetail() {
       {/* Header */}
       <section className="py-14 px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="bg-white p-2 border border-acl-line">
-            {imagemPrincipal ? (
-              <img
-                src={imagemPrincipal}
-                alt={atleta.nome}
-                className="w-full aspect-[4/5] object-cover"
-              />
-            ) : (
-              <div className="w-full aspect-[4/5] bg-acl-line/40 flex items-center justify-center">
-                <span className="text-acl-muted text-xs">Imagem em pesquisa</span>
-              </div>
+          <div>
+            <div className="bg-white p-2 border border-acl-line">
+              {imagemPrincipal ? (
+                <img
+                  src={imagemPrincipal}
+                  alt={atleta.nome}
+                  className="w-full aspect-[4/5] object-contain"
+                />
+              ) : (
+                <div className="w-full aspect-[4/5] bg-acl-line/40 flex items-center justify-center">
+                  <span className="text-acl-muted text-xs">Imagem em pesquisa</span>
+                </div>
+              )}
+            </div>
+            {atleta.fotoDestaque?.legenda && (
+              <p className="mt-2 text-xs text-acl-muted text-center italic">
+                {atleta.fotoDestaque.legenda}
+              </p>
             )}
           </div>
 
@@ -118,9 +125,17 @@ export default function AtletaDetail() {
         <div className="max-w-3xl mx-auto">
           <h2 className="mb-3">Biografia e trajetória</h2>
           <div className="w-12 h-px bg-acl-gold-deep mb-8" />
-          <p className="text-acl-ink-soft leading-relaxed whitespace-pre-wrap">
-            {atleta.biografia || "Biografia em fase de pesquisa."}
-          </p>
+          {atleta.biografia ? (
+            <div
+              className="prose prose-sm max-w-none text-acl-ink-soft"
+              dangerouslySetInnerHTML={{ __html: atleta.biografia }}
+              style={{ lineHeight: "1.8" }}
+            />
+          ) : (
+            <p className="text-acl-muted italic">
+              Biografia em fase de pesquisa.
+            </p>
+          )}
         </div>
       </section>
 

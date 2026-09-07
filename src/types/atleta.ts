@@ -31,6 +31,7 @@ export type TipoChavePix =
 export interface FotoPerfilPublicaDTO {
   publicId: string
   url: string
+  legenda?: string
 }
 
 /* =====================
@@ -79,6 +80,16 @@ export interface Atleta {
    */
   fotoDestaqueUrl?: string
   fotoDestaqueId?: string
+
+  /**
+   * NOVO — foto de destaque completa (com legenda)
+   * Substitui fotoDestaqueUrl quando disponível
+   */
+  fotoDestaque?: {
+    publicId: string
+    url: string
+    legenda?: string
+  } | null
 
   /**
    * NOVO — foto de perfil pública (avatar)

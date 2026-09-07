@@ -10,6 +10,7 @@ import {
   TipoChavePix,
 } from "@/types/atleta"
 import { UserPlus, Save, X, Upload } from "lucide-react"
+import RichTextEditor from "@/components/RichTextEditor"
 
 export default function AtletaForm() {
   const { id } = useParams<{ id: string }>()
@@ -46,7 +47,6 @@ export default function AtletaForm() {
 
   /* =====================
      REPRESENTAÇÃO
-     (estado existe; sem campos no formulário ainda — ver observação)
      ===================== */
 
   const [nomeRepresentante, setNomeRepresentante] = useState("")
@@ -55,7 +55,6 @@ export default function AtletaForm() {
 
   /* =====================
      FINANCEIRO
-     (estado existe; sem campos no formulário ainda — ver observação)
      ===================== */
 
   const [tipoChavePix, setTipoChavePix] = useState<TipoChavePix>("CPF")
@@ -76,6 +75,9 @@ export default function AtletaForm() {
 
   const [fotoPerfilFile, setFotoPerfilFile] = useState<File | null>(null)
   const [fotoDestaqueFile, setFotoDestaqueFile] = useState<File | null>(null)
+
+  const [legendaFotoPerfil, setLegendaFotoPerfil] = useState("")
+  const [legendaFotoDestaque, setLegendaFotoDestaque] = useState("")
 
   const [fotoPerfilPreview, setFotoPerfilPreview] = useState<string | null>(null)
   const [fotoDestaquePreview, setFotoDestaquePreview] = useState<string | null>(null)
@@ -181,211 +183,174 @@ export default function AtletaForm() {
   if (loading) return null
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto pb-16">
-      <h1 className="font-serif text-2xl text-acl-ink flex items-center gap-3">
-        <UserPlus size={22} className="text-acl-gold-deep" />
-        {isEditing ? `Editar: ${nome}` : "Nova inserção curatorial"}
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto">
+      <h1 className="text-4xl font-black uppercase flex items-center gap-3">
+        <UserPlus />
+        {isEditing ? `Editar: ${nome}` : "Nova Inserção Curatorial"}
       </h1>
 
       {/* DADOS PRINCIPAIS */}
-      <section className="card-editorial p-6 space-y-4">
-        <h2 className="text-sm text-acl-ink-soft">Dados da atleta</h2>
+      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
+        <h2 className="text-xl font-black uppercase">Dados da Atleta</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Nome</label>
-            <input
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder="Nome da atleta"
-              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
-              required
-            />
-          </div>
+        <input
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          placeholder="Nome da atleta"
+          className="w-full border-4 border-black p-3"
+          required
+        />
 
-          <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Nome social</label>
-            <input
-              value={nomeSocial}
-              onChange={(e) => setNomeSocial(e.target.value)}
-              placeholder="Opcional"
-              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
-            />
-          </div>
+        <select
+          value={categoria}
+          onChange={(e) => setCategoria(e.target.value as CategoriaAtleta)}
+          className="w-full border-4 border-black p-3"
+        >
+          <option value="ATIVA">ATIVA</option>
+          <option value="HISTORICA">HISTÓRICA</option>
+          <option value="ESPOLIO">ESPÓLIO</option>
+        </select>
 
-          <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@exemplo.com"
-              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
-              required
-            />
-          </div>
+        <select
+          value={statusVerificacao}
+          onChange={(e) => setStatusVerificacao(e.target.value as StatusVerificacao)}
+          className="w-full border-4 border-black p-3"
+        >
+          <option value="PENDENTE">PENDENTE</option>
+          <option value="VERIFICADO">VERIFICADO</option>
+          <option value="REJEITADO">REJEITADO</option>
+          <option value="MEMORIAL_PUBLICO">MEMORIAL PÚBLICO</option>
+        </select>
 
-          <div>
-            <label className="block text-xs text-acl-muted mb-1.5">CPF</label>
-            <input
-              value={cpf}
-              onChange={(e) => setCpf(e.target.value)}
-              placeholder="000.000.000-00"
-              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Senha</label>
-            <input
-              type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder={isEditing ? "Deixe em branco para manter a atual" : "Senha de acesso"}
-              className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Categoria</label>
-            <select
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value as CategoriaAtleta)}
-              className="w-full border border-acl-line rounded-sm p-2.5 text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
-            >
-              <option value="ATIVA">Ativa</option>
-              <option value="HISTORICA">Histórica</option>
-              <option value="ESPOLIO">Espólio</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Status de verificação</label>
-            <select
-              value={statusVerificacao}
-              onChange={(e) => setStatusVerificacao(e.target.value as StatusVerificacao)}
-              className="w-full border border-acl-line rounded-sm p-2.5 text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
-            >
-              <option value="PENDENTE">Pendente</option>
-              <option value="VERIFICADO">Verificado</option>
-              <option value="REJEITADO">Rejeitado</option>
-              <option value="MEMORIAL_PUBLICO">Memorial público</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Status</label>
-            <select
-              value={statusAtleta}
-              onChange={(e) => setStatusAtleta(e.target.value as StatusAtleta)}
-              className="w-full border border-acl-line rounded-sm p-2.5 text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
-            >
-              <option value="ATIVO">Ativo</option>
-              <option value="INATIVO">Inativo</option>
-              <option value="SUSPENSO">Suspenso</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs text-acl-muted mb-1.5">Observações administrativas</label>
-          <textarea
-            value={observacoesAdmin}
-            onChange={(e) => setObservacoesAdmin(e.target.value)}
-            rows={2}
-            placeholder="Visível apenas internamente, registrada junto à verificação"
-            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep resize-none"
-          />
-        </div>
+        <select
+          value={statusAtleta}
+          onChange={(e) => setStatusAtleta(e.target.value as StatusAtleta)}
+          className="w-full border-4 border-black p-3"
+        >
+          <option value="ATIVO">ATIVO</option>
+          <option value="INATIVO">INATIVO</option>
+          <option value="SUSPENSO">SUSPENSO</option>
+        </select>
       </section>
 
       {/* MODALIDADES */}
-      <section className="card-editorial p-6 space-y-4">
-        <h2 className="text-sm text-acl-ink-soft">Modalidades</h2>
+      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
+        <h2 className="text-xl font-black uppercase">Modalidades</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-          {modalidades.map((modalidade) => (
-            <label
-              key={modalidade.id}
-              className="flex items-center gap-3 border border-acl-line rounded-sm p-2.5 text-sm text-acl-ink-soft cursor-pointer hover:border-acl-gold-deep transition-colors"
-            >
-              <input
-                type="checkbox"
-                checked={modalidadesSelecionadas.includes(modalidade.id)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setModalidadesSelecionadas((prev) => [
-                      ...prev,
-                      modalidade.id,
-                    ])
-                  } else {
-                    setModalidadesSelecionadas((prev) =>
-                      prev.filter((mid) => mid !== modalidade.id)
-                    )
-                  }
-                }}
-                className="w-4 h-4 accent-acl-gold-deep"
-              />
-              {modalidade.nome}
-            </label>
-          ))}
-        </div>
-      </section>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {modalidades.map((modalidade) => (
+        <label
+        key={modalidade.id}
+        className="flex items-center gap-3 border-4 border-black p-3 cursor-pointer font-bold"
+      >
+        <input
+          type="checkbox"
+          checked={modalidadesSelecionadas.includes(modalidade.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setModalidadesSelecionadas((prev) => [
+                ...prev,
+                modalidade.id,
+              ])
+            } else {
+              setModalidadesSelecionadas((prev) =>
+                prev.filter((id) => id !== modalidade.id)
+              )
+            }
+          }}
+          className="w-5 h-5"
+        />
+        {modalidade.nome}
+        </label>
+    ))}
+    </div>
+    </section>
+
 
       {/* BIOGRAFIA */}
       <section className="card-editorial p-6 space-y-3">
         <h2 className="text-sm text-acl-ink-soft">Biografia</h2>
-        <textarea
+        <RichTextEditor
           value={biografia}
-          onChange={(e) => setBiografia(e.target.value)}
-          rows={6}
-          className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
+          onChange={setBiografia}
+          placeholder="Conte a trajetória desta atleta no esporte brasileiro..."
+          minHeight="220px"
         />
       </section>
 
       {/* IMAGENS */}
-      <section className="card-editorial p-6 space-y-4">
+      <section className="card-editorial p-6 space-y-5">
         <h2 className="text-sm text-acl-ink-soft">Imagens</h2>
 
-        <label className="flex items-center gap-2 text-sm text-acl-ink-soft cursor-pointer">
-          <Upload size={15} /> Foto de perfil
+        {/* Foto de Perfil */}
+        <div className="space-y-2.5">
+          <label className="block text-xs text-acl-muted">Foto de perfil</label>
+
+          {fotoPerfilPreview && (
+            <img
+              src={fotoPerfilPreview}
+              className="w-28 border border-acl-line rounded-sm"
+              alt="Pré-visualização foto de perfil"
+            />
+          )}
+
+          <label className="flex items-center gap-2 text-sm text-acl-ink-soft cursor-pointer">
+            <Upload size={15} /> Enviar arquivo
+            <input
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                setFotoPerfilFile(file)
+                if (file) setFotoPerfilPreview(URL.createObjectURL(file))
+              }}
+            />
+          </label>
+
           <input
-            type="file"
-            accept="image/*"
-            className="sr-only"
-            onChange={(e) => {
-              const file = e.target.files?.[0] || null
-              setFotoPerfilFile(file)
-              if (file) setFotoPerfilPreview(URL.createObjectURL(file))
-            }}
+            type="text"
+            value={legendaFotoPerfil}
+            onChange={(e) => setLegendaFotoPerfil(e.target.value)}
+            placeholder="Legenda da foto de perfil (opcional)"
+            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
           />
-        </label>
+        </div>
 
-        {fotoPerfilPreview && (
-          <img src={fotoPerfilPreview} className="w-28 border border-acl-line" />
-        )}
+        {/* Foto de Destaque */}
+        <div className="space-y-2.5 pt-4 border-t border-acl-line">
+          <label className="block text-xs text-acl-muted">Foto de destaque</label>
 
-        <label className="flex items-center gap-2 text-sm text-acl-ink-soft cursor-pointer">
-          <Upload size={15} /> Foto de destaque
+          {fotoDestaquePreview && (
+            <img
+              src={fotoDestaquePreview}
+              className="w-full max-w-md border border-acl-line rounded-sm"
+              alt="Pré-visualização foto de destaque"
+            />
+          )}
+
+          <label className="flex items-center gap-2 text-sm text-acl-ink-soft cursor-pointer">
+            <Upload size={15} /> Enviar arquivo
+            <input
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                setFotoDestaqueFile(file)
+                if (file) setFotoDestaquePreview(URL.createObjectURL(file))
+              }}
+            />
+          </label>
+
           <input
-            type="file"
-            accept="image/*"
-            className="sr-only"
-            onChange={(e) => {
-              const file = e.target.files?.[0] || null
-              setFotoDestaqueFile(file)
-              if (file) setFotoDestaquePreview(URL.createObjectURL(file))
-            }}
+            type="text"
+            value={legendaFotoDestaque}
+            onChange={(e) => setLegendaFotoDestaque(e.target.value)}
+            placeholder="Ex: Marta com a taça do Mundial sub-20, 2002"
+            className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
           />
-        </label>
-
-        {fotoDestaquePreview && (
-          <img
-            src={fotoDestaquePreview}
-            className="w-full max-w-md border border-acl-line"
-          />
-        )}
+        </div>
       </section>
 
       {/* BOTÕES */}
