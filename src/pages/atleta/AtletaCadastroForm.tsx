@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { atletaService } from "@/services/atletaService"
 import { modalidadeService } from "@/services/modalidadeService"
 import { mediaService } from "@/services/mediaService"
-import { Modalidade } from "@/types/modalidade"
+import { ModalidadePublicaDTO } from "@/types/modalidade"
 import {
   CategoriaAtleta,
   TipoChavePix,
@@ -37,7 +37,7 @@ export default function AtletaCadastroForm() {
   /* ======================= PERFIL ESPORTIVO ======================= */
   const [biografia, setBiografia] = useState("")
   const [categoria, setCategoria] = useState<CategoriaAtleta>("ATIVA")
-  const [modalidades, setModalidades] = useState<Modalidade[]>([])
+  const [modalidades, setModalidades] = useState<ModalidadePublicaDTO[]>([])
   const [modalidadesSelecionadas, setModalidadesSelecionadas] = useState<string[]>([])
 
   /* ======================= REPRESENTAÇÃO (ESPÓLIO) ======================= */
@@ -71,7 +71,7 @@ export default function AtletaCadastroForm() {
 
   /* ======================= LOAD MODALIDADES ======================= */
   useEffect(() => {
-    modalidadeService.listarAdmin()
+    modalidadeService.listarPublico()
       .then(setModalidades)
       .finally(() => setLoading(false))
   }, [])

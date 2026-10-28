@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { modalidadeService } from "@/services/modalidadeService"
-import { Modalidade } from "@/types/modalidade"
+import { ModalidadePublicaDTO } from "@/types/modalidade"
 
 export default function ModalidadesList() {
   const navigate = useNavigate()
-  const [modalidades, setModalidades] = useState<Modalidade[]>([])
+  const [modalidades, setModalidades] = useState<ModalidadePublicaDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     modalidadeService
-      .listarAdmin()
-      .then((data) => setModalidades(data.filter(m => m.ativa)))
+      .listarPublico()
+      .then(setModalidades)
       .catch((err) => {
         console.error("Erro ao carregar modalidades:", err)
         setError("Não foi possível carregar as modalidades no momento.")
