@@ -81,7 +81,7 @@ export default function AdminConfiguracaoFiscal() {
       {/* Header */}
       <div>
         <h1 className="font-serif text-2xl sm:text-3xl text-acl-ink flex items-center gap-3 mb-2">
-          <Settings size={24} className="text-acl-gold-deep" />
+          <Settings size={24} className="text-acl-gold-text" />
           Configuração fiscal do acervo
         </h1>
         <p className="text-acl-muted text-sm">
@@ -92,10 +92,10 @@ export default function AdminConfiguracaoFiscal() {
       <form onSubmit={handleSubmit} className="card-editorial p-6 space-y-5">
 
         <div>
-          <label className="block text-xs text-acl-muted mb-1.5">
+          <label htmlFor="campo-1" className="block text-xs text-acl-muted mb-1.5">
             % Repasse para atleta
           </label>
-          <input
+          <input id="campo-1"
             type="number"
             step="0.01"
             value={repasseAtleta}
@@ -106,10 +106,10 @@ export default function AdminConfiguracaoFiscal() {
         </div>
 
         <div>
-          <label className="block text-xs text-acl-muted mb-1.5">
+          <label htmlFor="campo-2" className="block text-xs text-acl-muted mb-1.5">
             % Comissão da plataforma
           </label>
-          <input
+          <input id="campo-2"
             type="number"
             step="0.01"
             value={comissaoPlataforma}
@@ -120,10 +120,10 @@ export default function AdminConfiguracaoFiscal() {
         </div>
 
         <div>
-          <label className="block text-xs text-acl-muted mb-1.5">
+          <label htmlFor="campo-3" className="block text-xs text-acl-muted mb-1.5">
             Observação legal (exibida em contratos/faturas)
           </label>
-          <textarea
+          <textarea id="campo-3"
             rows={4}
             value={observacaoLegal}
             onChange={(e) => setObservacaoLegal(e.target.value)}

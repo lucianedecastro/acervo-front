@@ -34,6 +34,7 @@ import Login from "@/pages/admin/Login"
 import AtletaRegistroForm from "@/pages/atleta/AtletaRegistroForm"
 import FotografaRegistroForm from "@/pages/public/FotografaRegistroForm"
 import EsqueciSenha from "@/pages/public/EsqueciSenha"
+import Acessibilidade from "@/pages/public/Acessibilidade"
 import RedefinirSenha from "@/pages/public/RedefinirSenha"
 
 /* ======================
@@ -73,6 +74,7 @@ export function AppRoutes() {
       <Route element={<LayoutPublic />}>
         <Route path="/" element={<Home />} />
         <Route path="/sobre" element={<Sobre />} />
+        <Route path="/acessibilidade" element={<Acessibilidade />} />
         <Route path="/arquitetura" element={<Arquitetura />} />
 
         <Route path="/modalidades" element={<ModalidadesList />} />

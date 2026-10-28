@@ -69,7 +69,7 @@ export default function AdminSimulacaoLicenciamento() {
       {/* Header */}
       <div>
         <h1 className="font-serif text-2xl sm:text-3xl text-acl-ink flex items-center gap-3 mb-1">
-          <Calculator size={24} className="text-acl-gold-deep" />
+          <Calculator size={24} className="text-acl-gold-text" />
           Simulação de licenciamento
         </h1>
         <p className="text-acl-muted text-sm">
@@ -82,8 +82,8 @@ export default function AdminSimulacaoLicenciamento() {
         <form onSubmit={handleSimular} className="card-editorial p-6 space-y-5">
 
           <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Item do acervo</label>
-            <select
+            <label htmlFor="campo-1" className="block text-xs text-acl-muted mb-1.5">Item do acervo</label>
+            <select id="campo-1"
               value={itemAcervoId}
               onChange={(e) => handleItemChange(e.target.value)}
               required
@@ -99,8 +99,8 @@ export default function AdminSimulacaoLicenciamento() {
           </div>
 
           <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Tipo de uso</label>
-            <input
+            <label htmlFor="campo-2" className="block text-xs text-acl-muted mb-1.5">Tipo de uso</label>
+            <input id="campo-2"
               value={tipoUso}
               onChange={(e) => setTipoUso(e.target.value)}
               required
@@ -110,8 +110,8 @@ export default function AdminSimulacaoLicenciamento() {
           </div>
 
           <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Prazo (meses)</label>
-            <input
+            <label htmlFor="campo-3" className="block text-xs text-acl-muted mb-1.5">Prazo (meses)</label>
+            <input id="campo-3"
               type="number"
               min={1}
               value={prazoMeses}
@@ -160,7 +160,7 @@ export default function AdminSimulacaoLicenciamento() {
 
                 <div className="pb-4 border-b border-acl-line">
                   <p className="text-xs text-acl-muted mb-1">Repasse atleta</p>
-                  <p className="text-2xl font-serif text-acl-gold-deep">
+                  <p className="text-2xl font-serif text-acl-gold-text">
                     {resultado.repasseAtleta.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                   </p>
                 </div>

@@ -90,7 +90,7 @@ export default function Login() {
 
           {/* Email */}
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">
+            <label htmlFor="campo-1" className="block text-xs text-acl-ink-soft mb-2">
               Email
             </label>
             <div className="relative">
@@ -98,7 +98,7 @@ export default function Login() {
                 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted"
                 size={16}
               />
-              <input
+              <input id="campo-1"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -111,7 +111,7 @@ export default function Login() {
 
           {/* Senha */}
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">
+            <label htmlFor="campo-2" className="block text-xs text-acl-ink-soft mb-2">
               Senha
             </label>
             <div className="relative">
@@ -119,7 +119,7 @@ export default function Login() {
                 className="z-10 pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted"
                 size={16}
               />
-              <PasswordInput
+              <PasswordInput id="campo-2"
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 placeholder="••••••••"
@@ -131,7 +131,7 @@ export default function Login() {
           </div>
 
           <div className="text-right -mt-2">
-            <Link to="/esqueci-senha" className="text-xs text-acl-ink-soft underline hover:text-acl-gold-deep">
+            <Link to="/esqueci-senha" className="text-xs text-acl-ink-soft underline hover:text-acl-gold-text">
               Esqueci minha senha
             </Link>
           </div>

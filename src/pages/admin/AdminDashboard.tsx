@@ -72,7 +72,7 @@ export default function AdminDashboard() {
       {/* Segunda linha — atenção e financeiro */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div className="card-editorial p-6 border-acl-gold-deep">
-          <Clock size={22} strokeWidth={1.5} className="text-acl-gold-deep mb-3" />
+          <Clock size={22} strokeWidth={1.5} className="text-acl-gold-text mb-3" />
           <p className="text-xs text-acl-muted mb-2">Itens aguardando publicação</p>
           <p className="text-3xl sm:text-4xl font-serif text-acl-ink">{stats.itensAguardandoPublicacao}</p>
         </div>

@@ -67,7 +67,7 @@ export default function ItemAcervoDetail() {
     <div className="max-w-6xl mx-auto p-6 space-y-8 bg-acl-cream">
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-deep transition-colors"
+        className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-text transition-colors"
       >
         <ArrowLeft size={16} /> Voltar para a galeria
       </button>
@@ -142,7 +142,7 @@ export default function ItemAcervoDetail() {
           {/* Licenciamento */}
           <div className="bg-white border border-acl-line p-6 space-y-4">
             <div className="flex items-start gap-3">
-              <ShieldCheck className="shrink-0 text-acl-gold-deep" size={26} strokeWidth={1.5} />
+              <ShieldCheck className="shrink-0 text-acl-gold-text" size={26} strokeWidth={1.5} />
               <div>
                 <h4 className="text-xs text-acl-ink mb-1">Licenciamento de uso</h4>
                 <p className="text-xs text-acl-muted leading-relaxed">

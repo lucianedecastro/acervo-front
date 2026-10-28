@@ -1,175 +1,138 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { CreditCard, Lock, Mail, Trophy, User } from "lucide-react"
+import PasswordInput from "@/components/PasswordInput"
 import { atletaService } from "@/services/atletaService"
 import { CategoriaAtleta } from "@/types/atleta"
-import { User, Mail, Lock, CreditCard, Trophy, UserPlus } from "lucide-react"
-import PasswordInput from "@/components/PasswordInput"
 import { mensagemErroCadastro } from "@/utils/erroApi"
+
+const inputClass =
+  "w-full pl-10 pr-4 py-3 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep transition-colors"
 
 export default function AtletaRegistroForm() {
   const navigate = useNavigate()
 
   const [nome, setNome] = useState("")
   const [email, setEmail] = useState("")
-  const [senha, setSenha] = useState("")
   const [cpf, setCpf] = useState("")
+  const [senha, setSenha] = useState("")
+  const [confirmarSenha, setConfirmarSenha] = useState("")
   const [categoria, setCategoria] = useState<CategoriaAtleta>("ATIVA")
 
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
+    setError(null)
 
-    const payload = {
-      nome,
-      email,
-      senha,
-      cpf,
-      categoria,
+    if (senha !== confirmarSenha) {
+      setError("As senhas não coincidem.")
+      return
     }
 
+    setLoading(true)
     try {
-      await atletaService.registrar(payload)
+      await atletaService.registrar({ nome, email, senha, cpf, categoria })
       alert("Cadastro recebido! Seu perfil será analisado pela curadoria. Faça login para continuar.")
       navigate("/login")
     } catch (err) {
-      alert(mensagemErroCadastro(err))
+      setError(mensagemErroCadastro(err))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-lg">
-        {/* Card Principal */}
-        <div className="bg-white border-4 sm:border-6 border-black rounded-xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
-          {/* Header */}
-          <div className="bg-black border-b-4 sm:border-b-6 border-black p-6 sm:p-8">
-            <div className="flex items-center gap-3 mb-3">
-              <UserPlus size={32} strokeWidth={3} className="text-[#D4A244]" />
-              <h1 className="text-2xl sm:text-3xl font-black uppercase text-[#D4A244]">
-                Criar Conta
-              </h1>
-            </div>
-            <p className="text-gray-400 font-bold text-sm">
-              Cadastre-se para fazer parte do acervo da atleta brasileira
-            </p>
-          </div>
-
-          {/* Formulário */}
-          <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
-            {/* Nome */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-black uppercase mb-2 text-gray-700">
-                <User size={16} strokeWidth={3} />
-                Nome Completo *
-              </label>
-              <input
-                type="text"
-                value={nome}
-                onChange={e => setNome(e.target.value)}
-                placeholder="Digite seu nome completo"
-                required
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-black uppercase mb-2 text-gray-700">
-                <Mail size={16} strokeWidth={3} />
-                Email *
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="seu@email.com"
-                required
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
-              />
-            </div>
-
-            {/* CPF */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-black uppercase mb-2 text-gray-700">
-                <CreditCard size={16} strokeWidth={3} />
-                CPF *
-              </label>
-              <input
-                type="text"
-                value={cpf}
-                onChange={e => setCpf(e.target.value)}
-                placeholder="000.000.000-00"
-                required
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
-              />
-            </div>
-
-            {/* Senha */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-black uppercase mb-2 text-gray-700">
-                <Lock size={16} strokeWidth={3} />
-                Senha *
-              </label>
-              <PasswordInput
-                value={senha}
-                onChange={e => setSenha(e.target.value)}
-                placeholder="Mínimo de 8 caracteres"
-                required
-                minLength={8}
-                maxLength={72}
-                autoComplete="new-password"
-                className="w-full pl-4 pr-12 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
-              />
-            </div>
-
-            {/* Categoria */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-black uppercase mb-2 text-gray-700">
-                <Trophy size={16} strokeWidth={3} />
-                Categoria *
-              </label>
-              <select
-                value={categoria}
-                onChange={e => setCategoria(e.target.value as CategoriaAtleta)}
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
-              >
-                <option value="ATIVA">ATIVA</option>
-                <option value="HISTORICA">HISTÓRICA</option>
-                <option value="ESPOLIO">ESPÓLIO</option>
-              </select>
-              <p className="mt-2 text-xs text-gray-500 font-bold">
-                Selecione a categoria que melhor representa seu perfil
-              </p>
-            </div>
-
-            {/* Botão Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-6 py-4 bg-[#D4A244] text-black font-black uppercase text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              <UserPlus size={18} strokeWidth={3} />
-              {loading ? "Criando conta..." : "Registrar"}
-            </button>
-          </form>
-
-          {/* Footer */}
-          <div className="border-t-4 border-gray-200 p-6 bg-gray-50 text-center">
-            <p className="text-sm text-gray-600 font-bold">
-              Já tem uma conta?{" "}
-              <button
-                onClick={() => navigate("/login")}
-                className="text-black font-black underline hover:text-[#D4A244] transition-colors"
-              >
-                Fazer login
-              </button>
-            </p>
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-acl-cream py-12 px-4 sm:px-6">
+      <div className="w-full max-w-lg card-editorial p-6 sm:p-8">
+        <div className="mb-7 text-center">
+          <h1 className="font-serif text-2xl sm:text-3xl text-acl-ink mb-2">Criar conta de atleta</h1>
+          <p className="text-acl-muted text-sm">
+            Cadastre-se para fazer parte do acervo da atleta brasileira. Seu perfil será analisado pela curadoria.
+          </p>
         </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="atleta-nome" className="block text-xs text-acl-ink-soft mb-2">Nome completo *</label>
+            <div className="relative">
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} aria-hidden="true" />
+              <input id="atleta-nome" type="text" value={nome} onChange={e => setNome(e.target.value)} required
+                     maxLength={150} autoComplete="name" className={inputClass} />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="atleta-email" className="block text-xs text-acl-ink-soft mb-2">Email *</label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} aria-hidden="true" />
+              <input id="atleta-email" type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                     placeholder="seu@email.com" autoComplete="email" className={inputClass} />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="atleta-cpf" className="block text-xs text-acl-ink-soft mb-2">CPF *</label>
+            <div className="relative">
+              <CreditCard className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} aria-hidden="true" />
+              <input id="atleta-cpf" type="text" value={cpf} onChange={e => setCpf(e.target.value)} required
+                     inputMode="numeric" maxLength={14} placeholder="000.000.000-00" className={inputClass} />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="atleta-senha" className="block text-xs text-acl-ink-soft mb-2">Senha * (mínimo de 8 caracteres)</label>
+            <div className="relative">
+              <Lock className="z-10 pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} aria-hidden="true" />
+              <PasswordInput id="atleta-senha" value={senha} onChange={e => setSenha(e.target.value)} required
+                             minLength={8} maxLength={72} autoComplete="new-password"
+                             className={`${inputClass} pr-11`} />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="atleta-confirmar" className="block text-xs text-acl-ink-soft mb-2">Confirmar senha *</label>
+            <div className="relative">
+              <Lock className="z-10 pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} aria-hidden="true" />
+              <PasswordInput id="atleta-confirmar" value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)}
+                             required minLength={8} maxLength={72} autoComplete="new-password"
+                             className={`${inputClass} pr-11`} />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="atleta-categoria" className="block text-xs text-acl-ink-soft mb-2">Categoria *</label>
+            <div className="relative">
+              <Trophy className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} aria-hidden="true" />
+              <select id="atleta-categoria" value={categoria} onChange={e => setCategoria(e.target.value as CategoriaAtleta)}
+                      aria-describedby="atleta-categoria-ajuda" className={inputClass}>
+                <option value="ATIVA">Ativa</option>
+                <option value="HISTORICA">Histórica</option>
+                <option value="ESPOLIO">Espólio</option>
+              </select>
+            </div>
+            <p id="atleta-categoria-ajuda" className="mt-2 text-xs text-acl-muted">
+              Selecione a categoria que melhor representa o seu perfil.
+            </p>
+          </div>
+
+          {error && (
+            <div className="bg-acl-wine/10 border border-acl-wine rounded-sm p-3" role="alert">
+              <p className="text-acl-wine text-sm text-center">{error}</p>
+            </div>
+          )}
+
+          <button type="submit" disabled={loading}
+                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed">
+            {loading ? "Criando conta..." : "Criar conta"}
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-acl-ink-soft">
+          Já tem uma conta?{" "}
+          <Link to="/login" className="underline hover:text-acl-gold-text">Fazer login</Link>
+        </p>
       </div>
     </div>
   )

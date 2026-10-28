@@ -44,7 +44,7 @@ export default function ModalidadesList() {
   )
 
   return (
-    <main className="bg-acl-cream min-h-screen">
+    <div className="bg-acl-cream min-h-screen">
 
       {/* Hero */}
       <section className="bg-acl-ink py-16 px-6">
@@ -91,7 +91,7 @@ export default function ModalidadesList() {
                     <h2 className="font-serif text-base text-acl-ink mb-2">
                       {modalidade.nome}
                     </h2>
-                    <span className="text-xs text-acl-gold-deep">
+                    <span className="text-xs text-acl-gold-text">
                       Explorar história →
                     </span>
                   </div>
@@ -102,6 +102,6 @@ export default function ModalidadesList() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

@@ -59,13 +59,13 @@ export default function ModalidadeDetail() {
     : null
 
   return (
-    <main className="bg-acl-cream min-h-screen">
+    <div className="bg-acl-cream min-h-screen">
 
       {/* Botão Voltar */}
       <div className="max-w-5xl mx-auto px-6 pt-8">
         <button
           onClick={() => navigate("/modalidades")}
-          className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-deep transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-text transition-colors"
         >
           <ArrowLeft size={16} /> Voltar
         </button>
@@ -149,6 +149,6 @@ export default function ModalidadeDetail() {
           </div>
         </section>
       )}
-    </main>
+    </div>
   )
 }

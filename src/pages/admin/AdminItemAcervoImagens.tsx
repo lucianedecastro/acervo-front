@@ -93,10 +93,10 @@ export default function AdminItemAcervoImagens() {
 
       <div className="card-editorial p-6 space-y-5">
         <div>
-          <label className="block text-sm text-acl-ink-soft mb-2">
+          <label htmlFor="campo-1" className="block text-sm text-acl-ink-soft mb-2">
             Selecionar arquivo original (alta resolução)
           </label>
-          <input
+          <input id="campo-1"
             type="file"
             accept="image/*"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
@@ -105,10 +105,10 @@ export default function AdminItemAcervoImagens() {
         </div>
 
         <div>
-          <label className="block text-sm text-acl-ink-soft mb-2">
+          <label htmlFor="campo-2" className="block text-sm text-acl-ink-soft mb-2">
             Legenda
           </label>
-          <input
+          <input id="campo-2"
             value={legenda}
             onChange={(e) => setLegenda(e.target.value)}
             className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"

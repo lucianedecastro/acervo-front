@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, createContext, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { atletaService } from "@/services/atletaService"
 import { modalidadeService } from "@/services/modalidadeService"
@@ -23,6 +23,60 @@ import {
   ChevronDown,
   ChevronUp
 } from "lucide-react"
+
+/* =====================================================
+   SEÇÃO RECOLHÍVEL
+   Fica FORA do formulário: se fosse definida dentro, o React a recriaria
+   a cada tecla digitada e o campo perderia o foco.
+   ===================================================== */
+const SecaoContext = createContext<{ secaoAberta: string; setSecaoAberta: (id: string) => void }>({
+  secaoAberta: "",
+  setSecaoAberta: () => {},
+})
+
+function SecaoCollapsible({
+  id,
+  titulo,
+  icone,
+  children,
+}: {
+  id: string
+  titulo: string
+  icone: React.ReactNode
+  children: React.ReactNode
+}) {
+  const { secaoAberta, setSecaoAberta } = useContext(SecaoContext)
+  const isAberta = secaoAberta === id
+
+  return (
+    <div className="bg-white border border-acl-line rounded overflow-hidden">
+      <h2 className="text-lg sm:text-xl font-medium">
+        <button
+          type="button"
+          id={`secao-${id}-botao`}
+          aria-expanded={isAberta}
+          aria-controls={`secao-${id}`}
+          onClick={() => setSecaoAberta(isAberta ? "" : id)}
+          className="w-full flex items-center justify-between p-4 sm:p-6 bg-acl-cream hover:bg-white transition-colors border-b border-acl-line text-left"
+        >
+          <span className="flex items-center gap-3">
+            {icone}
+            {titulo}
+          </span>
+          {isAberta
+            ? <ChevronUp size={24} aria-hidden="true" />
+            : <ChevronDown size={24} aria-hidden="true" />}
+        </button>
+      </h2>
+
+      {isAberta && (
+        <div id={`secao-${id}`} role="region" aria-labelledby={`secao-${id}-botao`} className="p-4 sm:p-6 space-y-4">
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function AtletaCadastroForm() {
   const navigate = useNavigate()
@@ -141,44 +195,9 @@ export default function AtletaCadastroForm() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#D4A244] border-6 border-black rounded-xl mx-auto mb-4 animate-pulse"></div>
-          <p className="text-sm sm:text-lg font-black uppercase tracking-wide">Carregando formulário...</p>
+          <div className="w-16 h-16 bg-acl-gold border border-acl-line rounded mx-auto mb-4 animate-pulse"></div>
+          <p className="text-sm sm:text-lg font-medium">Carregando formulário...</p>
         </div>
-      </div>
-    )
-  }
-
-  const SecaoCollapsible = ({
-    id,
-    titulo,
-    icone,
-    children
-  }: {
-    id: string;
-    titulo: string;
-    icone: React.ReactNode;
-    children: React.ReactNode
-  }) => {
-    const isAberta = secaoAberta === id
-    return (
-      <div className="bg-white border-4 border-black rounded-xl overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-        <button
-          type="button"
-          onClick={() => setSecaoAberta(isAberta ? "" : id)}
-          className="w-full flex items-center justify-between p-4 sm:p-6 bg-gray-50 hover:bg-gray-100 transition-colors border-b-4 border-black"
-        >
-          <div className="flex items-center gap-3">
-            {icone}
-            <h3 className="text-lg sm:text-xl font-black uppercase">{titulo}</h3>
-          </div>
-          {isAberta ? <ChevronUp size={24} strokeWidth={3} /> : <ChevronDown size={24} strokeWidth={3} />}
-        </button>
-
-        {isAberta && (
-          <div className="p-4 sm:p-6 space-y-4">
-            {children}
-          </div>
-        )}
       </div>
     )
   }
@@ -187,75 +206,76 @@ export default function AtletaCadastroForm() {
     <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight mb-2 text-black">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-medium mb-2 text-acl-ink">
           Cadastro de Atleta
         </h1>
-        <p className="text-gray-600 font-bold text-sm sm:text-base mb-3">
+        <p className="text-acl-ink-soft font-medium text-sm sm:text-base mb-3">
           Preencha os dados para criar um novo perfil no acervo
         </p>
-        <div className="w-24 sm:w-32 h-2 bg-[#D4A244] border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"></div>
+        <div className="w-24 sm:w-32 h-2 bg-acl-gold border border-acl-line rounded-full"></div>
       </div>
 
+      <SecaoContext.Provider value={{ secaoAberta, setSecaoAberta }}>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* SEÇÃO 1: IDENTIFICAÇÃO */}
         <SecaoCollapsible id="identificacao" titulo="Identificação" icone={<User size={24} strokeWidth={3} />}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Nome Completo *</label>
-              <input
+              <label htmlFor="campo-1" className="block text-xs font-medium mb-2 text-acl-ink-soft">Nome Completo *</label>
+              <input id="campo-1"
                 type="text"
                 value={nome}
                 onChange={e => setNome(e.target.value)}
                 placeholder="Nome completo da atleta"
                 required
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Nome Social</label>
-              <input
+              <label htmlFor="campo-2" className="block text-xs font-medium mb-2 text-acl-ink-soft">Nome Social</label>
+              <input id="campo-2"
                 type="text"
                 value={nomeSocial}
                 onChange={e => setNomeSocial(e.target.value)}
                 placeholder="Nome social (opcional)"
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Email *</label>
-              <input
+              <label htmlFor="campo-3" className="block text-xs font-medium mb-2 text-acl-ink-soft">Email *</label>
+              <input id="campo-3"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="email@exemplo.com"
                 required
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">CPF *</label>
-              <input
+              <label htmlFor="campo-4" className="block text-xs font-medium mb-2 text-acl-ink-soft">CPF *</label>
+              <input id="campo-4"
                 type="text"
                 value={cpf}
                 onChange={e => setCpf(e.target.value)}
                 placeholder="000.000.000-00"
                 required
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Senha *</label>
-              <input
+              <label htmlFor="campo-5" className="block text-xs font-medium mb-2 text-acl-ink-soft">Senha *</label>
+              <input id="campo-5"
                 type="password"
                 value={senha}
                 onChange={e => setSenha(e.target.value)}
                 placeholder="Senha de acesso"
                 required
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
           </div>
@@ -265,11 +285,11 @@ export default function AtletaCadastroForm() {
         <SecaoCollapsible id="perfil" titulo="Perfil Esportivo" icone={<Trophy size={24} strokeWidth={3} />}>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Categoria *</label>
-              <select
+              <label htmlFor="campo-6" className="block text-xs font-medium mb-2 text-acl-ink-soft">Categoria *</label>
+              <select id="campo-6"
                 value={categoria}
                 onChange={e => setCategoria(e.target.value as CategoriaAtleta)}
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               >
                 <option value="ATIVA">ATIVA</option>
                 <option value="HISTORICA">HISTÓRICA</option>
@@ -278,28 +298,28 @@ export default function AtletaCadastroForm() {
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Biografia</label>
-              <textarea
+              <label htmlFor="campo-7" className="block text-xs font-medium mb-2 text-acl-ink-soft">Biografia</label>
+              <textarea id="campo-7"
                 value={biografia}
                 onChange={e => setBiografia(e.target.value)}
                 placeholder="Conte a história da atleta..."
                 rows={6}
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244] resize-none"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none resize-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Modalidades</label>
+              <label className="block text-xs font-medium mb-2 text-acl-ink-soft">Modalidades</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                 {modalidades.map(mod => (
                   <button
                     key={mod.id}
                     type="button"
                     onClick={() => toggleModalidade(mod.id)}
-                    className={`px-3 py-2 border-4 border-black rounded-lg font-black text-xs uppercase transition-all ${modalidadesSelecionadas.includes(mod.id)
-                        ? "bg-[#D4A244] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                        : "bg-white text-gray-700 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5"
-                      }`}
+                    className={`px-3 py-2 border border-acl-line rounded-sm font-medium text-xs transition-all ${modalidadesSelecionadas.includes(mod.id)
+ ? "bg-acl-gold text-acl-ink "
+ : "bg-white text-acl-ink-soft "
+ }`}
                   >
                     {mod.nome}
                   </button>
@@ -314,35 +334,35 @@ export default function AtletaCadastroForm() {
           <SecaoCollapsible id="representacao" titulo="Representação Legal" icone={<Users size={24} strokeWidth={3} />}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-black uppercase mb-2 text-gray-700">Nome do Representante</label>
-                <input
+                <label htmlFor="campo-9" className="block text-xs font-medium mb-2 text-acl-ink-soft">Nome do Representante</label>
+                <input id="campo-9"
                   type="text"
                   value={nomeRepresentante}
                   onChange={e => setNomeRepresentante(e.target.value)}
                   placeholder="Nome completo"
-                  className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                  className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-black uppercase mb-2 text-gray-700">CPF do Representante</label>
-                <input
+                <label htmlFor="campo-10" className="block text-xs font-medium mb-2 text-acl-ink-soft">CPF do Representante</label>
+                <input id="campo-10"
                   type="text"
                   value={cpfRepresentante}
                   onChange={e => setCpfRepresentante(e.target.value)}
                   placeholder="000.000.000-00"
-                  className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                  className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-xs font-black uppercase mb-2 text-gray-700">Vínculo</label>
-                <input
+                <label htmlFor="campo-11" className="block text-xs font-medium mb-2 text-acl-ink-soft">Vínculo</label>
+                <input id="campo-11"
                   type="text"
                   value={vinculoRepresentante}
                   onChange={e => setVinculoRepresentante(e.target.value)}
                   placeholder="Ex: Filho, Cônjuge, Advogado"
-                  className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                  className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
                 />
               </div>
             </div>
@@ -353,11 +373,11 @@ export default function AtletaCadastroForm() {
         <SecaoCollapsible id="financeiro" titulo="Dados Financeiros" icone={<CreditCard size={24} strokeWidth={3} />}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Tipo Chave PIX</label>
-              <select
+              <label htmlFor="campo-12" className="block text-xs font-medium mb-2 text-acl-ink-soft">Tipo Chave PIX</label>
+              <select id="campo-12"
                 value={tipoChavePix}
                 onChange={e => setTipoChavePix(e.target.value as TipoChavePix)}
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               >
                 <option value="CPF">CPF</option>
                 <option value="EMAIL">EMAIL</option>
@@ -368,56 +388,56 @@ export default function AtletaCadastroForm() {
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Chave PIX</label>
-              <input
+              <label htmlFor="campo-13" className="block text-xs font-medium mb-2 text-acl-ink-soft">Chave PIX</label>
+              <input id="campo-13"
                 type="text"
                 value={chavePix}
                 onChange={e => setChavePix(e.target.value)}
                 placeholder="Digite a chave PIX"
                 disabled={tipoChavePix === "NENHUM"}
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244] disabled:bg-gray-200"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none disabled:bg-acl-cream"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Banco</label>
-              <input
+              <label htmlFor="campo-14" className="block text-xs font-medium mb-2 text-acl-ink-soft">Banco</label>
+              <input id="campo-14"
                 type="text"
                 value={banco}
                 onChange={e => setBanco(e.target.value)}
                 placeholder="Nome do banco"
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Agência</label>
-              <input
+              <label htmlFor="campo-15" className="block text-xs font-medium mb-2 text-acl-ink-soft">Agência</label>
+              <input id="campo-15"
                 type="text"
                 value={agencia}
                 onChange={e => setAgencia(e.target.value)}
                 placeholder="0000"
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Conta</label>
-              <input
+              <label htmlFor="campo-16" className="block text-xs font-medium mb-2 text-acl-ink-soft">Conta</label>
+              <input id="campo-16"
                 type="text"
                 value={conta}
                 onChange={e => setConta(e.target.value)}
                 placeholder="00000-0"
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Tipo de Conta</label>
-              <select
+              <label htmlFor="campo-17" className="block text-xs font-medium mb-2 text-acl-ink-soft">Tipo de Conta</label>
+              <select id="campo-17"
                 value={tipoConta}
                 onChange={e => setTipoConta(e.target.value)}
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               >
                 <option value="">Selecione</option>
                 <option value="CORRENTE">Corrente</option>
@@ -426,15 +446,15 @@ export default function AtletaCadastroForm() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Comissão Diferenciada (%)</label>
-              <input
+              <label htmlFor="campo-18" className="block text-xs font-medium mb-2 text-acl-ink-soft">Comissão Diferenciada (%)</label>
+              <input id="campo-18"
                 type="number"
                 value={comissaoPlataformaDiferenciada}
                 onChange={e => setComissaoPlataformaDiferenciada(Number(e.target.value))}
                 placeholder="0"
                 min="0"
                 max="100"
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
           </div>
@@ -443,38 +463,38 @@ export default function AtletaCadastroForm() {
         {/* SEÇÃO 5: GOVERNANÇA */}
         <SecaoCollapsible id="governanca" titulo="Governança e Contrato" icone={<FileText size={24} strokeWidth={3} />}>
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-4 bg-gray-50 border-2 border-gray-200 rounded-lg">
+            <div className="flex items-center gap-3 p-4 bg-acl-cream border-2 border-acl-line rounded-sm">
               <input
                 type="checkbox"
                 id="contrato"
                 checked={contratoAssinado}
                 onChange={e => setContratoAssinado(e.target.checked)}
-                className="w-6 h-6 border-4 border-black rounded accent-[#D4A244]"
+                className="w-6 h-6 border border-acl-line rounded accent-acl-gold-deep"
               />
-              <label htmlFor="contrato" className="text-sm font-bold cursor-pointer">
+              <label htmlFor="contrato" className="text-sm font-medium cursor-pointer">
                 Contrato assinado e verificado
               </label>
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Link do Contrato Digital</label>
-              <input
+              <label htmlFor="campo-20" className="block text-xs font-medium mb-2 text-acl-ink-soft">Link do Contrato Digital</label>
+              <input id="campo-20"
                 type="url"
                 value={linkContratoDigital}
                 onChange={e => setLinkContratoDigital(e.target.value)}
                 placeholder="https://..."
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black uppercase mb-2 text-gray-700">Dados de Contato</label>
-              <textarea
+              <label htmlFor="campo-21" className="block text-xs font-medium mb-2 text-acl-ink-soft">Dados de Contato</label>
+              <textarea id="campo-21"
                 value={dadosContato}
                 onChange={e => setDadosContato(e.target.value)}
                 placeholder="Telefone, endereço, etc."
                 rows={3}
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244] resize-none"
+                className="w-full px-4 py-3 border border-acl-line rounded-sm font-medium text-sm focus:outline-none resize-none"
               />
             </div>
           </div>
@@ -488,19 +508,19 @@ export default function AtletaCadastroForm() {
                 <img
                   src={fotoDestaqueUrl}
                   alt="Preview"
-                  className="max-w-xs w-full h-64 object-cover border-6 border-black rounded-xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+                  className="max-w-xs w-full h-64 object-cover border border-acl-line rounded"
                 />
               </div>
             )}
 
             <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col items-center justify-center w-full h-40 border-4 border-dashed border-black rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+              <label className="flex flex-col items-center justify-center w-full h-40 border border-dashed border-acl-line rounded cursor-pointer bg-acl-cream hover:bg-acl-cream transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload size={40} strokeWidth={2} className="text-gray-400 mb-3" />
-                  <p className="mb-2 text-sm font-black uppercase text-gray-500">
+                  <Upload size={40} strokeWidth={2} className="text-acl-muted mb-3" />
+                  <p className="mb-2 text-sm font-medium text-acl-muted">
                     {uploading ? "Enviando..." : "Clique para fazer upload"}
                   </p>
-                  <p className="text-xs text-gray-400 font-bold">PNG, JPG ou WEBP</p>
+                  <p className="text-xs text-acl-muted font-medium">PNG, JPG ou WEBP</p>
                 </div>
                 <input
                   type="file"
@@ -519,13 +539,14 @@ export default function AtletaCadastroForm() {
           <button
             type="submit"
             disabled={saving || uploading}
-            className="px-8 py-4 bg-black text-white font-black uppercase text-sm border-4 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-8 py-4 bg-acl-ink text-acl-cream font-medium text-sm border border-acl-line rounded-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             <Save size={18} strokeWidth={3} />
             {saving ? "Salvando..." : "Finalizar Cadastro"}
           </button>
         </div>
       </form>
+      </SecaoContext.Provider>
     </div>
   )
 }

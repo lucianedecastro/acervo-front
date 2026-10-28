@@ -65,19 +65,19 @@ export default function RedefinirSenha() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs text-acl-ink-soft mb-2">Nova senha (mínimo de 8 caracteres)</label>
+              <label htmlFor="campo-1" className="block text-xs text-acl-ink-soft mb-2">Nova senha (mínimo de 8 caracteres)</label>
               <div className="relative">
                 <Lock className="z-10 pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-                <PasswordInput value={senha} onChange={e => setSenha(e.target.value)} required minLength={8}
+                <PasswordInput id="campo-1" value={senha} onChange={e => setSenha(e.target.value)} required minLength={8}
                                maxLength={72} autoComplete="new-password" className={inputClass} />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs text-acl-ink-soft mb-2">Confirmar nova senha</label>
+              <label htmlFor="campo-2" className="block text-xs text-acl-ink-soft mb-2">Confirmar nova senha</label>
               <div className="relative">
                 <Lock className="z-10 pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-                <PasswordInput value={confirmar} onChange={e => setConfirmar(e.target.value)} required
+                <PasswordInput id="campo-2" value={confirmar} onChange={e => setConfirmar(e.target.value)} required
                                minLength={8} maxLength={72} autoComplete="new-password" className={inputClass} />
               </div>
             </div>

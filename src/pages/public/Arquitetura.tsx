@@ -1,6 +1,6 @@
 export default function Arquitetura() {
   return (
-    <main className="bg-acl-cream min-h-screen">
+    <div className="bg-acl-cream min-h-screen">
 
       {/* Hero */}
       <section className="bg-acl-ink py-16 px-6">
@@ -126,6 +126,6 @@ export default function Arquitetura() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

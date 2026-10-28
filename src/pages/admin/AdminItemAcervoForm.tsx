@@ -157,7 +157,7 @@ export default function AdminItemAcervoForm() {
     <div className="max-w-3xl mx-auto space-y-6 pb-16">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate(-1)} className="p-2 border border-acl-line rounded-sm hover:border-acl-gold-deep transition-colors">
+          <button type="button" aria-label="Voltar" onClick={() => navigate(-1)} className="p-2 border border-acl-line rounded-sm hover:border-acl-gold-deep transition-colors">
             <ArrowLeft size={18} className="text-acl-ink-soft" />
           </button>
           <div>
@@ -182,8 +182,8 @@ export default function AdminItemAcervoForm() {
       <form onSubmit={handleSubmit} className="card-editorial p-6 space-y-5">
 
         <div>
-          <label className="block text-xs text-acl-muted mb-1.5">Título do item</label>
-          <input
+          <label htmlFor="campo-1" className="block text-xs text-acl-muted mb-1.5">Título do item</label>
+          <input id="campo-1"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
             required
@@ -192,8 +192,8 @@ export default function AdminItemAcervoForm() {
         </div>
 
         <div>
-          <label className="block text-xs text-acl-muted mb-1.5">Descrição curta</label>
-          <textarea
+          <label htmlFor="campo-2" className="block text-xs text-acl-muted mb-1.5">Descrição curta</label>
+          <textarea id="campo-2"
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
             rows={2}
@@ -203,8 +203,8 @@ export default function AdminItemAcervoForm() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-acl-line">
           <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Tipo (natureza)</label>
-            <select
+            <label htmlFor="campo-3" className="block text-xs text-acl-muted mb-1.5">Tipo (natureza)</label>
+            <select id="campo-3"
               value={tipo}
               onChange={(e) => setTipo(e.target.value as TipoItemAcervo)}
               className="w-full border border-acl-line rounded-sm p-2.5 text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
@@ -216,16 +216,16 @@ export default function AdminItemAcervoForm() {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Local</label>
-            <input
+            <label htmlFor="campo-4" className="block text-xs text-acl-muted mb-1.5">Local</label>
+            <input id="campo-4"
               value={local}
               onChange={(e) => setLocal(e.target.value)}
               className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
             />
           </div>
           <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Procedência</label>
-            <input
+            <label htmlFor="campo-5" className="block text-xs text-acl-muted mb-1.5">Procedência</label>
+            <input id="campo-5"
               value={procedencia}
               onChange={(e) => setProcedencia(e.target.value)}
               className="w-full border border-acl-line rounded-sm p-2.5 text-sm focus:outline-none focus:border-acl-gold-deep"
@@ -235,8 +235,8 @@ export default function AdminItemAcervoForm() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-xs text-acl-muted mb-1.5">Modalidade</label>
-            <select
+            <label htmlFor="campo-6" className="block text-xs text-acl-muted mb-1.5">Modalidade</label>
+            <select id="campo-6"
               value={modalidadeId}
               onChange={(e) => setModalidadeId(e.target.value)}
               required
@@ -247,8 +247,8 @@ export default function AdminItemAcervoForm() {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-acl-muted mb-1.5">Status do item</label>
-            <select
+            <label htmlFor="campo-7" className="block text-xs text-acl-muted mb-1.5">Status do item</label>
+            <select id="campo-7"
               value={status}
               onChange={(e) => setStatus(e.target.value as StatusItem)}
               className="w-full border border-acl-line rounded-sm p-2.5 text-sm bg-white focus:outline-none focus:border-acl-gold-deep"

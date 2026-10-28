@@ -61,7 +61,7 @@ export default function LayoutAdmin() {
       collapsed && !isMobile ? "justify-center" : ""
     } ${
       isActive
-        ? "bg-acl-gold/15 text-acl-gold-deep border-acl-gold-deep"
+        ? "bg-acl-gold/15 text-acl-gold-text border-acl-gold-deep"
         : "text-acl-ink-soft border-transparent hover:bg-white hover:text-acl-ink"
     }`
 
@@ -74,23 +74,27 @@ export default function LayoutAdmin() {
       {isMobile && mobileOpen && (
         <div
           className="fixed inset-0 bg-acl-ink/40 z-30 transition-opacity"
+          aria-hidden="true"
           onClick={closeMobileSidebar}
         />
       )}
 
       {/* TOP BAR MOBILE */}
       {isMobile && (
-        <div className="fixed top-0 left-0 right-0 h-16 bg-acl-cream/95 backdrop-blur-sm border-b border-acl-line flex items-center justify-between px-4 z-20">
-          <h1 className="font-serif text-base text-acl-ink">
-            Admin <span className="text-acl-gold-deep">Acervo</span>
-          </h1>
+        <header className="fixed top-0 left-0 right-0 h-16 bg-acl-cream/95 backdrop-blur-sm border-b border-acl-line flex items-center justify-between px-4 z-20">
+          <p className="font-serif text-base text-acl-ink">
+            Admin <span className="text-acl-gold-text">Acervo</span>
+          </p>
           <button
             onClick={toggleSidebar}
+            aria-label={mobileOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="menu"
             className="w-10 h-10 border border-acl-line rounded-sm flex items-center justify-center text-acl-ink hover:border-acl-gold-deep transition-colors"
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
           </button>
-        </div>
+        </header>
       )}
 
       {/* SIDEBAR */}
@@ -107,31 +111,36 @@ export default function LayoutAdmin() {
         {/* Header Sidebar */}
         <div className="p-4 border-b border-acl-line relative flex items-center justify-between">
           {showLabels && (
-            <h1
+            <button
+              type="button"
               onClick={() => navigate("/admin")}
-              className="font-serif text-lg text-acl-ink cursor-pointer leading-tight hover:text-acl-gold-deep transition-colors"
+              className="text-left font-serif text-lg text-acl-ink leading-tight hover:text-acl-gold-text transition-colors"
             >
               Admin
               <br />
-              <span className="text-acl-gold-deep text-base">Acervo Carmen Lydia</span>
-            </h1>
+              <span className="text-acl-gold-text text-base">Acervo Carmen Lydia</span>
+            </button>
           )}
 
           {!isMobile && (
             <button
               onClick={toggleSidebar}
-              className="w-9 h-9 border border-acl-line rounded-sm flex items-center justify-center text-acl-ink-soft hover:border-acl-gold-deep hover:text-acl-gold-deep transition-colors flex-shrink-0"
+              aria-label={collapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
+              aria-expanded={!collapsed}
+              aria-controls="menu"
+              className="w-9 h-9 border border-acl-line rounded-sm flex items-center justify-center text-acl-ink-soft hover:border-acl-gold-deep hover:text-acl-gold-text transition-colors flex-shrink-0"
             >
-              {collapsed ? <Menu size={16} /> : <X size={16} />}
+              {collapsed ? <Menu size={16} aria-hidden="true" /> : <X size={16} aria-hidden="true" />}
             </button>
           )}
 
           {isMobile && (
             <button
               onClick={closeMobileSidebar}
+              aria-label="Fechar menu"
               className="w-9 h-9 border border-acl-line rounded-sm flex items-center justify-center text-acl-ink-soft hover:border-acl-gold-deep transition-colors"
             >
-              <X size={16} />
+              <X size={16} aria-hidden="true" />
             </button>
           )}
         </div>
@@ -140,7 +149,7 @@ export default function LayoutAdmin() {
         <div className={`p-4 border-b border-acl-line bg-acl-cream ${collapsed && !isMobile ? "flex justify-center" : ""}`}>
           <div className={`flex items-center ${collapsed && !isMobile ? "flex-col gap-2" : "gap-3"}`}>
             <div className="w-10 h-10 bg-white border border-acl-line rounded-full flex items-center justify-center flex-shrink-0">
-              <User size={18} className="text-acl-gold-deep" />
+              <User size={18} className="text-acl-gold-text" />
             </div>
             {showLabels && (
               <div>
@@ -152,9 +161,9 @@ export default function LayoutAdmin() {
         </div>
 
         {/* Menu */}
-        <nav className="flex-1 p-3 overflow-y-auto">
+        <nav id="menu" aria-label="Menu do painel administrativo" className="flex-1 p-3 overflow-y-auto">
           <NavLink to="/admin" end className={navLinkClass} title="Dashboard" onClick={closeMobileSidebar}>
-            <LayoutDashboard size={17} />
+            <LayoutDashboard size={17} aria-hidden="true" />
             {showLabels && <span>Dashboard</span>}
           </NavLink>
 
@@ -197,7 +206,7 @@ export default function LayoutAdmin() {
             title="Ver site"
             onClick={closeMobileSidebar}
           >
-            <Eye size={16} />
+            <Eye size={16} aria-hidden="true" />
             {showLabels && <span>Ver site</span>}
           </NavLink>
 
@@ -209,7 +218,7 @@ export default function LayoutAdmin() {
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-acl-muted hover:text-acl-wine transition-colors"
             title="Sair"
           >
-            <LogOut size={16} />
+            <LogOut size={16} aria-hidden="true" />
             {showLabels && <span>Sair</span>}
           </button>
         </div>
@@ -222,12 +231,12 @@ export default function LayoutAdmin() {
           ${isMobile ? 'ml-0 pt-16' : `${collapsed ? 'ml-20' : 'ml-64'}`}
         `}
       >
-        <main className="flex-1 p-4 md:p-6">
+        <main id="conteudo" tabIndex={-1} className="flex-1 p-4 md:p-6 focus:outline-none">
           <Outlet />
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-acl-line mt-auto">
+        <footer id="rodape" className="border-t border-acl-line mt-auto">
           <div className="px-4 md:px-6 py-3">
             <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-acl-muted">
               <p className="text-center md:text-left">

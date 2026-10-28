@@ -50,7 +50,7 @@ export default function AtletasList() {
   )
 
   return (
-    <main className="bg-acl-cream min-h-screen">
+    <div className="bg-acl-cream min-h-screen">
 
       {/* Hero */}
       <section className="bg-acl-ink py-16 px-6">
@@ -107,7 +107,7 @@ export default function AtletasList() {
                     </div>
 
                     <div className="p-5">
-                      <span className="text-xs text-acl-gold-deep">
+                      <span className="text-xs text-acl-gold-text">
                         {categoriaLabel[atleta.categoria] ?? atleta.categoria}
                       </span>
                       <h2 className="font-serif text-lg text-acl-ink mt-1">
@@ -122,6 +122,6 @@ export default function AtletasList() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

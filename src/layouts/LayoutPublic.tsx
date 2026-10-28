@@ -29,7 +29,7 @@ export default function LayoutPublic() {
       {/* =========================
           NAVBAR
           ========================= */}
-      <nav className="sticky top-0 z-50 bg-acl-cream/95 backdrop-blur-sm border-b border-acl-line">
+      <nav id="menu" aria-label="Menu principal" className="sticky top-0 z-50 bg-acl-cream/95 backdrop-blur-sm border-b border-acl-line">
         <div className="max-w-6xl mx-auto px-6 md:px-10 py-4">
           <div className="flex justify-between items-center">
 
@@ -38,7 +38,7 @@ export default function LayoutPublic() {
               to="/"
               className="font-serif text-xl md:text-2xl text-acl-ink tracking-tight"
             >
-              Acervo <span className="text-acl-gold-deep">Carmen Lydia</span>
+              Acervo <span className="text-acl-gold-text">Carmen Lydia</span>
             </Link>
 
             {/* Menu Desktop */}
@@ -47,7 +47,7 @@ export default function LayoutPublic() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="text-sm text-acl-ink-soft hover:text-acl-gold-deep transition-colors"
+                  className="text-sm text-acl-ink-soft hover:text-acl-gold-text transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -76,15 +76,17 @@ export default function LayoutPublic() {
             <button
               onClick={toggleMenu}
               className="md:hidden p-2.5 border border-acl-line rounded-sm text-acl-ink hover:border-acl-gold-deep transition-colors"
-              aria-label="Menu"
+              aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={isMenuOpen}
+              aria-controls="menu-mobile"
             >
-              {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
             </button>
           </div>
 
           {/* Dropdown Mobile */}
           {isMenuOpen && (
-            <div className="md:hidden mt-4 border border-acl-line rounded-sm bg-acl-cream overflow-hidden">
+            <div id="menu-mobile" className="md:hidden mt-4 border border-acl-line rounded-sm bg-acl-cream overflow-hidden">
               <div className="flex flex-col">
                 <Link
                   to="/"
@@ -138,22 +140,22 @@ export default function LayoutPublic() {
       {/* =========================
           CONTEÚDO DINÂMICO
           ========================= */}
-      <main className="flex-1">
+      <main id="conteudo" tabIndex={-1} className="flex-1 focus:outline-none">
         <Outlet />
       </main>
 
       {/* =========================
           FOOTER
           ========================= */}
-      <footer className="bg-acl-ink text-acl-cream py-14">
+      <footer id="rodape" className="bg-acl-ink text-acl-cream py-14">
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
 
             {/* Coluna 1: Sobre */}
             <div>
-              <h3 className="font-serif text-xl mb-3">
+              <p className="font-serif text-xl mb-3">
                 Acervo <span className="text-acl-gold">Carmen Lydia</span>
-              </h3>
+              </p>
               <p className="text-sm text-acl-cream/70 leading-relaxed">
                 Plataforma digital dedicada à preservação, pesquisa e valorização dos acervos
                 pessoais de atletas brasileiras, promovendo memória esportiva, sustentabilidade
@@ -163,8 +165,8 @@ export default function LayoutPublic() {
 
             {/* Coluna 2: Navegação */}
             <div>
-              <h4 className="eyebrow text-acl-gold mb-4">Navegação</h4>
-              <div className="space-y-2.5">
+              <h2 className="eyebrow text-acl-gold mb-4 font-sans">Navegação</h2>
+              <nav aria-label="Navegação do rodapé" className="space-y-2.5">
                 {navLinks.map((link) => (
                   <Link
                     key={link.to}
@@ -174,12 +176,15 @@ export default function LayoutPublic() {
                     {link.label === "Sobre" ? "Sobre o acervo" : link.label}
                   </Link>
                 ))}
-              </div>
+                <Link to="/acessibilidade" className="block text-sm text-acl-cream/70 hover:text-acl-gold transition-colors">
+                  Acessibilidade
+                </Link>
+              </nav>
             </div>
 
             {/* Coluna 3: Informações + INPI */}
             <div>
-              <h4 className="eyebrow text-acl-gold mb-4">Informações</h4>
+              <h2 className="eyebrow text-acl-gold mb-4 font-sans">Informações</h2>
               <p className="text-sm text-acl-cream/70 leading-relaxed mb-3">
                 Desenvolvido por <span className="text-acl-cream">Luciane de Castro</span>
               </p>

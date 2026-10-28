@@ -38,7 +38,7 @@ export default function AdminExtratoAtleta() {
       {/* Header */}
       <div>
         <h1 className="font-serif text-2xl sm:text-3xl text-acl-ink flex items-center gap-3 mb-1">
-          <FileText size={24} className="text-acl-gold-deep" />
+          <FileText size={24} className="text-acl-gold-text" />
           Auditoria de extratos
         </h1>
         <p className="text-acl-muted text-sm">
@@ -82,7 +82,7 @@ export default function AdminExtratoAtleta() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-acl-cream rounded-sm p-5">
               <p className="text-xs text-acl-muted mb-2">Saldo total</p>
-              <p className="text-2xl font-serif text-acl-gold-deep">
+              <p className="text-2xl font-serif text-acl-gold-text">
                 {extrato.saldoTotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
               </p>
             </div>

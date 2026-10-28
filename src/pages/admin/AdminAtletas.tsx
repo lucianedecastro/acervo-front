@@ -114,14 +114,14 @@ export default function AdminAtletas() {
       <div className="card-editorial p-5">
         <div className="flex items-center gap-2 mb-4">
           <Filter size={16} className="text-acl-ink-soft" />
-          <h3 className="text-sm text-acl-ink-soft">Filtros</h3>
+          <h2 className="text-sm text-acl-ink-soft">Filtros</h2>
         </div>
 
         <div className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs text-acl-muted mb-2">Categoria</label>
-              <select
+              <label htmlFor="campo-1" className="block text-xs text-acl-muted mb-2">Categoria</label>
+              <select id="campo-1"
                 value={filtroCategoria}
                 onChange={e => setFiltroCategoria(e.target.value as any)}
                 className="w-full px-3 py-2 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
@@ -134,8 +134,8 @@ export default function AdminAtletas() {
             </div>
 
             <div>
-              <label className="block text-xs text-acl-muted mb-2">Status</label>
-              <select
+              <label htmlFor="campo-2" className="block text-xs text-acl-muted mb-2">Status</label>
+              <select id="campo-2"
                 value={filtroStatus}
                 onChange={e => setFiltroStatus(e.target.value as any)}
                 className="w-full px-3 py-2 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
@@ -148,8 +148,8 @@ export default function AdminAtletas() {
             </div>
 
             <div>
-              <label className="block text-xs text-acl-muted mb-2">Verificação</label>
-              <select
+              <label htmlFor="campo-3" className="block text-xs text-acl-muted mb-2">Verificação</label>
+              <select id="campo-3"
                 value={filtroVerificacao}
                 onChange={e => setFiltroVerificacao(e.target.value as any)}
                 className="w-full px-3 py-2 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
@@ -166,7 +166,7 @@ export default function AdminAtletas() {
           <div className="flex justify-end">
             <button
               onClick={limparFiltros}
-              className="px-4 py-2 text-xs text-acl-ink-soft hover:text-acl-gold-deep transition-colors flex items-center gap-2"
+              className="px-4 py-2 text-xs text-acl-ink-soft hover:text-acl-gold-text transition-colors flex items-center gap-2"
             >
               <X size={14} />
               Limpar
@@ -195,7 +195,7 @@ export default function AdminAtletas() {
                     <span className="text-sm text-acl-ink">{a.nome}</span>
                   </td>
                   <td className="p-4 text-center">
-                    <span className="text-xs text-acl-gold-deep">
+                    <span className="text-xs text-acl-gold-text">
                       {categoriaLabel[a.categoria] ?? a.categoria}
                     </span>
                   </td>
@@ -239,7 +239,7 @@ export default function AdminAtletas() {
               <div>
                 <h3 className="text-sm text-acl-ink mb-1">{a.nome}</h3>
                 <div className="flex items-center gap-3 text-xs text-acl-muted">
-                  <span className="text-acl-gold-deep">{categoriaLabel[a.categoria] ?? a.categoria}</span>
+                  <span className="text-acl-gold-text">{categoriaLabel[a.categoria] ?? a.categoria}</span>
                   <span>{statusAtletaLabel[a.statusAtleta] ?? a.statusAtleta}</span>
                 </div>
               </div>

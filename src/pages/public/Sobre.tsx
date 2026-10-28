@@ -1,6 +1,6 @@
 export default function Sobre() {
   return (
-    <main className="bg-acl-cream min-h-screen">
+    <div className="bg-acl-cream min-h-screen">
 
       {/* Hero */}
       <section className="bg-acl-ink py-16 px-6">
@@ -116,6 +116,6 @@ export default function Sobre() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

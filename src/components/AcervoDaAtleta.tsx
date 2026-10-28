@@ -34,7 +34,7 @@ export default function AcervoDaAtleta({ atletaId }: AcervoDaAtletaProps) {
 
   if (loading) {
     return (
-      <div className="border-4 border-black p-6 text-center font-bold">
+      <div className="border border-acl-line p-6 text-center font-medium">
         Carregando acervo...
       </div>
     )
@@ -42,7 +42,7 @@ export default function AcervoDaAtleta({ atletaId }: AcervoDaAtletaProps) {
 
   if (error) {
     return (
-      <div className="border-4 border-black bg-red-500 text-white p-6 font-bold">
+      <div className="border border-acl-line bg-acl-wine text-acl-cream p-6 font-medium">
         {error}
       </div>
     )
@@ -50,7 +50,7 @@ export default function AcervoDaAtleta({ atletaId }: AcervoDaAtletaProps) {
 
   if (itens.length === 0) {
     return (
-      <div className="border-4 border-black p-6 font-bold text-center">
+      <div className="border border-acl-line p-6 font-medium text-center">
         Esta atleta ainda não possui itens de acervo publicados.
       </div>
     )
@@ -58,7 +58,7 @@ export default function AcervoDaAtleta({ atletaId }: AcervoDaAtletaProps) {
 
   return (
     <section className="space-y-6">
-      <h2 className="text-3xl font-black uppercase">
+      <h2 className="text-3xl font-medium">
         Acervo
       </h2>
 

@@ -159,7 +159,7 @@ export default function AdminModalidades() {
                         onClick={() => handleToggleAtiva(modalidade)}
                         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs transition-colors ${
                           modalidade.ativa
-                            ? 'bg-acl-gold/15 text-acl-gold-deep'
+                            ? 'bg-acl-gold/15 text-acl-gold-text'
                             : 'bg-acl-line/30 text-acl-muted'
                         }`}
                       >
@@ -213,7 +213,7 @@ export default function AdminModalidades() {
                   )}
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm text-acl-ink mb-1 break-words">{modalidade.nome}</h3>
+                    <h2 className="text-sm text-acl-ink mb-1 break-words">{modalidade.nome}</h2>
                     <code className="text-xs text-acl-muted break-all">/{modalidade.slug}</code>
                   </div>
                 </div>
@@ -223,7 +223,7 @@ export default function AdminModalidades() {
                   <button
                     onClick={() => handleToggleAtiva(modalidade)}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs transition-colors ${
-                      modalidade.ativa ? 'bg-acl-gold/15 text-acl-gold-deep' : 'bg-acl-line/30 text-acl-muted'
+                      modalidade.ativa ? 'bg-acl-gold/15 text-acl-gold-text' : 'bg-acl-line/30 text-acl-muted'
                     }`}
                   >
                     {modalidade.ativa ? <CheckCircle size={14} /> : <XCircle size={14} />}

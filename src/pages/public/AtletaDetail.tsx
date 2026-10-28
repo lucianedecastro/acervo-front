@@ -74,12 +74,12 @@ export default function AtletaDetail() {
     null
 
   return (
-    <main className="bg-acl-cream min-h-screen">
+    <div className="bg-acl-cream min-h-screen">
       {/* Botão Voltar */}
       <div className="max-w-5xl mx-auto px-6 pt-8">
         <button
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-deep transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-acl-ink-soft hover:text-acl-gold-text transition-colors"
         >
           <ArrowLeft size={16} /> Voltar
         </button>
@@ -110,7 +110,7 @@ export default function AtletaDetail() {
           </div>
 
           <div>
-            <p className="eyebrow text-acl-gold-deep mb-3">
+            <p className="eyebrow text-acl-gold-text mb-3">
               {categoriaLabel[atleta.categoria] ?? atleta.categoria}
             </p>
             <h1 className="font-serif text-3xl md:text-5xl text-acl-ink">
@@ -153,6 +153,6 @@ export default function AtletaDetail() {
           </div>
         </section>
       )}
-    </main>
+    </div>
   )
 }

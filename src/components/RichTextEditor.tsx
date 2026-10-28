@@ -37,7 +37,7 @@ export default function RichTextEditor({
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: "text-acl-gold-deep underline hover:text-acl-gold",
+          class: "text-acl-gold-text underline hover:text-acl-gold",
           rel: "noopener noreferrer",
           target: "_blank",
         },
@@ -81,7 +81,7 @@ export default function RichTextEditor({
     `p-1.5 rounded-sm border transition-colors text-sm ${
       active
         ? "bg-acl-gold text-acl-ink border-acl-gold"
-        : "border-acl-line text-acl-ink-soft hover:border-acl-gold-deep hover:text-acl-gold-deep"
+        : "border-acl-line text-acl-ink-soft hover:border-acl-gold-deep hover:text-acl-gold-text"
     }`
 
   return (

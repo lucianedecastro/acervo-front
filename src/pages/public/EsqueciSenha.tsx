@@ -47,10 +47,10 @@ export default function EsqueciSenha() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs text-acl-ink-soft mb-2">Email</label>
+              <label htmlFor="campo-1" className="block text-xs text-acl-ink-soft mb-2">Email</label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-                <input
+                <input id="campo-1"
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -74,7 +74,7 @@ export default function EsqueciSenha() {
             </button>
 
             <p className="text-center text-sm text-acl-ink-soft">
-              <Link to="/login" className="underline hover:text-acl-gold-deep">Voltar ao login</Link>
+              <Link to="/login" className="underline hover:text-acl-gold-text">Voltar ao login</Link>
             </p>
           </form>
         )}

@@ -67,7 +67,7 @@ export default function CardItemAcervo({ item }: CardItemAcervoProps) {
       </div>
 
       {/* Título */}
-      <h3 className="font-serif text-base text-acl-ink group-hover:text-acl-gold-deep transition-colors truncate">
+      <h3 className="font-serif text-base text-acl-ink group-hover:text-acl-gold-text transition-colors truncate">
         {item.titulo}
       </h3>
 

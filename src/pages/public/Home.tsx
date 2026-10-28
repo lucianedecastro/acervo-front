@@ -9,12 +9,14 @@ export default function Home() {
       duration: 900,
       once: true,
       offset: 60,
-      easing: 'ease-out-cubic'
+      easing: 'ease-out-cubic',
+      // Respeita quem pede menos movimento
+      disable: () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
     })
   }, [])
 
   return (
-    <main className="w-full bg-acl-cream">
+    <div className="w-full bg-acl-cream">
 
       {/* =========================
           HERO
@@ -62,7 +64,7 @@ export default function Home() {
               data-aos="fade-up"
               data-aos-delay="0"
             >
-              <Users size={28} strokeWidth={1.5} className="mb-4 text-acl-gold-deep" />
+              <Users size={28} strokeWidth={1.5} className="mb-4 text-acl-gold-text" />
               <h3 className="font-serif text-lg text-acl-ink mb-2">Atletas</h3>
               <p className="text-sm text-acl-muted leading-relaxed">
                 Conheça as trajetórias e os acervos que compõem a memória do esporte brasileiro.
@@ -75,7 +77,7 @@ export default function Home() {
               data-aos="fade-up"
               data-aos-delay="80"
             >
-              <Trophy size={28} strokeWidth={1.5} className="mb-4 text-acl-gold-deep" />
+              <Trophy size={28} strokeWidth={1.5} className="mb-4 text-acl-gold-text" />
               <h3 className="font-serif text-lg text-acl-ink mb-2">Modalidades</h3>
               <p className="text-sm text-acl-muted leading-relaxed">
                 Explore as modalidades esportivas e seus contextos históricos.
@@ -88,7 +90,7 @@ export default function Home() {
               data-aos="fade-up"
               data-aos-delay="160"
             >
-              <BookOpen size={28} strokeWidth={1.5} className="mb-4 text-acl-gold-deep" />
+              <BookOpen size={28} strokeWidth={1.5} className="mb-4 text-acl-gold-text" />
               <h3 className="font-serif text-lg text-acl-ink mb-2">Sobre o acervo</h3>
               <p className="text-sm text-acl-muted leading-relaxed">
                 Conheça o propósito e os princípios éticos do projeto.
@@ -101,7 +103,7 @@ export default function Home() {
               data-aos="fade-up"
               data-aos-delay="240"
             >
-              <Scale size={28} strokeWidth={1.5} className="mb-4 text-acl-gold-deep" />
+              <Scale size={28} strokeWidth={1.5} className="mb-4 text-acl-gold-text" />
               <h3 className="font-serif text-lg text-acl-ink mb-2">Arquitetura</h3>
               <p className="text-sm text-acl-muted leading-relaxed">
                 Entenda a estrutura técnica e institucional da plataforma.
@@ -139,6 +141,6 @@ export default function Home() {
         </div>
       </section>
 
-    </main>
+    </div>
   )
 }

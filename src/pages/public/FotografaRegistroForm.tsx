@@ -68,66 +68,66 @@ export default function FotografaRegistroForm() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Nome completo *</label>
+            <label htmlFor="campo-1" className="block text-xs text-acl-ink-soft mb-2">Nome completo *</label>
             <div className="relative">
               <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-              <input type="text" value={nome} onChange={e => setNome(e.target.value)} required maxLength={150}
+              <input id="campo-1" type="text" value={nome} onChange={e => setNome(e.target.value)} required maxLength={150}
                      autoComplete="name" className={inputClass} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Nome social</label>
+            <label htmlFor="campo-2" className="block text-xs text-acl-ink-soft mb-2">Nome social</label>
             <div className="relative">
               <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-              <input type="text" value={nomeSocial} onChange={e => setNomeSocial(e.target.value)} maxLength={150}
+              <input id="campo-2" type="text" value={nomeSocial} onChange={e => setNomeSocial(e.target.value)} maxLength={150}
                      className={inputClass} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Email *</label>
+            <label htmlFor="campo-3" className="block text-xs text-acl-ink-soft mb-2">Email *</label>
             <div className="relative">
               <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+              <input id="campo-3" type="email" value={email} onChange={e => setEmail(e.target.value)} required
                      placeholder="seu@email.com" autoComplete="email" className={inputClass} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">CPF</label>
+            <label htmlFor="campo-4" className="block text-xs text-acl-ink-soft mb-2">CPF</label>
             <div className="relative">
               <CreditCard className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-              <input type="text" value={cpf} onChange={e => setCpf(e.target.value)} maxLength={14}
+              <input id="campo-4" type="text" value={cpf} onChange={e => setCpf(e.target.value)} maxLength={14}
                      placeholder="000.000.000-00" className={inputClass} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Senha * (mínimo de 8 caracteres)</label>
+            <label htmlFor="campo-5" className="block text-xs text-acl-ink-soft mb-2">Senha * (mínimo de 8 caracteres)</label>
             <div className="relative">
               <Lock className="z-10 pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-              <PasswordInput value={senha} onChange={e => setSenha(e.target.value)} required minLength={8}
+              <PasswordInput id="campo-5" value={senha} onChange={e => setSenha(e.target.value)} required minLength={8}
                              maxLength={72} autoComplete="new-password"
                              className={`${inputClass} pr-11`} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Confirmar senha *</label>
+            <label htmlFor="campo-6" className="block text-xs text-acl-ink-soft mb-2">Confirmar senha *</label>
             <div className="relative">
               <Lock className="z-10 pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-              <PasswordInput value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} required
+              <PasswordInput id="campo-6" value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} required
                              minLength={8} maxLength={72} autoComplete="new-password"
                              className={`${inputClass} pr-11`} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Categoria *</label>
+            <label htmlFor="campo-7" className="block text-xs text-acl-ink-soft mb-2">Categoria *</label>
             <div className="relative">
               <Camera className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted" size={16} />
-              <select value={categoria} onChange={e => setCategoria(e.target.value as CategoriaFotografa)}
+              <select id="campo-7" value={categoria} onChange={e => setCategoria(e.target.value as CategoriaFotografa)}
                       className={inputClass}>
                 <option value="ATIVA">Ativa</option>
                 <option value="HISTORICA">Histórica</option>
@@ -137,21 +137,21 @@ export default function FotografaRegistroForm() {
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Registro profissional</label>
-            <input type="text" value={registroProfissional} onChange={e => setRegistroProfissional(e.target.value)}
+            <label htmlFor="campo-8" className="block text-xs text-acl-ink-soft mb-2">Registro profissional</label>
+            <input id="campo-8" type="text" value={registroProfissional} onChange={e => setRegistroProfissional(e.target.value)}
                    maxLength={100} className={inputClass.replace("pl-10", "pl-4")} />
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Link da rede social principal</label>
-            <input type="url" value={linkRedeSocialPrincipal}
+            <label htmlFor="campo-9" className="block text-xs text-acl-ink-soft mb-2">Link da rede social principal</label>
+            <input id="campo-9" type="url" value={linkRedeSocialPrincipal}
                    onChange={e => setLinkRedeSocialPrincipal(e.target.value)} maxLength={500}
                    placeholder="https://" className={inputClass.replace("pl-10", "pl-4")} />
           </div>
 
           <div>
-            <label className="block text-xs text-acl-ink-soft mb-2">Biografia</label>
-            <textarea value={biografia} onChange={e => setBiografia(e.target.value)} rows={4} maxLength={5000}
+            <label htmlFor="campo-10" className="block text-xs text-acl-ink-soft mb-2">Biografia</label>
+            <textarea id="campo-10" value={biografia} onChange={e => setBiografia(e.target.value)} rows={4} maxLength={5000}
                       className={inputClass.replace("pl-10", "pl-4")} />
           </div>
 
@@ -169,7 +169,7 @@ export default function FotografaRegistroForm() {
 
         <p className="mt-6 text-center text-sm text-acl-ink-soft">
           Já tem uma conta?{" "}
-          <Link to="/login" className="underline hover:text-acl-gold-deep">Fazer login</Link>
+          <Link to="/login" className="underline hover:text-acl-gold-text">Fazer login</Link>
         </p>
       </div>
     </div>

@@ -109,7 +109,7 @@ export default function ModalidadeForm() {
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-16">
       <h1 className="font-serif text-2xl text-acl-ink flex items-center gap-3">
-        <Trophy size={22} className="text-acl-gold-deep" />
+        <Trophy size={22} className="text-acl-gold-text" />
         {isEdit ? `Editar: ${nome}` : "Cadastrar modalidade"}
       </h1>
 
@@ -123,8 +123,8 @@ export default function ModalidadeForm() {
 
         {/* Nome */}
         <div>
-          <label className="block text-xs text-acl-muted mb-1.5">Nome</label>
-          <input
+          <label htmlFor="campo-1" className="block text-xs text-acl-muted mb-1.5">Nome</label>
+          <input id="campo-1"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
             required
@@ -198,10 +198,10 @@ export default function ModalidadeForm() {
 
           {/* Legenda da foto de destaque */}
           <div>
-            <label className="block text-xs text-acl-muted mb-1.5">
+            <label htmlFor="campo-6" className="block text-xs text-acl-muted mb-1.5">
               Legenda da foto de destaque
             </label>
-            <input
+            <input id="campo-6"
               type="text"
               value={legendaFotoDestaque}
               onChange={(e) => setLegendaFotoDestaque(e.target.value)}

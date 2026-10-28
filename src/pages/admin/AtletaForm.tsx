@@ -184,27 +184,28 @@ export default function AtletaForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto">
-      <h1 className="text-4xl font-black uppercase flex items-center gap-3">
+      <h1 className="text-4xl font-medium flex items-center gap-3">
         <UserPlus />
         {isEditing ? `Editar: ${nome}` : "Nova Inserção Curatorial"}
       </h1>
 
       {/* DADOS PRINCIPAIS */}
-      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
-        <h2 className="text-xl font-black uppercase">Dados da Atleta</h2>
+      <section className="bg-white border border-acl-line rounded p-6 space-y-4">
+        <h2 className="text-xl font-medium">Dados da Atleta</h2>
 
         <input
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           placeholder="Nome da atleta"
-          className="w-full border-4 border-black p-3"
+          className="w-full border border-acl-line p-3"
           required
         />
 
         <select
           value={categoria}
+          aria-label="Categoria da atleta"
           onChange={(e) => setCategoria(e.target.value as CategoriaAtleta)}
-          className="w-full border-4 border-black p-3"
+          className="w-full border border-acl-line p-3"
         >
           <option value="ATIVA">ATIVA</option>
           <option value="HISTORICA">HISTÓRICA</option>
@@ -213,8 +214,9 @@ export default function AtletaForm() {
 
         <select
           value={statusVerificacao}
+          aria-label="Situação da verificação"
           onChange={(e) => setStatusVerificacao(e.target.value as StatusVerificacao)}
-          className="w-full border-4 border-black p-3"
+          className="w-full border border-acl-line p-3"
         >
           <option value="PENDENTE">PENDENTE</option>
           <option value="VERIFICADO">VERIFICADO</option>
@@ -224,8 +226,9 @@ export default function AtletaForm() {
 
         <select
           value={statusAtleta}
+          aria-label="Status da atleta"
           onChange={(e) => setStatusAtleta(e.target.value as StatusAtleta)}
-          className="w-full border-4 border-black p-3"
+          className="w-full border border-acl-line p-3"
         >
           <option value="ATIVO">ATIVO</option>
           <option value="INATIVO">INATIVO</option>
@@ -234,14 +237,14 @@ export default function AtletaForm() {
       </section>
 
       {/* MODALIDADES */}
-      <section className="bg-white border-4 border-black rounded-xl p-6 space-y-4">
-        <h2 className="text-xl font-black uppercase">Modalidades</h2>
+      <section className="bg-white border border-acl-line rounded p-6 space-y-4">
+        <h2 className="text-xl font-medium">Modalidades</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {modalidades.map((modalidade) => (
         <label
         key={modalidade.id}
-        className="flex items-center gap-3 border-4 border-black p-3 cursor-pointer font-bold"
+        className="flex items-center gap-3 border border-acl-line p-3 cursor-pointer font-medium"
       >
         <input
           type="checkbox"

@@ -14,14 +14,21 @@
    VARIÁVEIS CSS CUSTOMIZADAS
    ========================= */
 :root {
-  --color-cream: #F6F1E7;
-  --color-ink: #2A211A;
-  --color-ink-soft: #5C5142;
-  --color-muted: #7A6F5A;
-  --color-gold: #C9A45C;
-  --color-gold-deep: #9C7A3C;
-  --color-wine: #8C4A3D;
-  --color-line: #D8CFB8;
+
+  /* Tripletos RGB usados pelo Tailwind (tailwind.config.js). O alto contraste os redefine. */
+  --acl-cream: 246 241 231;
+  --acl-ink: 42 33 26;
+  --acl-ink-soft: 92 81 66;
+  --acl-muted: 107 96 75;      /* #6B604B — 5,5:1 sobre o creme */
+  --acl-gold: 201 164 92;
+  --acl-gold-deep: 156 122 60;
+  --acl-gold-text: 128 98 42;  /* #80622A — 5,0:1 sobre o creme */
+  --acl-wine: 140 74 61;
+  --acl-line: 216 207 184;
+  --acl-field: 133 122 99;     /* #857A63 — 3,8:1 (borda de campo) */
+
+  /* Ajustável pela barra de acessibilidade */
+  --a11y-escala: 1;
 
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.6;
@@ -33,8 +40,8 @@
   -moz-osx-font-smoothing: grayscale;
 
   color-scheme: light;
-  color: var(--color-ink);
-  background-color: var(--color-cream);
+  color: rgb(var(--acl-ink));
+  background-color: rgb(var(--acl-cream));
 }
 
 /* =========================
@@ -48,14 +55,15 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: calc(100% * var(--a11y-escala));
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: var(--color-cream);
-  color: var(--color-ink);
+  background-color: rgb(var(--acl-cream));
+  color: rgb(var(--acl-ink));
   overflow-x: hidden;
 }
 
@@ -71,7 +79,7 @@ h6 {
   font-family: 'Fraunces', Georgia, serif;
   font-weight: 500;
   line-height: 1.25;
-  color: var(--color-ink);
+  color: rgb(var(--acl-ink));
 }
 
 h1 {
@@ -133,7 +141,7 @@ a {
 
   .btn-secondary-light {
     @apply inline-block border border-acl-line text-acl-ink font-medium text-sm px-7 py-3 rounded-sm;
-    @apply hover:border-acl-gold-deep hover:text-acl-gold-deep transition-colors duration-200;
+    @apply hover:border-acl-gold-deep hover:text-acl-gold-text transition-colors duration-200;
   }
 
   .card-editorial {
@@ -168,16 +176,16 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-cream);
+  background: rgb(var(--acl-cream));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-line);
+  background: rgb(var(--acl-line));
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-gold-deep);
+  background: rgb(var(--acl-gold-deep));
 }
 
 /* =========================
@@ -196,7 +204,7 @@ a {
 }
 
 *:focus-visible {
-  outline: 2px solid var(--color-gold-deep);
+  outline: 2px solid rgb(var(--acl-gold-deep));
   outline-offset: 2px;
 }
 
@@ -204,17 +212,239 @@ a {
    RESPONSIVIDADE
    ========================= */
 @media (max-width: 768px) {
-  :root {
-    font-size: 15px;
+  html {
+    font-size: calc(93.75% * var(--a11y-escala));
   }
 }
 
+
+/* =========================
+   CONTRASTE DE CAMPOS E PLACEHOLDERS (WCAG 1.4.11 / 1.4.3)
+   Especificidade maior que a das classes utilitárias, para valer em todas as telas.
+   ========================= */
+input.border-acl-line,
+select.border-acl-line,
+textarea.border-acl-line {
+  border-color: rgb(var(--acl-field));
+}
+
+::placeholder {
+  color: rgb(var(--acl-muted));
+  opacity: 1;
+}
+
+/* Foco visível mais forte em campos e botões */
+*:focus-visible {
+  outline: 3px solid rgb(var(--acl-gold-text));
+  outline-offset: 2px;
+}
+
+/* =========================
+   LINKS DE SALTO (eMAG: ir para conteúdo, menu e rodapé)
+   ========================= */
+.links-de-salto a {
+  position: absolute;
+  left: 0.5rem;
+  top: -4rem;
+  z-index: 1000;
+  padding: 0.75rem 1rem;
+  background: rgb(var(--acl-ink));
+  color: rgb(var(--acl-cream));
+  font-size: 0.875rem;
+  border-radius: 2px;
+}
+
+.links-de-salto a:focus {
+  top: 0.5rem;
+}
+
+/* =========================
+   MOVIMENTO REDUZIDO
+   (preferência do sistema OU opção da barra de acessibilidade)
+   ========================= */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+html.a11y-sem-animacao *,
+html.a11y-sem-animacao *::before,
+html.a11y-sem-animacao *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+html.a11y-sem-animacao [data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* =========================
+   OPÇÕES DA BARRA DE ACESSIBILIDADE
+   ========================= */
+html.a11y-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+html.a11y-fonte-legivel body,
+html.a11y-fonte-legivel body * {
+  font-family: Verdana, 'Trebuchet MS', Arial, sans-serif !important;
+}
+
+/* WCAG 1.4.12 — espaçamento de texto */
+html.a11y-espacamento body {
+  line-height: 1.8;
+  letter-spacing: 0.06em;
+  word-spacing: 0.16em;
+}
+
+html.a11y-espacamento p {
+  margin-bottom: 1em;
+}
+
+/* =========================
+   ALTO CONTRASTE (fundo preto, texto branco, destaques amarelos)
+   ========================= */
+html.a11y-contraste {
+  --acl-cream: 0 0 0;
+  --acl-ink: 255 255 255;
+  --acl-ink-soft: 255 255 255;
+  --acl-muted: 255 255 255;
+  --acl-gold: 255 221 0;
+  --acl-gold-deep: 255 221 0;
+  --acl-gold-text: 255 221 0;
+  --acl-wine: 255 140 140;
+  --acl-line: 255 255 255;
+  --acl-field: 255 255 255;
+  color-scheme: dark;
+}
+
+html.a11y-contraste body,
+html.a11y-contraste .bg-white,
+html.a11y-contraste .bg-gray-50,
+html.a11y-contraste .bg-green-50 {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+/* Texto sobre dourado/amarelo volta a ser preto */
+html.a11y-contraste .bg-acl-gold,
+html.a11y-contraste .bg-acl-gold *,
+html.a11y-contraste .btn-primary,
+html.a11y-contraste .links-de-salto a {
+  color: #000 !important;
+}
+
+html.a11y-contraste .links-de-salto a {
+  background: #ffdd00;
+}
+
+/* Seções escuras (fundo "ink") ficam pretas, com texto branco e destaques amarelos */
+html.a11y-contraste .bg-acl-ink {
+  background-color: #000 !important;
+  border: 1px solid #fff;
+}
+
+html.a11y-contraste .bg-acl-ink,
+html.a11y-contraste .bg-acl-ink * {
+  color: #fff !important;
+}
+
+html.a11y-contraste .bg-acl-ink .btn-primary,
+html.a11y-contraste .bg-acl-ink .bg-acl-gold,
+html.a11y-contraste .bg-acl-ink .bg-acl-gold * {
+  color: #000 !important;
+}
+
+html.a11y-contraste .bg-acl-ink .text-acl-gold,
+html.a11y-contraste .bg-acl-ink .text-acl-gold * {
+  color: #ffdd00 !important;
+}
+
+/* Rodapé escuro vira preto com borda branca */
+html.a11y-contraste footer {
+  background-color: #000 !important;
+  border-top: 2px solid #fff;
+}
+
+html.a11y-contraste footer,
+html.a11y-contraste footer * {
+  color: #fff !important;
+}
+
+html.a11y-contraste footer .text-acl-gold {
+  color: #ffdd00 !important;
+}
+
+html.a11y-contraste .card-editorial,
+html.a11y-contraste input,
+html.a11y-contraste select,
+html.a11y-contraste textarea {
+  border-color: #fff !important;
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+html.a11y-contraste a {
+  text-decoration: underline;
+}
+
+html.a11y-contraste ::placeholder {
+  color: #ddd;
+}
+
+html.a11y-contraste *:focus-visible {
+  outline: 3px solid #ffdd00;
+}
+
+html.a11y-contraste img {
+  filter: contrast(1.1);
+}
+
+/* Alvos de salto/foco programático não precisam de contorno */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* O foco visível não pode ser removido por utilitários como focus:outline-none */
+*:focus-visible {
+  outline: 3px solid rgb(var(--acl-gold-text)) !important;
+  outline-offset: 2px !important;
+}
+
+html.a11y-contraste *:focus-visible {
+  outline-color: #ffdd00 !important;
+}
+
+/* Alto contraste: verdes e vermelhos de status precisam de tons claros sobre o preto */
+html.a11y-contraste .text-green-700,
+html.a11y-contraste .text-green-600 {
+  color: #7dffa0 !important;
+}
+
+html.a11y-contraste .text-red-600,
+html.a11y-contraste .text-red-700 {
+  color: #ff9b9b !important;
+}
+
+html.a11y-contraste .bg-acl-gold\/15 {
+  background-color: #2a2400 !important;
+}
+
+/* Espaço para o botão flutuante de acessibilidade não cobrir o rodapé */
+#rodape {
+  padding-bottom: 5rem;
 }

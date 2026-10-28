@@ -126,6 +126,7 @@ export default function AdminVendas() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <select
             value={statusFiltro}
+            aria-label="Filtrar por status"
             onChange={e => setStatusFiltro(e.target.value)}
             className="px-3 py-2 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep"
           >
@@ -138,6 +139,7 @@ export default function AdminVendas() {
           <input
             type="date"
             value={dataInicio}
+            aria-label="Data inicial"
             onChange={e => setDataInicio(e.target.value)}
             className="px-3 py-2 border border-acl-line rounded-sm text-sm focus:outline-none focus:border-acl-gold-deep"
           />
@@ -145,6 +147,7 @@ export default function AdminVendas() {
           <input
             type="date"
             value={dataFim}
+            aria-label="Data final"
             onChange={e => setDataFim(e.target.value)}
             className="px-3 py-2 border border-acl-line rounded-sm text-sm focus:outline-none focus:border-acl-gold-deep"
           />
@@ -153,7 +156,7 @@ export default function AdminVendas() {
         <div className="flex justify-end">
           <button
             onClick={limparFiltros}
-            className="px-4 py-2 text-xs text-acl-ink-soft hover:text-acl-gold-deep transition-colors flex items-center gap-2"
+            className="px-4 py-2 text-xs text-acl-ink-soft hover:text-acl-gold-text transition-colors flex items-center gap-2"
           >
             <X size={14} />
             Limpar
@@ -219,7 +222,7 @@ export default function AdminVendas() {
                     </td>
                     <td className="p-4 text-center">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-xs ${
-                        v.status === "APROVADO" ? "bg-green-50 text-green-700" : "bg-acl-gold/15 text-acl-gold-deep"
+                        v.status === "APROVADO" ? "bg-green-50 text-green-700" : "bg-acl-gold/15 text-acl-gold-text"
                       }`}>
                         <CheckCircle size={12} />
                         {statusLabel[v.status] ?? v.status}
@@ -249,7 +252,7 @@ export default function AdminVendas() {
                       </span>
                     </div>
                     <span className={`px-2 py-1 rounded-sm text-[11px] ${
-                      v.status === "APROVADO" ? "bg-green-50 text-green-700" : "bg-acl-gold/15 text-acl-gold-deep"
+                      v.status === "APROVADO" ? "bg-green-50 text-green-700" : "bg-acl-gold/15 text-acl-gold-text"
                     }`}>
                       {statusLabel[v.status] ?? v.status}
                     </span>
@@ -266,7 +269,7 @@ export default function AdminVendas() {
 
                   <div className="pt-2 border-t border-acl-line">
                     <p className="text-xs text-acl-muted mb-1">Valor total</p>
-                    <p className="text-lg font-serif text-acl-gold-deep">
+                    <p className="text-lg font-serif text-acl-gold-text">
                       {v.valorTotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                     </p>
                   </div>
