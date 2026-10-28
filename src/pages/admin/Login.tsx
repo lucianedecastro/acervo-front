@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import api from "@/services/api"
 import { useAuth } from "@/auth/AuthContext"
 import { Lock, Mail } from "lucide-react"
+import PasswordInput from "@/components/PasswordInput"
 
 interface LoginResponse {
   token: string
@@ -115,16 +116,16 @@ export default function Login() {
             </label>
             <div className="relative">
               <Lock
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted"
+                className="z-10 pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-acl-muted"
                 size={16}
               />
-              <input
-                type="password"
+              <PasswordInput
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full pl-10 pr-4 py-3 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep transition-colors"
+                autoComplete="current-password"
+                className="w-full pl-10 pr-11 py-3 border border-acl-line rounded-sm text-sm bg-white focus:outline-none focus:border-acl-gold-deep transition-colors"
               />
             </div>
           </div>
@@ -147,6 +148,19 @@ export default function Login() {
             {loading ? "Verificando..." : "Entrar"}
           </button>
         </form>
+
+        {/* Criar conta */}
+        <div className="mt-6 pt-6 border-t border-acl-line text-center">
+          <p className="text-sm text-acl-ink-soft mb-3">Ainda não tem conta?</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link to="/atleta/registro" className="btn-secondary-light">
+              Criar conta de atleta
+            </Link>
+            <Link to="/fotografa/registro" className="btn-secondary-light">
+              Criar conta de fotógrafa
+            </Link>
+          </div>
+        </div>
 
         {/* Footer */}
         <footer className="mt-6 text-center">

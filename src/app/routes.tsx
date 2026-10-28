@@ -32,6 +32,7 @@ import Login from "@/pages/admin/Login"
    Atleta – Acesso Livre
    ====================== */
 import AtletaRegistroForm from "@/pages/atleta/AtletaRegistroForm"
+import FotografaRegistroForm from "@/pages/public/FotografaRegistroForm"
 
 /* ======================
    Atleta – Protegido
@@ -83,6 +84,7 @@ export function AppRoutes() {
 
         {/* Registro inicial da atleta */}
         <Route path="/atleta/registro" element={<AtletaRegistroForm />} />
+        <Route path="/fotografa/registro" element={<FotografaRegistroForm />} />
 
         <Route path="/login" element={<Login />} />
       </Route>

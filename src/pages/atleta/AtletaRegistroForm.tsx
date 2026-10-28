@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { atletaService } from "@/services/atletaService"
 import { CategoriaAtleta } from "@/types/atleta"
 import { User, Mail, Lock, CreditCard, Trophy, UserPlus } from "lucide-react"
+import PasswordInput from "@/components/PasswordInput"
+import { mensagemErroCadastro } from "@/utils/erroApi"
 
 export default function AtletaRegistroForm() {
   const navigate = useNavigate()
@@ -29,10 +31,10 @@ export default function AtletaRegistroForm() {
 
     try {
       await atletaService.registrar(payload)
-      alert("Cadastro realizado com sucesso. Faça login para continuar.")
+      alert("Cadastro recebido! Seu perfil será analisado pela curadoria. Faça login para continuar.")
       navigate("/login")
-    } catch {
-      alert("Erro ao realizar cadastro.")
+    } catch (err) {
+      alert(mensagemErroCadastro(err))
     } finally {
       setLoading(false)
     }
@@ -112,13 +114,15 @@ export default function AtletaRegistroForm() {
                 <Lock size={16} strokeWidth={3} />
                 Senha *
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 value={senha}
                 onChange={e => setSenha(e.target.value)}
-                placeholder="Crie uma senha forte"
+                placeholder="Mínimo de 8 caracteres"
                 required
-                className="w-full px-4 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
+                minLength={8}
+                maxLength={72}
+                autoComplete="new-password"
+                className="w-full pl-4 pr-12 py-3 border-4 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-4 focus:ring-[#D4A244]"
               />
             </div>
 
