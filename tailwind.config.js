@@ -7,25 +7,20 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Fundo principal (marfim, não branco puro — papel, não tela)
-                'acl-cream': '#F6F1E7',
-
-                // Preto quente, usado em seções de destaque (não preto puro)
-                'acl-ink': '#2A211A',
-                'acl-ink-soft': '#5C5142',
-
-                // Texto terciário / legendas
-                'acl-muted': '#7A6F5A',
-
-                // Acento principal — dourado antigo (medalha, não construção)
-                'acl-gold': '#C9A45C',
-                'acl-gold-deep': '#9C7A3C',
-
-                // Acento secundário, uso esparso (tags, variação visual)
-                'acl-wine': '#8C4A3D',
-
-                // Linhas/divisórias sobre o creme
-                'acl-line': '#D8CFB8',
+                // Cores definidas como variáveis (tripletos RGB) em index.css,
+                // para que o modo de alto contraste possa trocá-las em um lugar só.
+                'acl-cream': 'rgb(var(--acl-cream) / <alpha-value>)',
+                'acl-ink': 'rgb(var(--acl-ink) / <alpha-value>)',
+                'acl-ink-soft': 'rgb(var(--acl-ink-soft) / <alpha-value>)',
+                'acl-muted': 'rgb(var(--acl-muted) / <alpha-value>)',
+                'acl-gold': 'rgb(var(--acl-gold) / <alpha-value>)',
+                'acl-gold-deep': 'rgb(var(--acl-gold-deep) / <alpha-value>)',
+                // Dourado para TEXTO sobre fundo claro (contraste mínimo de 4,5:1)
+                'acl-gold-text': 'rgb(var(--acl-gold-text) / <alpha-value>)',
+                'acl-wine': 'rgb(var(--acl-wine) / <alpha-value>)',
+                'acl-line': 'rgb(var(--acl-line) / <alpha-value>)',
+                // Borda de campos de formulário (contraste mínimo de 3:1)
+                'acl-field': 'rgb(var(--acl-field) / <alpha-value>)',
             },
             fontFamily: {
                 // Serifa editorial para títulos — substitui o display neobrutalista
