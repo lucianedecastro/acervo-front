@@ -33,6 +33,8 @@ import Login from "@/pages/admin/Login"
    ====================== */
 import AtletaRegistroForm from "@/pages/atleta/AtletaRegistroForm"
 import FotografaRegistroForm from "@/pages/public/FotografaRegistroForm"
+import EsqueciSenha from "@/pages/public/EsqueciSenha"
+import RedefinirSenha from "@/pages/public/RedefinirSenha"
 
 /* ======================
    Atleta – Protegido
@@ -87,6 +89,8 @@ export function AppRoutes() {
         <Route path="/fotografa/registro" element={<FotografaRegistroForm />} />
 
         <Route path="/login" element={<Login />} />
+        <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+        <Route path="/redefinir-senha" element={<RedefinirSenha />} />
       </Route>
 
       {/* =====================================================

@@ -130,6 +130,12 @@ export default function Login() {
             </div>
           </div>
 
+          <div className="text-right -mt-2">
+            <Link to="/esqueci-senha" className="text-xs text-acl-ink-soft underline hover:text-acl-gold-deep">
+              Esqueci minha senha
+            </Link>
+          </div>
+
           {/* Mensagem de Erro */}
           {error && (
             <div className="bg-acl-wine/10 border border-acl-wine rounded-sm p-3">
